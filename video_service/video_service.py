@@ -13,7 +13,9 @@ static_movies = [
     os.path.splitext(f)[0] for f in os.listdir(movie_dir) if f.endswith(".mp4")
 ]
 
-# print(static_movies)~
+# print(static_movies)
+
+ALOOWED_GAP_TIME_IN_SECONDS = 5
 
 num_users = 0
 
@@ -23,9 +25,6 @@ video_state = {
     "source": os.path.join(movie_dir, f"{static_movies[0]}.mp4"),
     "play_rate": 1,
 }
-
-print(video_state)
-
 
 @app.route("/")
 def index():
@@ -49,7 +48,7 @@ def connection_event():
     num_users -= 1
     print(f"User disconnected, now num users is {num_users}")
 
-
+# добавить gap в 5 секунд для избегания лишней синхронизации.
 @socketio.on("state_update_from_client")
 def handle_state_update(data):
     video_state = data

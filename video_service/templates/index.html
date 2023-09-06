@@ -27,13 +27,13 @@
                 Video Player
             </div>
             <div class="player">
-                <video id="video-player" controls>
-                    <source
-                    id="video-source"
-                    src="{{url_for('static', filename='movies/' + movie_by_default + '.mp4')}}" 
-                    type="video/mp4"/>
-                    Your browser does not support the video tag.
-                </video>
+                <video
+                id="video-player"
+                class="video-js"
+                controls
+                preload="auto"
+                data-setup="{}"
+                src="{{url_for('static', filename='movies/' + movie_by_default + '.mp4')}}">
             </div>
         </div>
 
@@ -63,7 +63,7 @@
                 <div class="input">
                     <input class="input-content" placeholder="Input message">
                     <div class="span-controls">
-                        <button class="emoji-button chat-btn" onclick="takeEmoji()">
+                        <button class="emoji-button chat-btn" onclick="toggleEmojiPicker()">
                             <i class="fa-regular fa-face-smile"></i>
                         </button>
                         <button class="send-button chat-btn" onclick="sendMessage()">
@@ -85,6 +85,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="{{url_for('static', filename='scripts/index.js')}}"></script>
     <script src="https://kit.fontawesome.com/159c9006d5.js" crossorigin="anonymous"></script>
+    
+    <link href="https://unpkg.com/video.js/dist/video-js.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/video.js/dist/video.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/videojs-mobile-ui/dist/videojs-mobile-ui.css">
+    <script src="https://unpkg.com/videojs-mobile-ui@1.1.0/dist/videojs-mobile-ui.js"></script>
+    <script>
+        let options = {
+            fullscreen: {
+                enterOnRotate: true,
+                exitOnRotate: true,
+                lockOnRotate: true,
+                lockToLandscapeOnEnter: false,
+                disabled: false
+            },
+            touchControls: {
+                seekSeconds: 5,
+                tapTimeout: 200,
+                disableOnEnd: false,
+                disabled: false,
+            }
+        };
+
+        var player = videojs('video-player', {}, function onPlayerReady() {
+            console.log("Player ready!");
+        });
+        
+        document.querySelectorAll("button.vjs-play-control").forEach((value, key) => {
+            console.log(value);
+        });
+
+        player.mobileUi(options = options);
+
+
+    </script>
 </body>
 
 </html>

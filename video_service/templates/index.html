@@ -1,49 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>RoomMate</title>
+        <link rel="stylesheet" href="../static/styles/style.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/vidstack/styles/defaults.min.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/vidstack/styles/community-skin/video.min.css" />
+        <script
+            type="module"
+            src="https://cdn.jsdelivr.net/npm/vidstack/dist/cdn/prod.js"></script>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoomMate</title>
-    <link rel="stylesheet" href="../static/styles/style.css">
-</head>
-
-<body>
-    <section class="layout">
-        <div id="header" class="header">
-            <span id="sandwichButton" onclick="openNav()">&#9776;</span>
-            <div class="title">RoomMate - Movie sharing service.</div>
-        </div>
-        <div id="sideNav" class="sidenav">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a href="#">About</a>
-            <a href="#">Services</a>
-            <a href="#">Clients</a>
-            <a href="#">Contact</a>
-        </div>
-
-        <div id="main" class="body">
-            <div class="containerHeader">
-                Video Player
+    <body>
+        <section class="layout">
+            <div id="header" class="header">
+                <span id="sandwichButton" onclick="openNav()">&#9776;</span>
+                <div class="title">RoomMate - Movie sharing service.</div>
             </div>
-            <div class="player">
-                <video
-                id="video-player"
-                class="video-js"
-                controls
-                preload="auto"
-                data-setup="{}"
-                src="{{url_for('static', filename='movies/' + movie_by_default + '.mp4')}}">
-            </div>
-        </div>
-
-        <div id="chat" class="chat">
-            <div class="containerHeader">
-                Chat
+            <div id="sideNav" class="sidenav">
+                <a
+                    href="javascript:void(0)"
+                    class="closebtn"
+                    onclick="closeNav()"
+                    >&times;</a
+                >
+                <a href="#">About</a>
+                <a href="#">Services</a>
+                <a href="#">Clients</a>
+                <a href="#">Contact</a>
             </div>
 
-            <ul id="room-messages" class="messages">
-                <!-- <li class="message">
+            <div id="main" class="body">
+                <div class="containerHeader">Video Player</div>
+                <media-player
+                    src="{{url_for('static', filename='movies/' + movie_by_default + '.mp4')}}"
+                    poster=""
+                    thumbnails=""
+                    crossorigin>
+                    <media-outlet></media-outlet>
+                    <media-community-skin></media-community-skin>
+                </media-player>
+            </div>
+
+            <div id="chat" class="chat">
+                <div class="containerHeader">Chat</div>
+
+                <ul id="room-messages" class="messages">
+                    <!-- <li class="message">
                     <div class="message-sender">
                         зюзя
                         <span class="message-time">03:06 AM</span>
@@ -57,69 +65,51 @@
                     </div>
                     <p class="message-content">Здарова! Какой фильм будем смотреть? Я вот тут решил хуйни всякой написать на кучу текста, чтобы проверить, не пойдет ли по одному месту вёрстка!</p>
                 </li> -->
-            </ul>
+                </ul>
 
-            <div class="input-wrapper">
-                <div class="input">
-                    <input class="input-content" placeholder="Input message">
-                    <div class="span-controls">
-                        <button class="emoji-button chat-btn" onclick="toggleEmojiPicker()">
-                            <i class="fa-regular fa-face-smile"></i>
-                        </button>
-                        <button class="send-button chat-btn" onclick="sendMessage()">
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
+                <div class="input-wrapper">
+                    <div class="input">
+                        <input
+                            id="chat-input"
+                            class="input-content"
+                            placeholder="Input message" />
+                        <div class="span-controls">
+                            <button
+                                class="emoji-button chat-btn"
+                                onclick="toggleEmojiPicker()">
+                                <i class="fa-regular fa-face-smile"></i>
+                            </button>
+                            <button
+                                class="send-button chat-btn"
+                                onclick="sendMessage()">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
                     </div>
-                    </input>
                 </div>
             </div>
-        </div>
-        <div id="footer" class="footer">
-            <div class="links">
-                <a class="footerLink" href="https://github.com/fitumi0" target="_blank">Github</a>
-                <a class="footerLink" href="https://t.me/MrSt4ff" target="_blank">Telegram</a>
+            <div id="footer" class="footer">
+                <div class="links">
+                    <a
+                        class="footerLink"
+                        href="https://github.com/fitumi0"
+                        target="_blank"
+                        >Github</a
+                    >
+                    <a
+                        class="footerLink"
+                        href="https://t.me/MrSt4ff"
+                        target="_blank"
+                        >Telegram</a
+                    >
+                </div>
             </div>
-        </div>
-    </section>
-    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    <script src="{{url_for('static', filename='scripts/index.js')}}"></script>
-    <script src="https://kit.fontawesome.com/159c9006d5.js" crossorigin="anonymous"></script>
-    
-    <link href="https://unpkg.com/video.js/dist/video-js.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/video.js/dist/video.min.js"></script>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/videojs-mobile-ui/dist/videojs-mobile-ui.css">
-    <script src="https://unpkg.com/videojs-mobile-ui@1.1.0/dist/videojs-mobile-ui.js"></script>
-    <script>
-        let options = {
-            fullscreen: {
-                enterOnRotate: true,
-                exitOnRotate: true,
-                lockOnRotate: true,
-                lockToLandscapeOnEnter: false,
-                disabled: false
-            },
-            touchControls: {
-                seekSeconds: 5,
-                tapTimeout: 200,
-                disableOnEnd: false,
-                disabled: false,
-            }
-        };
-
-        var player = videojs('video-player', {}, function onPlayerReady() {
-            console.log("Player ready!");
-        });
-        
-        document.querySelectorAll("button.vjs-play-control").forEach((value, key) => {
-            console.log(value);
-        });
-
-        player.mobileUi(options = options);
-
-
-    </script>
-</body>
-
+        </section>
+        <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+        <script src="{{url_for('static', filename='scripts/index.js')}}"></script>
+        <script
+            src="https://kit.fontawesome.com/159c9006d5.js"
+            crossorigin="anonymous"></script>
+    </body>
 </html>

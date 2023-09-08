@@ -2,7 +2,8 @@
 
 body {
     margin: 0;
-    font-family: "Roboto", sans-serif;
+    /* font-family: "Roboto", sans-serif; */
+    font-family: Apple Color Emoji, "Segoe UI Emoji", "Noto Color Emoji";
 }
 
 /*#region General*/
@@ -79,7 +80,7 @@ body {
     display: flex;
     flex-direction: column;
     height: auto;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .footer {
@@ -129,9 +130,10 @@ body {
 .sidenav .closebtn {
     position: absolute;
     top: 0;
-    right: 25px;
+    left: 0;
     font-size: 36px;
-    margin-left: 50px;
+    /* margin-left: 50px; */
+    padding: 8px;
 }
 
 #sandwichButton {
@@ -155,7 +157,7 @@ body {
     padding-inline-start: 16px;
     padding-inline-end: 16px;
     flex: 1;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .message {
@@ -213,7 +215,7 @@ body {
     margin: 0;
     width: 100%;
     font-size: 16px;
-    font-family: "Roboto", sans-serif;
+    /* font-family: "Roboto", sans-serif; */
     box-sizing: border-box;
     outline: none;
     word-break: break-all;
@@ -281,17 +283,18 @@ body {
 
 /*#region Player*/
 
-.player {
+media-player {
     display: flex;
-    height: 100%;
+    align-items: center;
+    justify-content: center;
     width: auto;
-}
-
-.player #video-player {
-    width: 100%;
-    height: 100%;
     background-color: black;
     border: none;
+}
+
+video {
+    width: 100%;
+    height: 100%;
 }
 
 /*#endregion Player*/

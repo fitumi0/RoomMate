@@ -17,9 +17,13 @@ document.addEventListener("DOMContentLoaded", function (event) {});
 }; */
 
 const pickerOptions = {
-    onEmojiSelect: console.log,
+    onEmojiSelect: (emoji) => {
+        // console.log(emoji);
+        let input = document.getElementById("chat-input");
+        input.value += emoji.native;
+    },
     locale: "ru",
-    set: "apple",
+    // set: "apple",
 };
 
 const chat = document.getElementById("chat");
@@ -40,13 +44,11 @@ function toggleEmojiPicker() {
     }
 }
 
-/* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
 function openNav() {
     document.getElementById("sideNav").style.width = "100vw";
     document.getElementById("sandwichButton").style.display = "none";
 }
 
-/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
 function closeNav() {
     document.getElementById("sideNav").style.width = "0";
     document.getElementById("sandwichButton").style.display = "flex";
@@ -54,14 +56,12 @@ function closeNav() {
 
 let socket = io.connect(window.location.href);
 
-let video = document.querySelector("video");
-// let video_source = document.getElementById("video-source");
+let player = document.querySelector("media-player");
 
 socket.on("connect", () => {
     console.log("Socket connection establised to the server");
 });
 
-// disconnection event
 socket.on("disconnect", () => {
     console.log("got disconnected");
     client_uid = null;
@@ -70,27 +70,27 @@ socket.on("disconnect", () => {
 socket.on("state_update_from_server", function (data) {
     console.log("Recieved data:", data);
     if (data.video_timestamp !== null && data.video_timestamp !== undefined) {
-        video.currentTime = data.video_timestamp;
+        player.currentTime = data.video_timestamp;
     }
 
     if (data.play_rate !== null && data.play_rate !== undefined) {
-        video.playbackRate = data.play_rate;
+        player.playbackRate = data.play_rate;
     }
 
     if (
         data.source !== null &&
         data.source !== undefined &&
-        data.source !== video.src
+        data.source !== player.src
     ) {
-        video.src = data.source;
-        video.load();
+        player.src = data.source;
+        player.load();
     }
 
     if (data.playing !== null && data.playing !== undefined) {
-        if (data.playing === true && video.paused) {
-            video.play();
-        } else if (data.playing === false && !video.paused) {
-            video.pause();
+        if (data.playing === true && player.paused) {
+            player.play();
+        } else if (data.playing === false && !player.paused) {
+            player.pause();
         }
     }
 });
@@ -108,40 +108,29 @@ let state_change_handler = (event) => {
     }
 
     state_image = {
-        video_timestamp: video.currentTime,
+        video_timestamp: player.currentTime,
         playing: video_playing,
-        source: video.src,
-        play_rate: video.playbackRate,
+        source: player.src,
+        play_rate: player.playbackRate,
     };
+
+    console.log(state_image);
 
     socket.emit("state_update_from_client", state_image);
 };
 
-video.onpause = state_change_handler;
-video.onplay = state_change_handler;
-video.onratechange = state_change_handler;
-
-// let movieList = document.getElementById("movie-list");
-
-// movieList.addEventListener("click", function (event) {
-// console.log(event.target)
-// if (event.target.tagName === "LI") {
-//     var movieName = event.target.textContent;
-//     var movieUrl = "/static/movies/" + movieName + ".mp4";
-//     video_soruce.src = movieUrl;
-//     video.load();
-
-//     closeButton.click();
-// }
-// });
+player.addEventListener("pause", state_change_handler);
+player.addEventListener("play", state_change_handler);
+player.addEventListener("rate-change", state_change_handler);
+player.addEventListener("seeked", state_change_handler);
 
 function changeSource(source) {
     video_source.src = source;
-    video.load();
+    player.load();
 }
 
 async function getMessages(count = -1) {
-    const url = "http://127.0.0.1:22335/api/v1/";
+    /* const url = "http://127.0.0.1:22335/api/v1/";
     let response;
     if (count === -1) {
         response = await fetch(url + "get_all_messages");
@@ -149,13 +138,16 @@ async function getMessages(count = -1) {
         response = await fetch(url + "get_last_messages/" + count);
     }
 
-    return await response.json();
+    return await response.json();*/
 }
 
-async function sendMessage(message) {}
+async function sendMessage() {
+    let message = document.getElementById("chat-input").value;
+    console.log(message);
+}
 
 function addMessage(message) {
-    const messages = document.getElementById("room-messages");
+    /*const messages = document.getElementById("room-messages");
     const messageElement = document.createElement("li");
     messageElement.classList.add("message");
 
@@ -174,5 +166,5 @@ function addMessage(message) {
 
     messageElement.appendChild(messageSender);
     messageElement.appendChild(messageContent);
-    messages.appendChild(messageElement);
+    messages.appendChild(messageElement);*/
 }

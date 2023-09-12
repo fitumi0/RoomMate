@@ -36,6 +36,9 @@ picker.style.left = "0";
 // alert(navigator.userAgentData.mobile);
 chat.appendChild(picker);
 
+/**
+ * Показывает/скрывает панель с эмодзи
+ */
 function toggleEmojiPicker() {
     if (picker.style.display === "none") {
         picker.style.display = "flex";
@@ -54,9 +57,18 @@ function closeNav() {
     document.getElementById("sandwichButton").style.display = "flex";
 }
 
+/**
+ * Сокет для обмена сообщениями с сервером
+ */
 let socket = io.connect(window.location.href);
 
+/**
+ * Видео проигрыватель vidstack: 
+ * {@link "https://www.vidstack.io/docs/player/components/media/player"}
+ */
 let player = document.querySelector("media-player");
+
+let fromWebSocket = false;
 
 socket.on("connect", () => {
     console.log("Socket connection establised to the server");
@@ -67,8 +79,11 @@ socket.on("disconnect", () => {
     client_uid = null;
 });
 
+/**
+ * Обработчик события изменения состояния видео
+ */
 socket.on("state_update_from_server", function (data) {
-    console.log("Recieved data:", data);
+    // console.log("Recieved data:", data);
     if (data.video_timestamp !== null && data.video_timestamp !== undefined) {
         player.currentTime = data.video_timestamp;
     }
@@ -78,28 +93,36 @@ socket.on("state_update_from_server", function (data) {
     }
 
     if (
-        data.source !== null &&
         data.source !== undefined &&
+        data.source &&
         data.source !== player.src
     ) {
         player.src = data.source;
-        player.load();
     }
 
+    fromWebSocket = true;
+
     if (data.playing !== null && data.playing !== undefined) {
-        if (data.playing === true && player.paused) {
+        if (data.playing && player.paused) {
             player.play();
-        } else if (data.playing === false && !player.paused) {
+        } else if (!data.playing && !player.paused) {
             player.pause();
         }
     }
+
+    fromWebSocket = false;
 });
 
-let state_change_handler = (event) => {
-    let video_playing = false;
-    if (event === null && event === undefined) {
+/**
+ * Изменяет состояние видео и отправляет его на сервер
+ * @param {*} event
+ */
+let stateChangeHandler = (event) => {
+    if (event === null || event === undefined) {
         return;
     }
+
+    let video_playing = false;
 
     if (event.type === "pause") {
         video_playing = false;
@@ -119,14 +142,22 @@ let state_change_handler = (event) => {
     socket.emit("state_update_from_client", state_image);
 };
 
-player.addEventListener("pause", state_change_handler);
-player.addEventListener("play", state_change_handler);
-player.addEventListener("rate-change", state_change_handler);
-player.addEventListener("seeked", state_change_handler);
+player.onpause = (event) => {
+    if (!fromWebSocket) {
+        stateChangeHandler(event);
+    }
+};
+player.onplay = stateChangeHandler;
+player.onratechange = stateChangeHandler;
+player.onseeked = stateChangeHandler;
 
+/**
+ * Изменяет источник видео
+ * @param {string} source
+ */
 function changeSource(source) {
     video_source.src = source;
-    player.load();
+    // player.load();
 }
 
 async function getMessages(count = -1) {
@@ -146,25 +177,42 @@ async function sendMessage() {
     console.log(message);
 }
 
+/**
+ * Добавляет сообщение в список сообщений
+ * @param {{ sender: string; timestamp: Date; text: string }} message Объект сообщения
+ */
 function addMessage(message) {
-    /*const messages = document.getElementById("room-messages");
+    // Получаем элемент, в который будем добавлять сообщения
+    const messages = document.getElementById("room-messages");
     const messageElement = document.createElement("li");
     messageElement.classList.add("message");
 
+    // Создаем элементы для имени отправителя и времени отправки
     const messageSender = document.createElement("div");
     messageSender.classList.add("message-sender");
     messageSender.textContent = message.sender;
 
     const messageTime = document.createElement("span");
     messageTime.classList.add("message-time");
-    messageTime.textContent = message.timestamp;
-    messageSender.appendChild(messageTime);
 
+    // Преобразуем время в формат ЧЧ:ММ:СС
+    const timestamp = new Date(message.timestamp);
+    const hours = timestamp.getHours().toString().padStart(2, "0");
+    const minutes = timestamp.getMinutes().toString().padStart(2, "0");
+    const seconds = timestamp.getSeconds().toString().padStart(2, "0");
+    messageTime.textContent = `${hours}:${minutes}:${seconds}`;
+
+    // Создаем элемент для текста сообщения
     const messageContent = document.createElement("p");
     messageContent.classList.add("message-content");
     messageContent.textContent = message.text;
 
+    // Добавляем элементы в DOM
+    messageSender.appendChild(messageTime);
     messageElement.appendChild(messageSender);
     messageElement.appendChild(messageContent);
-    messages.appendChild(messageElement);*/
+    messages.appendChild(messageElement);
+
+    // Прокручиваем список сообщений вниз
+    messages.scrollTop = messages.scrollHeight;
 }

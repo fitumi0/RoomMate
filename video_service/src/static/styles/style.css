@@ -64,7 +64,7 @@ body {
     border-radius: var(--border-radius);
     transition: var(--default-transition);
     color: var(--text-color);
-    margin: 16px 8px;
+    margin: var(--container-margin);
     /* border: 1px solid var(--accent-color); */
 }
 
@@ -75,12 +75,23 @@ body {
     border-radius: var(--border-radius);
     /* border: 1px solid var(--accent-color); */
     min-width: 300px;
-    max-width: 400px;
-    margin: 16px 8px;
+    max-width: 300px;
+    margin: var(--container-margin);
     display: flex;
     flex-direction: column;
     height: auto;
     overflow-y: auto;
+}
+
+.body,
+.chat {
+    max-height: calc(
+        100vh -
+            (
+                var(--header-height) + var(--footer-height) + 2 *
+                    var(--container-margin)
+            )
+    );
 }
 
 .footer {
@@ -158,6 +169,22 @@ body {
     padding-inline-end: 16px;
     flex: 1;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    border: 2px solid transparent;
 }
 
 .message {
@@ -179,7 +206,8 @@ body {
 
 .message-time {
     font-weight: lighter;
-    font-size: x-small;
+    font-size: small;
+    margin-left: 8px;
 }
 
 .message-content {
@@ -284,17 +312,8 @@ body {
 /*#region Player*/
 
 media-player {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: auto;
-    background-color: black;
     border: none;
-}
-
-video {
-    width: 100%;
-    height: 100%;
+    border-radius: var(--border-radius);
 }
 
 /*#endregion Player*/
@@ -363,4 +382,6 @@ video {
 
     --default-transition: 0.5s;
     --input-transition: 0.15s;
+
+    --container-margin: 16px;
 }

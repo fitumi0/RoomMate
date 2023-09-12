@@ -8,7 +8,7 @@ app.config["SECRET_KEY"] = "secret!"
 socketio = SocketIO(app)
 CORS(app)
 
-movie_dir = os.path.join("static", "movies")
+movie_dir = os.path.join("src", "static", "movies")
 static_movies = [
     os.path.splitext(f)[0] for f in os.listdir(movie_dir) if f.endswith(".mp4")
 ]
@@ -57,4 +57,5 @@ def handle_state_update(data):
 
 
 if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=22334)
     socketio.run(app)

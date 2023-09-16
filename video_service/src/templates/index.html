@@ -17,11 +17,11 @@
     </head>
 
     <body>
-        <section class="layout">
-            <div id="header" class="header">
-                <span id="sandwichButton" onclick="openNav()">&#9776;</span>
-                <div class="title">RoomMate - Movie sharing service.</div>
-            </div>
+        <header id="header" class="header">
+            <span id="sandwichButton" onclick="openNav()">&#9776;</span>
+            <div class="title">RoomMate - Movie sharing service.</div>
+        </header>
+        <section class="layout">  
             <div id="sideNav" class="sidenav">
                 <a
                     href="javascript:void(0)"
@@ -42,66 +42,66 @@
                     <media-outlet></media-outlet>
                     <media-community-skin></media-community-skin>
                 </media-player>
-            </div>
 
-            <div id="chat" class="chat">
-                <div class="containerHeader">Chat</div>
-
-                <ul id="room-messages" class="messages">
-                    <!-- <li class="message">
-                    <div class="message-sender">
-                        зюзя
-                        <span class="message-time">03:06 AM</span>
-                    </div>
-                    <p class="message-content">привет!</p>
-                </li>
-                <li class="message">
-                    <div class="message-sender">
-                        Евгеха супер длинный ник 229 привет всем йоу
-                        <span class="message-time">03:07 AM</span>
-                    </div>
-                    <p class="message-content">Здарова! Какой фильм будем смотреть? Я вот тут решил хуйни всякой написать на кучу текста, чтобы проверить, не пойдет ли по одному месту вёрстка!</p>
-                </li> -->
-                </ul>
-
-                <div class="input-wrapper">
-                    <div class="input">
-                        <input
-                            id="chat-input"
-                            class="input-content"
-                            placeholder="Input message" />
-                        <div class="span-controls">
-                            <button
-                                class="emoji-button chat-btn"
-                                onclick="toggleEmojiPicker()">
-                                <i class="fa-regular fa-face-smile"></i>
-                            </button>
-                            <button
-                                class="send-button chat-btn"
-                                onclick="sendMessage()">
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </button>
+                <div id="chat" class="chat">
+                    <div class="containerHeader">Chat</div>
+    
+                    <ul id="room-messages" class="messages">
+                        <!-- <li class="message">
+                        <div class="message-sender">
+                            зюзя
+                            <span class="message-time">03:06 AM</span>
+                        </div>
+                        <p class="message-content">привет!</p>
+                    </li>
+                    <li class="message">
+                        <div class="message-sender">
+                            Евгеха супер длинный ник 229 привет всем йоу
+                            <span class="message-time">03:07 AM</span>
+                        </div>
+                        <p class="message-content">Здарова! Какой фильм будем смотреть? Я вот тут решил хуйни всякой написать на кучу текста, чтобы проверить, не пойдет ли по одному месту вёрстка!</p>
+                    </li> -->
+                    </ul>
+    
+                    <div class="input-wrapper">
+                        <div class="input">
+                            <input
+                                id="chat-input"
+                                class="input-content"
+                                placeholder="Input message" />
+                            <div class="span-controls">
+                                <button
+                                    class="emoji-button chat-btn"
+                                    onclick="toggleEmojiPicker()">
+                                    <i class="fa-regular fa-face-smile"></i>
+                                </button>
+                                <button
+                                    class="send-button chat-btn"
+                                    onclick="sendMessage()">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="footer" class="footer">
-                <div class="links">
-                    <a
-                        class="footerLink"
-                        href="https://github.com/fitumi0"
-                        target="_blank"
-                        >Github</a
-                    >
-                    <a
-                        class="footerLink"
-                        href="https://t.me/MrSt4ff"
-                        target="_blank"
-                        >Telegram</a
-                    >
-                </div>
-            </div>
         </section>
+        <footer id="footer" class="footer">
+            <div class="links">
+                <a
+                    class="footerLink"
+                    href="https://github.com/fitumi0"
+                    target="_blank"
+                    >Github</a
+                >
+                <a
+                    class="footerLink"
+                    href="https://t.me/MrSt4ff"
+                    target="_blank"
+                    >Telegram</a
+                >
+            </div>
+        </footer>
         <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
         <script src="{{url_for('static', filename='scripts/index.js')}}"></script>

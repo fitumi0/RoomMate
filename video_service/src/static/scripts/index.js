@@ -63,10 +63,25 @@ function closeNav() {
 let socket = io.connect(window.location.href);
 
 /**
- * Видео проигрыватель vidstack: 
+ * Видео проигрыватель vidstack:
  * {@link "https://www.vidstack.io/docs/player/components/media/player"}
  */
-let player = document.querySelector("media-player");
+const player = document.querySelector("media-player");
+
+player.addEventListener("media-player-connect", function (event) {
+    player.onAttach(async () => {
+        console.log("Player attached");
+
+        const unsubPaused = player.subscribe(({ paused }) => {
+            console.log("Paused: ", paused);
+          });
+        
+          const unsubCurrentTime = player.subscribe(({ currentTime }) => {
+            console.log("Current time: ", currentTime);
+          });
+    });
+});
+
 
 let fromWebSocket = false;
 
@@ -82,7 +97,7 @@ socket.on("disconnect", () => {
 /**
  * Обработчик события изменения состояния видео
  */
-socket.on("state_update_from_server", function (data) {
+socket.on("state_update_from_server", async function (data) {
     // console.log("Recieved data:", data);
     if (data.video_timestamp !== null && data.video_timestamp !== undefined) {
         player.currentTime = data.video_timestamp;
@@ -98,19 +113,20 @@ socket.on("state_update_from_server", function (data) {
         data.source !== player.src
     ) {
         player.src = data.source;
+        player.startLoading();
     }
 
     fromWebSocket = true;
 
     if (data.playing !== null && data.playing !== undefined) {
         if (data.playing && player.paused) {
-            player.play();
-        } else if (!data.playing && !player.paused) {
-            player.pause();
+            await player.play();
+        } else {
+            await player.pause();
         }
-    }
 
-    fromWebSocket = false;
+        fromWebSocket = false;
+    }
 });
 
 /**
@@ -142,14 +158,31 @@ let stateChangeHandler = (event) => {
     socket.emit("state_update_from_client", state_image);
 };
 
-player.onpause = (event) => {
-    if (!fromWebSocket) {
-        stateChangeHandler(event);
-    }
-};
-player.onplay = stateChangeHandler;
-player.onratechange = stateChangeHandler;
-player.onseeked = stateChangeHandler;
+// player.onpause = (event) => {
+//     if (!fromWebSocket) {
+//         stateChangeHandler(event);
+//     }
+// };
+// player.onplay = (event) => {
+//     if (!fromWebSocket) {
+//         stateChangeHandler(event);
+//     }
+// };
+// player.onratechange = (event) => {
+//     if (!fromWebSocket) {
+//         stateChangeHandler(event);
+//     }
+// };
+// player.onseeked = (event) => {
+//     if (!fromWebSocket) {
+//         stateChangeHandler(event);
+//     }
+// };
+// player.onseeking = (event) => {
+//     if (!fromWebSocket) {
+//         stateChangeHandler(event);
+//     }
+// };
 
 /**
  * Изменяет источник видео
@@ -174,7 +207,7 @@ async function getMessages(count = -1) {
 
 async function sendMessage() {
     let message = document.getElementById("chat-input").value;
-    console.log(message);
+    // console.log(message);
 }
 
 /**

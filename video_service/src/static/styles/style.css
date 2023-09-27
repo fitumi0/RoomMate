@@ -378,7 +378,7 @@ media-player video {
 }
 /* #region Sign-In*/
 
-.sign-in-section {
+.form-section {
     position: absolute;
     width: 100vw;
     height: 100vh;
@@ -399,12 +399,12 @@ media-player video {
     animation: animate 5s linear infinite;
 } */
 
-.sign-in {
+.form-container {
     position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #222;
+    background: var(--detail-background-color);
     z-index: 1000;
     display: flex;
     justify-content: center;
@@ -414,7 +414,7 @@ media-player video {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
-.sign-in .content {
+.form-container .content {
     position: relative;
     width: 100%;
     display: flex;
@@ -508,11 +508,36 @@ media-player video {
 }
 
 .form .links a:hover {
-    color: var(--bright-accent-color);
+    color: var(--accent-color);
     transition: var(--input-transition);
 }
 
 /*#endregion Sign-In*/
+
+/*#region Notifications*/
+
+.notification {
+    color: var(--text-color);
+    padding: 16px;
+    border: 1px solid var();
+    border-radius: var(--border-radius);
+}
+
+
+.info {
+    background-color: var(--info-color);
+}
+
+.warning {
+    color: var(--background-color);
+    background-color: var(--warning-color);
+}
+
+.danger {
+    background-color: var(--danger-color);
+}
+/*#endregion Notifications*/
+
 
 :root {
     --header-height: 50px;
@@ -530,14 +555,18 @@ media-player video {
     /* --accent-color: #5d2b90; */
     --accent-color: #008a00;
     --bright-accent-color: #0f0;
+
+    --danger-color: #f00;
+    --warning-color: #ff0;
+    --info-color: #00f;
     /* --accent-color: #9f27b0; */
-    --accent-color-rgb: 159, 39, 176;
-    --accent-color-light: #e1bee7;
+    /* --accent-color-rgb: 159, 39, 176; */
+    /* --accent-color-light: #e1bee7; */
     --button-color: var(--background-color);
     --input-color-hover: #3d3d3d;
     --button-color-active: var(--accent-color);
 
-    --shadow: 6px 0px 18px 12px rgba(var(--accent-color-rgb), 0.5);
+    /* --shadow: 6px 0px 18px 12px rgba(var(--accent-color-rgb), 0.5); */
 
     --border-radius: 6px;
     --input-border-color: #707070;

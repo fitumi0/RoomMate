@@ -72,18 +72,46 @@ player.addEventListener("media-player-connect", function (event) {
     player.onAttach(async () => {
         console.log("Player attached");
 
-        const unsubPaused = player.subscribe(({ paused }) => {
-            console.log("Paused: ", paused);
-          });
-        
-          const unsubCurrentTime = player.subscribe(({ currentTime }) => {
-            console.log("Current time: ", currentTime);
-          });
+        // add handler to state change: pause, play, seek, rate change.
+
+        const unsubPlaying = player.subscribe(({ playing }) => {
+            console.log("Playing: ", playing);
+
+            // stateChangeHandler({
+            //     playing: playing,
+            //     video_timestamp: player.currentTime,
+            //     play_rate: player.playbackRate,
+            //     source: player.src,
+            // });
+        });
+
+        // const unsubRate = player.subscribe(({ playbackRate }) => {
+        //     console.log("Playback rate: ", playbackRate);
+
+        //     stateChangeHandler({
+        //         playing: !player.paused,
+        //         video_timestamp: player.currentTime,
+        //         play_rate: playbackRate,
+        //         source: player.src,
+        //     });
+        // });
+
+        player.addEventListener("seeked", function (event) {
+            console.log("Seeked: ", event);
+
+            stateChangeHandler({
+                playing: !player.paused,
+                video_timestamp: event.srcElement.currentTime,
+                play_rate: player.playbackRate,
+                source: player.src,
+            });
+        });
+
+        // const unsubCurrentTime = player.subscribe(({ currentTime }) => {
+        //     console.log("Current time: ", currentTime);
+        // });
     });
 });
-
-
-let fromWebSocket = false;
 
 socket.on("connect", () => {
     console.log("Socket connection establised to the server");
@@ -116,73 +144,39 @@ socket.on("state_update_from_server", async function (data) {
         player.startLoading();
     }
 
-    fromWebSocket = true;
-
     if (data.playing !== null && data.playing !== undefined) {
         if (data.playing && player.paused) {
             await player.play();
         } else {
             await player.pause();
         }
-
-        fromWebSocket = false;
     }
 });
 
 /**
  * Изменяет состояние видео и отправляет его на сервер
- * @param {*} event
+ * @param {Object} data
+ * @param {boolean} data.playing
+ * @param {number} data.video_timestamp
+ * @param {string} data.source
+ * @param {number} data.play_rate
  */
-let stateChangeHandler = (event) => {
-    if (event === null || event === undefined) {
+let stateChangeHandler = (data) => {
+    if (data === null || data === undefined) {
         return;
     }
 
-    let video_playing = false;
-
-    if (event.type === "pause") {
-        video_playing = false;
-    } else if (event.type === "play") {
-        video_playing = true;
-    }
-
     state_image = {
-        video_timestamp: player.currentTime,
-        playing: video_playing,
-        source: player.src,
-        play_rate: player.playbackRate,
+        video_timestamp: data.video_timestamp,
+        playing: data.playing,
+        source: data.source,
+        play_rate: data.play_rate,
     };
 
     console.log(state_image);
 
     socket.emit("state_update_from_client", state_image);
 };
-
-// player.onpause = (event) => {
-//     if (!fromWebSocket) {
-//         stateChangeHandler(event);
-//     }
-// };
-// player.onplay = (event) => {
-//     if (!fromWebSocket) {
-//         stateChangeHandler(event);
-//     }
-// };
-// player.onratechange = (event) => {
-//     if (!fromWebSocket) {
-//         stateChangeHandler(event);
-//     }
-// };
-// player.onseeked = (event) => {
-//     if (!fromWebSocket) {
-//         stateChangeHandler(event);
-//     }
-// };
-// player.onseeking = (event) => {
-//     if (!fromWebSocket) {
-//         stateChangeHandler(event);
-//     }
-// };
 
 /**
  * Изменяет источник видео

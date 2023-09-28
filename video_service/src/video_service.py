@@ -2,7 +2,6 @@ from flask import Flask, render_template, Response, request, redirect, url_for, 
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 import os
-import requests
 from database_helper import UserHelper
 
 app = Flask(__name__)
@@ -64,6 +63,9 @@ def sign_up_post():
     flash("Registration completed successfully!\nYou can login.", "info")
     return redirect(url_for('login'))
 
+@app.route("/send-message")
+def send_message():
+    pass
     
 # TODO: Добавить синхронизацию времени на клиенте и сервере, ибо возможно клиент будет отставать от сервера по причине подгрузок или подвисаний.
 

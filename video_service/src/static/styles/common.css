@@ -1,0 +1,156 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+    text-decoration: none;
+}
+
+body {
+    font-family: Lato, Helvetica Neue, Arial, Helvetica, sans-serif !important;
+    background: linear-gradient(
+        -45deg,
+        var(--accent-color),
+        var(--secondary-color),
+        var(--secondary-accent)
+    );
+    background-size: 400% 400%;
+    animation: gradient 60s ease-in-out infinite;
+    margin: 0;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+header {
+    /* display: flex; */
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    user-select: none;
+}
+
+.logo-room {
+    color: var(--secondary-accent);
+}
+
+.logo-mate {
+    color: var(--accent-color);
+}
+
+.divider {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    text-align: center;
+    margin: 16px 0;
+    user-select: none;
+}
+
+.divider h4 {
+    font-weight: 900;
+}
+
+.divider i {
+    font-size: 24px;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid var(--primary-color);
+}
+
+.divider:not(:empty)::before {
+    margin-right: 0.25em;
+}
+
+.divider:not(:empty)::after {
+    margin-left: 0.25em;
+}
+
+:root {
+    --primary-color: #333;
+
+    --accent-color: #21ba45;
+    --accent-color-t: #21ba45bb;
+    --bright-accent-color: #21ba45;
+
+    --secondary-accent: #2185d0;
+    --secondary-accent-t: #2185d0bb;
+
+    --secondary-color: #fff;
+    --tertiary-color: #ccc;
+    --header-height: 50px;
+    --footer-height: 50px;
+
+    --header-background-color: #202020;
+    --footer-background-color: var(--header-background-color);
+
+    --background-color: #111111;
+    --detail-background-color: #1a1a1a;
+    --message-background-color: #1f1f1f;
+
+    --text-color: #dcdcdc;
+    --link-color: #adadad;
+
+    --danger-color: #f00;
+    --warning-color: #ff0;
+    --info-color: #00f;
+
+    /* --accent-color: #9f27b0; */
+    /* --accent-color-rgb: 159, 39, 176; */
+    /* --accent-color-light: #e1bee7; */
+
+    --button-color: var(--background-color);
+    --input-color-hover: #3d3d3d;
+    --button-color-active: var(--accent-color);
+
+    /* --shadow: 6px 0px 18px 12px rgba(var(--accent-color-rgb), 0.5); */
+
+    --border-radius: 0.5rem;
+    --input-border-color: #707070;
+
+    --default-transition: 0.5s;
+    --input-transition: 0.15s;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--tertiary-color);
+    border-radius: 0.25rem;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--secondary-color);
+}

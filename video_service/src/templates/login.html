@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="../static/styles/style.css" />
+        <link rel="stylesheet" href="../static/styles/auth.css" />
+        <link rel="stylesheet" href="../static/styles/common.css" />
         <title>Document</title>
     </head>
     <body>
@@ -11,13 +12,11 @@
             <div class="form-container">
                 <div class="content">
                     <h2 class="form-header">RoomMate - Log in</h2>
-                    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages%}
-                    {% for category, message in messages %}
-                    <div class="notification {{category}}">
-                        {{ message }}
-                    </div>
-                    {% endfor %}
-                    {% endif %} {% endwith %}
+                    {% with messages =
+                    get_flashed_messages(with_categories=true) %} {% if
+                    messages%} {% for category, message in messages %}
+                    <div class="notification {{category}}">{{ message }}</div>
+                    {% endfor %} {% endif %} {% endwith %}
                     <div class="form">
                         <div class="input-box">
                             <input type="text" />
@@ -38,5 +37,8 @@
                 </div>
             </div>
         </section>
+        <script
+            src="https://kit.fontawesome.com/159c9006d5.js"
+            crossorigin="anonymous"></script>
     </body>
 </html>

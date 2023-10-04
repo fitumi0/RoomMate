@@ -3,110 +3,260 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>RoomMate</title>
-        <link rel="stylesheet" href="../static/styles/style.css" />
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/vidstack/styles/defaults.min.css" />
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/vidstack/styles/community-skin/video.min.css" />
-        <script
-            type="module"
-            src="https://cdn.jsdelivr.net/npm/vidstack/dist/cdn/prod.js"></script>
-    </head>
-
-    <body>
-        <header id="header" class="header">
-            <span id="sandwichButton" onclick="openNav()">&#9776;</span>
-            <div class="title">RoomMate - Movie sharing service.</div>
-        </header>
-        <section class="layout">  
-            <div id="sideNav" class="sidenav">
-                <a
-                    href="javascript:void(0)"
-                    class="closebtn"
-                    onclick="closeNav()"
-                    >&times;</a
-                >
-                <a href="#">About</a>
-                <a href="#">Services</a>
-                <a href="#">Clients</a>
-                <a href="#">Contact</a>
-            </div>
-
-            <div id="main" class="body">
-                <media-player
-                    src="{{url_for('static', filename='movies/' + movie_by_default + '.mp4')}}"
-                    crossorigin>
-                    <media-outlet></media-outlet>
-                    <media-community-skin></media-community-skin>
-                </media-player>
-
-                <div id="chat" class="chat">
-                    <div class="containerHeader">Chat</div>
-    
-                    <ul id="room-messages" class="messages">
-                        <!-- <li class="message">
-                        <div class="message-sender">
-                            зюзя
-                            <span class="message-time">03:06 AM</span>
-                        </div>
-                        <p class="message-content">привет!</p>
-                    </li>
-                    <li class="message">
-                        <div class="message-sender">
-                            Евгеха супер длинный ник 229 привет всем йоу
-                            <span class="message-time">03:07 AM</span>
-                        </div>
-                        <p class="message-content">Здарова! Какой фильм будем смотреть? Я вот тут решил хуйни всякой написать на кучу текста, чтобы проверить, не пойдет ли по одному месту вёрстка!</p>
-                    </li> -->
-                    </ul>
-    
-                    <div class="input-wrapper">
-                        <div class="input">
-                            <input
-                                id="chat-input"
-                                class="input-content"
-                                placeholder="Input message" />
-                            <div class="span-controls">
-                                <button
-                                    class="emoji-button chat-btn"
-                                    onclick="toggleEmojiPicker()">
-                                    <i class="fa-regular fa-face-smile"></i>
-                                </button>
-                                <button
-                                    class="send-button chat-btn"
-                                    onclick="sendMessage()">
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <footer id="footer" class="footer">
-            <div class="links">
-                <a
-                    class="footerLink"
-                    href="https://github.com/fitumi0"
-                    target="_blank"
-                    >Github</a
-                >
-                <a
-                    class="footerLink"
-                    href="https://t.me/MrSt4ff"
-                    target="_blank"
-                    >Telegram</a
-                >
-            </div>
-        </footer>
-        <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-        <script src="{{url_for('static', filename='scripts/index.js')}}"></script>
+        <title>RoomMate - Main</title>
+        <link rel="stylesheet" href="../static/styles/index.css" />
+        <link rel="stylesheet" href="../static/styles/common.css" />
         <script
             src="https://kit.fontawesome.com/159c9006d5.js"
             crossorigin="anonymous"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous" />
+        <script
+            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <header class="bg-dark text-white p-0">
+            <nav class="navbar navbar-expand">
+                <a class="navbar-brand" href="/">
+                    <div class="logo">
+                        <div class="logo">
+                            <div class="logo-room">Room</div>
+                            <div class="logo-mate">Mate</div>
+                        </div>
+                    </div>
+                </a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse">
+                    <div class="links">
+                        <a
+                            href="https://github.com/fitumi0"
+                            target="_blank"
+                            class="top-nav-link"
+                            ><i class="fa-brands fa-github"></i
+                        ></a>
+                        <a href="#" target="_blank" class="top-nav-link"
+                            ><i class="fa-brands fa-discord"></i
+                        ></a>
+                        <a href="#" target="_blank" class="top-nav-link"
+                            ><i class="fa-brands fa-telegram"></i
+                        ></a>
+                    </div>
+                    <div class="ml-auto">
+                        <a href="/login" class="btn btn-accent m-1"> Log in </a>
+                        <a href="/sign-up" class="btn btn-outline-accent">
+                            Sign up
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <main>
+            <div class="row about mb-5 justify-content-around pl-5 pr-5 pt-5">
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="row" style="padding: 30px">
+                        <div class="col-md-12">
+                            <h1 style="font-weight: 700">
+                                Watch videos together with friends anywhere.
+                            </h1>
+                            <h5>No registration or download required.</h5>
+                        </div>
+                        <div class="col-md-12">
+                            <a
+                                type="button"
+                                class="btn btn-dark btn-lg"
+                                href="{{ url_for('create_room') }}">
+                                Create a room
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-auto mw-100 p-3">
+                    <div
+                        id="carousel"
+                        class="carousel slide col-md-12 b-r-50"
+                        data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li
+                                data-target="#carousel"
+                                data-slide-to="0"
+                                class="active"></li>
+                            <li data-target="#carousel" data-slide-to="1"></li>
+                            <li data-target="#carousel" data-slide-to="2"></li>
+                        </ol>
+                        <div class="carousel-inner b-r-50">
+                            <div
+                                class="carousel-item active"
+                                data-interval="10000">
+                                <img
+                                    src="https://placehold.co/500x400"
+                                    class="d-block w-100"
+                                    alt="https://placehold.co/500x400" />
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>First slide label</h5>
+                                    <p>
+                                        Nulla vitae elit libero, a pharetra
+                                        augue mollis interdum.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="carousel-item" data-interval="10000">
+                                <img
+                                    src="https://placehold.co/500x400"
+                                    class="d-block w-100"
+                                    alt="https://placehold.co/500x400" />
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Second slide label</h5>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur
+                                        adipiscing elit.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="carousel-item" data-interval="10000">
+                                <img
+                                    src="https://placehold.co/500x400"
+                                    class="d-block w-100"
+                                    alt="https://placehold.co/500x400" />
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5>Third slide label</h5>
+                                    <p>
+                                        Praesent commodo cursus magna, vel
+                                        scelerisque nisl consectetur.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <a
+                            class="carousel-control-prev rounded-left"
+                            href="#carousel"
+                            role="button"
+                            data-slide="prev">
+                            <span
+                                class="carousel-control-prev-icon"
+                                aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a
+                            class="carousel-control-next rounded-right"
+                            href="#carousel"
+                            role="button"
+                            data-slide="next">
+                            <span
+                                class="carousel-control-next-icon"
+                                aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider p-3">
+                <i class="fa-solid fa-gears"></i>
+                <h4>Features</h4>
+            </div>
+            <section class="d-flex flex-wrap justify-content-around mb-4 p-3">
+                <div class="card-box">
+                    <i class="fa-solid fa-rotate"></i>
+                    <div class="card-box-header">Synchronized Play</div>
+                    <p class="card-box-text">
+                        Watch videos with your friends in sync.
+                    </p>
+                </div>
+                <div class="card-box">
+                    <i class="fa-regular fa-comments"></i>
+                    <div class="card-box-header">Chat</div>
+                    <p class="card-box-text">
+                        Chat with your friends while watching videos.
+                    </p>
+                </div>
+                <div class="card-box">
+                    <i class="fa-solid fa-video"></i>
+                    <div class="card-box-header">Video Chat</div>
+                    <p class="card-box-text">
+                        Video chat with your friends while watching videos.
+                    </p>
+                </div>
+                <div class="card-box">
+                    <i class="fa-solid fa-microphone"></i>
+                    <div class="card-box-header">Voice Chat</div>
+                    <p class="card-box-text">
+                        Voice chat with your friends while watching videos.
+                    </p>
+                </div>
+            </section>
+            <div class="row about mb-5 justify-content-around pl-5 pr-5 pt-5">
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="row" style="padding: 30px">
+                        <div class="col-md-12">
+                            <h1 style="font-weight: 700">h1.</h1>
+                            <h5>h5.</h5>
+                        </div>
+                        <div class="col-md-12" style="background-color: red">
+                            qwe
+                        </div>
+                    </div>
+                </div>
+                <div class="w-auto mw-100">
+                    <div class="col-md-12">
+                        <img
+                            src="https://placehold.co/500x400"
+                            class="d-block w-100 b-r-50"
+                            alt="https://placehold.co/500x400" />
+                    </div>
+                </div>
+            </div>
+            <div class="divider p-3">
+                <i class="fa-solid fa-photo-film"></i>
+                <h4>Formats</h4>
+            </div>
+            <section class="d-flex flex-wrap justify-content-around mb-4 p-3">
+                <div class="card-box">
+                    <i class="fa-brands fa-youtube"></i>
+                    <div class="card-box-header">Youtube</div>
+                    <p class="card-box-text">
+                        Most popular online video sharing and social media
+                        platform.
+                    </p>
+                </div>
+                <div class="card-box">
+                    <i class="fa-solid fa-link"></i>
+                    <div class="card-box-header">Any URL</div>
+                    <p class="card-box-text">Use different URLs for videos.</p>
+                </div>
+                <div class="card-box">
+                    <i class="fa-solid fa-file"></i>
+                    <div class="card-box-header">Local Files</div>
+                    <p class="card-box-text">
+                        Share files directly from your device!
+                    </p>
+                </div>
+                <div class="card-box">
+                    <i class="fa-solid fa-desktop"></i>
+                    <div class="card-box-header">Screenshare</div>
+                    <p class="card-box-text">
+                        Share your desktop screen or a browser tab.
+                    </p>
+                </div>
+            </section>
+        </main>
     </body>
 </html>

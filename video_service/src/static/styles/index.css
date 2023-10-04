@@ -1,0 +1,120 @@
+.about {
+    margin: 0 !important;
+}
+
+.b-r-50 {
+    border-radius: 0.5rem !important;
+}
+
+.top-nav-link {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.top-nav-link:visited,
+.top-nav-link:link {
+    color: var(--tertiary-color);
+}
+
+.top-nav-link:hover {
+    color: var(--secondary-color);
+}
+
+.btn-accent {
+    color: var(--secondary-color) !important;
+    background-color: var(--accent-color);
+}
+
+.btn-accent:hover {
+    color: var(--primary-color) !important;
+    background-color: var(--accent-color-t);
+}
+
+.btn-outline-accent {
+    color: var(--secondary-color) !important;
+    border: 1px solid var(--accent-color) !important;
+}
+
+.btn-outline-accent:hover {
+    background-color: var(--accent-color);
+}
+
+.card-box {
+    flex-basis: calc(25% - 20px);
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid var(--primary-color);
+    border-radius: 0.5rem;
+    text-align: center;
+    min-width: 200px;
+    max-width: 400px;
+    user-select: none;
+}
+
+.card-box i {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.card-box .card-box-header {
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.card-box .card-box-text {
+    font-size: 16px;
+}
+
+.formats {
+    margin-bottom: 50px;
+}
+
+.get-started ol {
+    list-style: decimal;
+    margin-left: 20px;
+}
+
+.get-started li {
+    margin-bottom: 10px;
+}
+
+.bg-grad-blue-green {
+    background-image: linear-gradient(to bottom right, #00bfff, #00ff7f);
+}
+
+.bg-grad-purple-red {
+    background-image: linear-gradient(to bottom right, #8a2be2, #ff0000);
+}
+
+.bg-grad-black-green {
+    background-image: linear-gradient(to bottom right, #000000, #008000);
+}
+
+.bg-grad-black-blue {
+    background-image: linear-gradient(to bottom right, #000000, #0000ff);
+}
+
+.bg-grad-black-purple {
+    background-image: linear-gradient(180deg, #000000, #800080);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 50%;
+}
+
+.bg-grad-black-red {
+    background-image: linear-gradient(to bottom right, #000000, #ff0000);
+}
+
+.bg-grad-white-green {
+    background-image: linear-gradient(
+        180deg,
+        var(--secondary-color),
+        var(--accent-color)
+    );
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 50%;
+}
+
+.bg-grad-grey-white {
+    background-image: linear-gradient(to bottom right, #808080, #ffffff);
+}

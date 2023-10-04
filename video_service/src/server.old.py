@@ -14,10 +14,6 @@ static_movies = [
     os.path.splitext(f)[0] for f in os.listdir(movie_dir) if f.endswith(".mp4")
 ]
 
-# print(static_movies)
-
-ALLOWED_GAP_TIME_IN_SECONDS = 5
-
 num_users = 0
 
 video_state = {
@@ -31,7 +27,6 @@ video_state = {
 def index():
     return render_template("index.html", static_movies=static_movies, movie_by_default=static_movies[0])
 
-
 @app.route("/login")
 def login():
     return render_template("login.html")
@@ -43,7 +38,6 @@ def sign_up():
 
 @app.route("/sign-up", methods=["POST"])
 def sign_up_post():
-    
     email = request.form.get('email')
     username = request.form.get('username')
     password = request.form.get('password')
@@ -67,7 +61,13 @@ def sign_up_post():
 def send_message():
     pass
     
+@app.route("/create-room")
+def create_room():
+    pass
+
 # TODO: Добавить синхронизацию времени на клиенте и сервере, ибо возможно клиент будет отставать от сервера по причине подгрузок или подвисаний.
+
+
 
 @socketio.on("connect")
 def connection_event():

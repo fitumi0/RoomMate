@@ -51,6 +51,7 @@ function closeNav() {
  */
 const player = document.querySelector("media-player");
 let startScreenShare;
+let stopScreenShare;
 player.addEventListener("media-player-connect", function (event) {
     player.onAttach(async () => {
         console.log("Player attached");
@@ -61,13 +62,41 @@ player.addEventListener("media-player-connect", function (event) {
             video: {
                 displaySurface: "window",
             },
-            audio: false,
+            audio: true,
         };
+        /**
+         * Starts the screen sharing process.
+         *
+         * @return {Promise<void>} A promise that resolves when the screen sharing is started.
+         */
         startScreenShare = async function screenShare() {
             const mediaStream = await navigator.mediaDevices.getDisplayMedia(
                 displayMediaOptions
             );
             player.src = mediaStream;
+            let button = document.getElementById("screen-share-button");
+            button.classList.remove("btn-secondary");
+            button.classList.add("btn-danger");
+            button.textContent = "Stop sharing";
+            button.onclick = stopScreenShare;
+        };
+
+        /**
+         * Stops the screen sharing and resets the player and button state.
+         *
+         * @return {Promise<void>} A promise that resolves when the screen sharing is stopped.
+         */
+        stopScreenShare = async function stopScreenShare() {
+            let tracks = player.src.getTracks();
+
+            tracks.forEach((track) => track.stop());
+            player.src = "";
+
+            let button = document.getElementById("screen-share-button");
+            button.classList.remove("btn-danger");
+            button.classList.add("btn-secondary");
+            button.textContent = "Screenshare";
+            button.onclick = startScreenShare;
         };
 
         // add handler to state change: pause, play, seek, rate change.
@@ -206,7 +235,11 @@ const urlChanger = document.getElementById("url-changer");
 urlChanger.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
-        // TODO: VALIDATE
+        // validate url validator
+        if (urlChanger.value === "") {
+            return;
+        }
+
         player.src = urlChanger.value;
     }
 });

@@ -88,9 +88,9 @@
                         aria-describedby="basic-addon1" />
                 </div>
                 <button
-                    id="screen-share-button"
+                    id="playlist-share-button"
                     onclick=""
-                    class="input-group-text btn btn-secondary mt-2 mr-2 mb-2"
+                    class="input-group-text mt-2 mr-2 mb-2 btn btn-secondary"
                     data-toggle="tooltip"
                     data-placement="bottom"
                     title="Show current playlist">
@@ -100,22 +100,24 @@
                 <button
                     id="screen-share-button"
                     onclick="startScreenShare()"
-                    class="input-group-text button btn btn-secondary mt-2 mr-2 mb-2">
+                    class="mt-2 mr-2 mb-2 btn btn-secondary">
                     Screenshare
                 </button>
-                <button
-                    id="file-share-button"
-                    onclick=""
-                    class="input-group-text button btn btn-secondary mt-2 mr-2 mb-2">
-                    Pick a file
-                </button>
+                <div class="custom-file mt-2 mr-2 mb-2">
+                    <input
+                        class="custom-file-input btn btn-secondary"
+                        type="file"
+                        name="file-picker"
+                        id="file-share-button" />
+                    <label
+                        class="custom-file-label btn btn-secondary"
+                        for="file-picker"
+                        >Pick a file</label
+                    >
+                </div>
             </div>
             <div id="main" class="body m-2">
-                <media-player
-                    autoplay
-                    src="{{url_for('static', filename='movies/' +
-                        movie_by_default)}}"
-                    crossorigin>
+                <media-player autoplay aspect-ratio="16/9" src="" crossorigin>
                     <media-outlet></media-outlet>
                     <media-community-skin></media-community-skin>
                 </media-player>
@@ -183,6 +185,7 @@
         <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script> -->
         <script src="{{url_for('static', filename='scripts/room.js')}}"></script>
-        <script src="{{url_for('static', filename='scripts/screenshare.js')}}"></script>
+        <!-- <script src="{{url_for('static', filename='scripts/screenshare.js')}}"></script> -->
+        <script src="{{url_for('static', filename='scripts/WebRTC.js')}}"></script>
     </body>
 </html>

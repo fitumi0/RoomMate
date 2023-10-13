@@ -1,6 +1,9 @@
 /.vscode
 
+nginx
 movies
+
+*api*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -111,14 +111,17 @@
                 </button>
             </div>
             <div id="main" class="body m-2">
-                <media-player
-                    autoplay
-                    src="{{url_for('static', filename='movies/' +
-                        movie_by_default)}}"
-                    crossorigin>
-                    <media-outlet></media-outlet>
-                    <media-community-skin></media-community-skin>
-                </media-player>
+                <div class="player-wrapper">
+                    <media-player
+                        autoplay
+                        src=""
+                        crossorigin
+                        aspect-ratio="16/9">
+                        <media-outlet></media-outlet>
+                        <media-community-skin></media-community-skin>
+                    </media-player>
+                </div>
+
                 <div id="chat" class="chat">
                     <div class="containerHeader">Chat</div>
 

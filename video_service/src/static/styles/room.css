@@ -1,3 +1,6 @@
+body {
+    height: 100vh !important;
+}
 .btn-accent {
     color: var(--secondary-color) !important;
     background-color: var(--accent-color);
@@ -286,14 +289,26 @@
 
 /*#region Player*/
 
+.player-wrapper {
+    width: 100%;
+    height: calc(100vh - var(--header-height) * 3.88);
+    display: flex;
+    align-items: center;
+}
+
 media-player {
     border: none;
     border-radius: var(--border-radius);
     margin: var(--container-margin);
-    height: auto;
+    height: 100%;
     width: 100%;
     max-width: 100%;
     object-fit: cover;
+}
+
+media-player video {
+    height: 100%;
+    width: 100%;
 }
 
 media-time-slider [part="track"] {
@@ -325,6 +340,7 @@ media-player video {
     align-items: center;
     justify-content: center;
     width: 100%;
+    height: var(--footer-height);
 }
 
 .footerLink {

@@ -117,11 +117,7 @@
                 </div>
             </div>
             <div id="main" class="body m-2">
-                <media-player
-                    autoplay
-                    src="{{url_for('static', filename='movies/' +
-                        movie_by_default)}}"
-                    crossorigin>
+                <media-player autoplay aspect-ratio="16/9" src="" crossorigin>
                     <media-outlet></media-outlet>
                     <media-community-skin></media-community-skin>
                 </media-player>
@@ -190,6 +186,6 @@
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script> -->
         <script src="{{url_for('static', filename='scripts/room.js')}}"></script>
         <!-- <script src="{{url_for('static', filename='scripts/screenshare.js')}}"></script> -->
-        <script src="{{url_for('static', filename='scripts/WebRTC.js')}}"></script>
+        <script src="{{url_for('static', filename='scripts/fileshare.js')}}"></script>
     </body>
 </html>

@@ -19,14 +19,3 @@
 //     peers[event.track.id] = event.track;
 //     console.log("Peer connection is set");
 // };
-
-// file share
-const filePick = document.getElementById("file-share-button");
-filePick.addEventListener("change", handleFileInput);
-
-function handleFileInput(event) {
-    const file = event.target.files[0];
-    if (file) {
-        console.log(file);
-    }
-}

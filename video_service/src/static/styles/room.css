@@ -50,20 +50,19 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    max-height: calc(100% - var(--header-height) - var(--footer-height));
+    max-height: calc(100vh - (74px) - var(--footer-height));
     overflow: hidden;
     background-color: var(--background-color);
 }
 
 .body {
-    flex: 1;
     display: flex;
     flex-direction: row;
     border-radius: var(--border-radius);
     transition: var(--default-transition);
     color: var(--text-color);
     gap: 8px;
-    height: calc(100% - var(--header-height) - var(--footer-height));
+    height: calc(100vh - (74px) - var(--footer-height));
     overflow: hidden;
     /* margin: var(--container-margin); */
     /* overflow: hidden; */

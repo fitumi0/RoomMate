@@ -1,7 +1,9 @@
 from flask import Flask, render_template, make_response, Response, request, redirect, url_for, flash, Markup
 # from flask_socketio import SocketIO, emit
 from flask_cors import CORS
-import m3u8
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret!"
@@ -54,9 +56,13 @@ def generate_nickname():
 
 # # # # # # # # # # # # # # # # # # # # 
 
+
+cred = credentials.Certificate('roommate-9e1af-120003dd6e68.json')
+default_app = firebase_admin.initialize_app(cred)
+db = firestore.client()
+
 @app.route("/")
 def index():
-    
     return render_template("index.html")
 
 @app.route("/login")
@@ -66,11 +72,6 @@ def login():
 @app.route("/sign-up")
 def sign_up():
     return render_template("signup.html")
-
-@app.route("/get-m3u8/<path:link>")
-def get_m3u8(link):
-    playlist = m3u8.load(link)
-    return(playlist.dumps())
 
 @app.route("/sign-up", methods=["POST"])
 def sign_up_post():
@@ -93,12 +94,19 @@ def sign_up_post():
     flash("Registration completed successfully!\nYou can login.", "info")
     return redirect(url_for('login'))
 
+@app.route("/api/add-message", methods=["POST"])
+def add_message_post():
+    data = request.get_json()
+    print(data)
+    result = db.collection("video-service").document("messages").set(data)
+    if result.exists:
+        return(result.to_dict())
+
 @app.route("/create-room")
 def create_room():
-    # return "create room"
-    return render_template("room.html", movie_by_default="2020.09.15-23.06_01.mp4")
+    return render_template("room.html")
 
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=22334)
+    app.run(debug=True, host='127.0.0.1', port=22334)

@@ -111,7 +111,9 @@ player.addEventListener("media-player-connect", function (event) {
             //     source: player.src,
             // });
         });
-
+        const unsubBuffer = player.subscribe(({ buffered }) => {
+            console.log(buffered);
+        });
         // sub to source-change event
         const unsubSource = player.subscribe(({ src }) => {
             // console.log("New sourcde:" + src);
@@ -271,6 +273,19 @@ async function sendMessage() {
  * @param {{ sender: string; timestamp: Date; text: string }} message Объект сообщения
  */
 function addMessage(message) {
+    const timestamp = new Date(message.timestamp);
+
+    fetch("/api/add-message", {
+        method: "POST",
+        body: JSON.stringify({
+            messageSender: message.sender | "Anonymous",
+            messageTimestamp: timestamp,
+            messageContent: message.text,
+        }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+        },
+    });
     // Получаем элемент, в который будем добавлять сообщения
     const messages = document.getElementById("room-messages");
     const messageElement = document.createElement("li");
@@ -285,7 +300,7 @@ function addMessage(message) {
     messageTime.classList.add("message-time");
 
     // Преобразуем время в формат ЧЧ:ММ:СС
-    const timestamp = new Date(message.timestamp);
+
     const hours = timestamp.getHours().toString().padStart(2, "0");
     const minutes = timestamp.getMinutes().toString().padStart(2, "0");
     const seconds = timestamp.getSeconds().toString().padStart(2, "0");

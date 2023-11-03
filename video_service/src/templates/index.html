@@ -79,13 +79,30 @@
                             </h1>
                             <h5>No registration or download required.</h5>
                         </div>
-                        <div class="col-md-12">
+                        <div class="d-flex col-md-12 align-items-center">
                             <a
                                 type="button"
                                 class="btn btn-dark btn-lg"
                                 href="{{ url_for('create_room') }}">
                                 Create a room
                             </a>
+                            <h5 class="m-3">or</h5>
+                            <div class="input-group">
+                                <a
+                                    class="btn btn-dark btn-lg"
+                                    style="color: var(--text-color)"
+                                    type="button"
+                                    id="button-addon2"
+                                    onclick="let id = document.getElementById('room-id').value; window.location.href = '/room/' + id;"
+                                    >Join a room</a
+                                ><input
+                                    id="room-id"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Room id"
+                                    aria-label="Room id"
+                                    aria-describedby="button-addon2" />
+                            </div>
                         </div>
                     </div>
                 </div>

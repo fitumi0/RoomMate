@@ -60,9 +60,4 @@ class UserHelper:
 if __name__ == "__main__":
     db = UserHelper("RoomMate_db", "postgres", "admin")
     print(db.username_is_free("fitumi0"))
-    # db.raw_execute("SELECT password FROM \"UserServiceSchema\".\"user\"")
-    # print(check_password_hash())
-    # db.register_user("Anton", "Червяков", "fitumi0", datetime.datetime.now(), "fitumi@gmail.com", "abu_bandit", 1)
-    # db.change_user_username("neprtn", "_neprtn")
-    # db.change_user_email("masha@gmail.com", "neprtn")
     pass

@@ -4,6 +4,11 @@ nginx
 movies
 
 *api*
+*9e1af*
+node_modules
+utils
+config.py
+*.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

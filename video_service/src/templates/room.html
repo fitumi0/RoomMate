@@ -1,191 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>RoomMate</title>
-        <link rel="stylesheet" href="../static/styles/room.css" />
-        <link rel="stylesheet" href="../static/styles/common.css" />
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>RoomMate</title>
+		<link rel="stylesheet" href="../static/styles/room.css" />
+		<link rel="stylesheet" href="../static/styles/common.css" />
 
-        <script
-            src="https://kit.fontawesome.com/159c9006d5.js"
-            crossorigin="anonymous"></script>
+		<script
+			src="https://kit.fontawesome.com/159c9006d5.js"
+			crossorigin="anonymous"></script>
 
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-            crossorigin="anonymous" />
-        <script
-            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+			crossorigin="anonymous" />
+		<script
+			src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+			integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+			crossorigin="anonymous"></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+			integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+			crossorigin="anonymous"></script>
 
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/vidstack/styles/defaults.min.css" />
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/vidstack/styles/community-skin/video.min.css" />
-        <script
-            type="module"
-            src="https://cdn.jsdelivr.net/npm/vidstack/dist/cdn/prod.js"></script>
-    </head>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/vidstack/styles/defaults.min.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/vidstack/styles/community-skin/video.min.css" />
+		<script
+			type="module"
+			src="https://cdn.jsdelivr.net/npm/vidstack/dist/cdn/prod.js"></script>
+		<script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
+	</head>
 
-    <body>
-        <!-- <header id="header" class="header">
-            <span id="sandwichButton" onclick="openNav()">&#9776;</span>
-            <div class="title">RoomMate - Movie sharing service.</div>
-        </header> -->
-        <header class="bg-dark text-white p-0">
-            <nav class="navbar navbar-expand">
-                <a class="navbar-brand" href="/">
-                    <div class="logo">
-                        <div class="logo">
-                            <div class="logo-room">Room</div>
-                            <div class="logo-mate">Mate</div>
-                        </div>
-                    </div>
-                </a>
-                <div class="ml-auto">
-                    <a href="/login" class="btn btn-accent m-1"> Log in </a>
-                    <a href="/sign-up" class="btn btn-outline-accent">
-                        Sign up
-                    </a>
-                </div>
-            </nav>
-        </header>
-        <section class="layout">
-            <div id="sideNav" class="sidenav">
-                <a
-                    href="javascript:void(0)"
-                    class="closebtn"
-                    onclick="closeNav()"
-                    >&times;</a
-                >
-                <a href="#">About</a>
-                <a href="#">Services</a>
-                <a href="#">Clients</a>
-                <a href="#">Contact</a>
-            </div>
-            <div class="room-settings d-flex">
-                <div class="input-group m-2">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1"
-                            >Now watching:</span
-                        >
-                    </div>
-                    <input
-                        id="url-changer"
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter link to video (for example, youtube)"
-                        aria-label="Enter link to video (for example, youtube)"
-                        aria-describedby="basic-addon1" />
-                </div>
-                <button
-                    id="playlist-share-button"
-                    onclick=""
-                    class="input-group-text mt-2 mr-2 mb-2 btn btn-secondary"
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="Show current playlist">
-                    <i class="fa-solid fa-list-ul"></i>
-                    <div class="ml-2">Playlist</div>
-                </button>
-                <button
-                    id="screen-share-button"
-                    onclick="startScreenShare()"
-                    class="mt-2 mr-2 mb-2 btn btn-secondary">
-                    Screenshare
-                </button>
-                <div class="custom-file mt-2 mr-2 mb-2">
-                    <input
-                        class="custom-file-input btn btn-secondary"
-                        type="file"
-                        name="file-picker"
-                        id="file-share-button" />
-                    <label
-                        class="custom-file-label btn btn-secondary"
-                        for="file-picker"
-                        >Pick a file</label
-                    >
-                </div>
-            </div>
-            <div id="main" class="body m-2">
-                <media-player autoplay aspect-ratio="16/9" src="" crossorigin>
-                    <media-outlet></media-outlet>
-                    <media-community-skin></media-community-skin>
-                </media-player>
-                <div id="chat" class="chat">
-                    <div class="containerHeader">Chat</div>
+	<body>
+		<header class="bg-dark text-white p-0">
+			<nav class="navbar navbar-expand">
+				<a class="navbar-brand" href="/">
+					<div class="logo">
+						<div class="logo">
+							<div class="logo-room">Room</div>
+							<div class="logo-mate">Mate</div>
+						</div>
+					</div>
+				</a>
+				<div class="ml-auto">
+					<a href="/login" class="btn btn-accent m-1"> Log in </a>
+					<a href="/sign-up" class="btn btn-outline-accent">
+						Sign up
+					</a>
+				</div>
+			</nav>
+		</header>
+		<section class="layout">
+			<div id="sideNav" class="sidenav">
+				<a
+					href="javascript:void(0)"
+					class="closebtn"
+					onclick="closeNav()"
+					>&times;</a
+				>
+				<a href="#">About</a>
+				<a href="#">Services</a>
+				<a href="#">Clients</a>
+				<a href="#">Contact</a>
+			</div>
+			<div class="room-settings d-flex">
+				<div class="input-group m-2">
+					<div class="input-group-prepend">
+						<span class="input-group-text" id="basic-addon1"
+							>Now watching:</span
+						>
+					</div>
+					<!-- !TODO: ADD BUTTON TO CHANGE LINKS -->
+					<input
+						id="url-changer"
+						type="text"
+						class="form-control"
+						placeholder="Enter link to video (for example, youtube)"
+						aria-label="Enter link to video (for example, youtube)"
+						aria-describedby="basic-addon1" />
+					<div class="input-group-append">
+						<button
+							id="url-changer-button"
+							class="btn btn-secondary"
+							type="button"
+							onclick="changePlayerSourceUrl()">
+							<i class="fa-solid fa-check"></i>
+						</button>
+					</div>
+				</div>
+				<button
+					id="playlist-share-button"
+					onclick=""
+					class="input-group-text mt-2 mr-2 mb-2 btn btn-secondary"
+					data-toggle="tooltip"
+					data-placement="bottom"
+					title="Show current playlist"
+					data-bs-toggle="popover"
+					data-bs-content="А вот и потрясающий контент. Это очень интересно. Правильно?">
+					<i class="fa-solid fa-list-ul"></i>
+					<div class="ml-2">Playlist</div>
+				</button>
+				<button
+					id="screen-share-button"
+					onclick="startScreenShare()"
+					class="mt-2 mr-2 mb-2 btn btn-secondary">
+					Screenshare
+				</button>
+				<div class="custom-file mt-2 mr-2 mb-2">
+					<input
+						class="custom-file-input btn btn-secondary"
+						type="file"
+						name="file-picker"
+						id="file-share-button" />
+					<label
+						class="custom-file-label btn btn-secondary"
+						for="file-picker"
+						>Pick a file</label
+					>
+				</div>
+			</div>
+			<div id="main" class="body m-2">
+				<media-player autoplay aspect-ratio="16/9" src="" crossorigin>
+					<media-outlet></media-outlet>
+					<media-community-skin></media-community-skin>
+				</media-player>
+				<div id="chat" class="chat">
+					<div class="containerHeader">Chat</div>
 
-                    <div class="input-group p-2">
-                        <input
-                            id="nickname-changer"
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter new nickname"
-                            aria-label="Enter new nickname"
-                            aria-describedby="basic-addon2" />
-                        <div class="input-group-append">
-                            <button
-                                class="btn btn-outline-secondary"
-                                type="button">
-                                <i class="fa-solid fa-check"></i>
-                            </button>
-                        </div>
-                    </div>
+					<div class="input-group p-2">
+						<div>{{ room_id }}</div>
+						<input
+							id="nickname-changer"
+							type="text"
+							class="form-control"
+							placeholder="Enter new nickname"
+							aria-label="Enter new nickname"
+							aria-describedby="basic-addon2" />
+						<div class="input-group-append">
+							<button
+								id="nickname-changer-button"
+								class="btn btn-outline-secondary"
+								type="button">
+								<i class="fa-solid fa-check"></i>
+							</button>
+						</div>
+					</div>
 
-                    <ul id="room-messages" class="messages"></ul>
+					<ul id="room-messages" class="messages"></ul>
 
-                    <div class="input-wrapper">
-                        <div class="input">
-                            <input
-                                id="chat-input"
-                                class="input-content"
-                                placeholder="Input message" />
-                            <div class="span-controls">
-                                <button
-                                    class="emoji-button chat-btn"
-                                    onclick="toggleEmojiPicker()">
-                                    <i class="fa-regular fa-face-smile"></i>
-                                </button>
-                                <button
-                                    class="send-button chat-btn"
-                                    onclick="sendMessage()">
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <footer class="bg-dark text-white p-0">
-            <div class="links">
-                <a
-                    class="footerLink"
-                    href="https://github.com/fitumi0"
-                    target="_blank"
-                    >Github</a
-                >
-                <a
-                    class="footerLink"
-                    href="https://t.me/MrSt4ff"
-                    target="_blank"
-                    >Telegram</a
-                >
-            </div>
-        </footer>
-        <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
-        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script> -->
-        <script src="{{url_for('static', filename='scripts/room.js')}}"></script>
-        <!-- <script src="{{url_for('static', filename='scripts/screenshare.js')}}"></script> -->
-        <script src="{{url_for('static', filename='scripts/fileshare.js')}}"></script>
-    </body>
+					<div class="input-wrapper">
+						<div class="input">
+							<input
+								id="chat-input"
+								class="input-content"
+								placeholder="Input message" />
+							<div class="span-controls">
+								<button
+									class="emoji-button chat-btn"
+									onclick="toggleEmojiPicker()">
+									<i class="fa-regular fa-face-smile"></i>
+								</button>
+								<button
+									id="send-message-button"
+									class="send-button chat-btn"
+									onclick="">
+									<i class="fa-solid fa-arrow-right"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<footer class="bg-dark text-white p-0">
+			<div class="links">
+				<a
+					class="footerLink"
+					href="https://github.com/fitumi0"
+					target="_blank"
+					>Github</a
+				>
+				<a
+					class="footerLink"
+					href="https://t.me/MrSt4ff"
+					target="_blank"
+					>Telegram</a
+				>
+			</div>
+		</footer>
+		<script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+		<script src="{{url_for('static', filename='scripts/script.js')}}"></script>
+		<script src="{{url_for('static', filename='scripts/room.js')}}"></script>
+		<!-- <script src="{{url_for('static', filename='scripts/screenshare.js')}}"></script> -->
+		<script src="{{url_for('static', filename='scripts/fileshare.js')}}"></script>
+	</body>
 </html>

@@ -1,65 +1,36 @@
-from flask import Flask, render_template, make_response, Response, request, redirect, url_for, flash, Markup
-# from flask_socketio import SocketIO, emit
+from flask import Flask, render_template, make_response, Response, request, redirect, url_for, flash, Markup, session
+from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_cors import CORS
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+import json
+
+import config
+from db_room_helper import RoomHelper
+
+# import firebase_admin
+# from firebase_admin import credentials
+# from firebase_admin import firestore
+
+
+# # # # # # # # # # # # # # # # # # # # 
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret!"
-# socketio = SocketIO(app)
+
+socketio = SocketIO(app)
+
 CORS(app)
 
-# # # # # # # # # # # # # # # # # # # # 
-import uuid
-
-def generate_user_id():
-    return str(uuid.uuid4())
-
-    # TODO: use it inside room
-    # user_id = request.cookies.get('user_id')
-
-    # if not user_id:
-    #     user_id = generate_user_id()
-
-    # response = make_response(render_template("index.html"))
-    # response.set_cookie('user_id', generate_user_id())
-    # return response
-
-import random
-
-def generate_nickname():
-    adjectives = ['sleepy', 'slow', 'smelly', 'wet', 'fat', 'red', 'orange',
-                  'yellow', 'green', 'blue', 'purple', 'fluffy', 'white', 'proud',
-                  'brave', 'amazing', 'fierce', 'grumpy', 'tiny', 'shy', 'great', 'happy',
-                  'silly', 'funny', 'cool', 'sweet', 'kind', 'gentle', 'clever', 'jolly',
-                  'jumpy', 'lucky', 'odd', 'perfect', 'proud', 'silly', 'sleepy', 'super',
-                  'tame', 'wild', 'chatty', 'chilly', 'crazy', 'fancy', 'hungry', 'itchy']
-    
-    nouns = ['cat', 'dog', 'bird', 'fish', 'tree', 'flower', 'car', 'bike', 'boat',
-             'socks', 'pants', 'shirt', 'hat', 'chair', 'table', 'duck', 'bed', 'mouse',
-             'house', 'ball', 'clown', 'toy', 'pen', 'laptop', 'phone', 'bottle', 'cup',
-             'fork', 'knife', 'spoon', 'banana', 'apple', 'orange', 'grapes', 'cheese',
-             'lion', 'tiger', 'bear', 'goat', 'zebra', 'cow', 'horse', 'pig', 'chicken',
-             'sheep', 'fish', 'rabbit', 'panda', 'monkey', 'kangaroo', 'elephant', 'giraffe']
-    
-    adjective = random.choice(adjectives)
-    noun = random.choice(nouns)
-    return f"{adjective}_{noun}"
-
-    # user_nickname = request.cookies.get('user_nickname')
-    # if not user_nickname:
-    #     user_nickname = generate_nickname()
-    # response = make_response(render_template("index.html"))
-    # response.set_cookie('user_nickname', user_nickname)
-    # return response
+db = RoomHelper(config.root_database, config.room_table)
 
 # # # # # # # # # # # # # # # # # # # # 
 
+# cred = credentials.Certificate('roommate-9e1af-120003dd6e68.json')
+# default_app = firebase_admin.initialize_app(cred)
+# db = firestore.client()
 
-cred = credentials.Certificate('roommate-9e1af-120003dd6e68.json')
-default_app = firebase_admin.initialize_app(cred)
-db = firestore.client()
+# # # # # # # # # # # # # # # # # # # # 
+
+# region routes
 
 @app.route("/")
 def index():
@@ -79,33 +50,74 @@ def sign_up_post():
     username = request.form.get('username')
     password = request.form.get('password')
     return redirect(url_for('login'))
-    # check username and email uniq
-    db = UserHelper("RoomMate_db", "postgres", "admin")
 
-    if (not db.username_is_free(username)):
-        flash("This username already taken!", "warning")
-        return redirect(url_for('sign_up'))
-    
-    if (not db.email_is_free(email)):
-        flash(Markup("This email address is already taken!\n <a href='/login'><u>Log in?</u></a>"), "warning")
-        return redirect(url_for('sign_up'))
-    
-    db.register_user(username, email, password)
-    flash("Registration completed successfully!\nYou can login.", "info")
-    return redirect(url_for('login'))
 
-@app.route("/api/add-message", methods=["POST"])
-def add_message_post():
-    data = request.get_json()
-    print(data)
-    result = db.collection("video-service").document("messages").set(data)
-    if result.exists:
-        return(result.to_dict())
-
-@app.route("/create-room")
+@app.route("/create-room", methods=["GET", "POST"])
 def create_room():
-    return render_template("room.html")
+    import uuid
+    new_id = uuid.uuid4()
+    if request.method == "GET":
+        db.add_room(str(new_id))
+        return redirect(url_for("room", room_id=str(new_id)))
+    
+    if request.method == "POST":
+        return json.dumps({"id": str(new_id)})
 
+# @app.route("/join-room")
+# def join_existing_room():
+#     return render_template("room.html")
+
+@app.route("/room")
+def room_without_id():
+    return render_template("room.404.html")
+
+@app.route("/room/<room_id>")
+def room(room_id):
+    if not db.room_exists(room_id):
+        return render_template("room.404.html")
+    return render_template("room.html", room_id=room_id)
+
+@app.route("/rooms")
+def get_rooms():
+    return Response(json.dumps(db.get_rooms()), mimetype="application/json")
+
+# endregion routes
+
+# # # # # # # # # # # # # # # # # # # # 
+
+# region sockets
+
+@socketio.on("connect")
+def on_connect():
+    print("New socket connected ", request.sid)
+    # socketio.emit("create-room")
+    
+@socketio.on("join-room")
+def on_join_room(room_id, rtcpeer_id):
+    join_room(room_id)
+    emit("user-connected", {"socket_id": request.sid, "rtc_id":rtcpeer_id}, include_self=False, to=room_id)
+    
+    @socketio.on("disconnect")
+    def on_disconnect():
+        print("disconnected ", request.sid)
+        emit("user-disconnected", request.sid, include_self=False, to=room_id) 
+        
+@socketio.on("create-room")
+def on_create_room(room_id):
+    join_room(room_id)
+    
+
+@socketio.on("message")
+def on_message(sender, message, room_id):
+    socketio.emit("message", {"sender": sender, "text": message}, to=room_id, include_self=True)
+
+@socketio.on("leave-room")
+def on_leave_room(room_id, peer_id):
+    print(f"{request.sid} left {room_id}")
+    
+# endregion sockets
+
+# # # # # # # # # # # # # # # # # # # # 
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ function handleFileInput(event) {
     if (file) {
         console.log(file);
         const player = document.querySelector("media-player");
+        // ! TODO: send URL.createObjectURL(file) thru rtc connection
         player.src = URL.createObjectURL(file);
         player.startLoading();
     }

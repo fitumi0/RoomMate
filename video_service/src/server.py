@@ -20,7 +20,7 @@ socketio = SocketIO(app)
 
 CORS(app)
 
-db = RoomHelper(config.root_database, config.room_table)
+db = RoomHelper(config.root_database, config.room_table, config.message_table)
 
 # # # # # # # # # # # # # # # # # # # # 
 
@@ -81,6 +81,10 @@ def room(room_id):
 def get_rooms():
     return Response(json.dumps(db.get_rooms()), mimetype="application/json")
 
+@app.route("/api/get-messages/room/<room_id>")
+def get_messages(room_id):
+    return Response(json.dumps(db.get_history_room(room_id), ensure_ascii=False, indent=4), mimetype="application/json")
+
 # endregion routes
 
 # # # # # # # # # # # # # # # # # # # # 
@@ -109,7 +113,9 @@ def on_create_room(room_id):
 
 @socketio.on("message")
 def on_message(sender, message, room_id):
+    import datetime
     socketio.emit("message", {"sender": sender, "text": message}, to=room_id, include_self=True)
+    db.add_message(room_id, sender, message, datetime.datetime.now())
 
 @socketio.on("leave-room")
 def on_leave_room(room_id, peer_id):

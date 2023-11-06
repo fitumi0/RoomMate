@@ -133,7 +133,7 @@ let stopStream = () => {
  * (Разрыв peer соединения и повторная установка)
  * @param {*} streamSource 
  */
-let changeStreamingSource = (streamSource) => {
+let changeRemoteSources = (streamSource) => {
     Object.values(peers).forEach((peer) => {
         peer.peer.setStreams(streamSource);
     });

@@ -11,7 +11,8 @@ const rtcPeer = new Peer(undefined, {
 });
 
 let sendMessageButton = document.getElementById("send-message-button");
-
+let screenShare = false;
+let fileShare = false;
 let currentRoom = window.location.pathname.split("/")[2];
 
 // variables end
@@ -23,7 +24,7 @@ let currentRoom = window.location.pathname.split("/")[2];
  * {@link "https://www.vidstack.io/"}
  */
 const player = document.querySelector("media-player");
-
+let video;
 const PC_CONFIGURATION = new RTCPeerConnection({
     iceServers: [
         {
@@ -78,8 +79,6 @@ socket.on("user-connected", (ids) => {
 })
 
 socket.on("user-disconnected", (id) => {
-    // connectToNewUser(id)
-
     console.log(`User ${id} disconnected`);
 
     if (peers[id]) peers[id].close();
@@ -98,28 +97,86 @@ player.addEventListener("media-player-connect", function (event) {
     player.onAttach(async () => {
         console.log("Player attached");
 
-        const playingState = player.subscribe(({ paused, playing }) => {
+        const filePick = document.getElementById("file-share-button");
+        filePick.accept = "video/mp4, video/quicktime";
+        filePick.addEventListener("change", handleFileInput);
 
+        function handleFileInput(event) {
+            const file = event.target.files[0];
+            if (file) {
+                player.src = URL.createObjectURL(file);
+                player.startLoading();
+                // fileShare = true;
+                // const stream = new MediaStream(video.captureStream(50));
+                // setStreamingSources(stream);
+            }
+        }
+
+        const playingState = player.subscribe(({ paused }) => {
+            // if (screenShare) {
+            //     return;
+            // }
+            // Object.values(peers).forEach((peer) => {
+            //     peer.send({
+            //         type: "stream",
+            //         source: player.src,
+            //         paused: paused,
+            //         currentTime: player.currentTime,
+            //         playbackrate: player.playbackRate,
+            //         screenShare: screenShare
+            //     })
+            // })
         });
 
         const sourceState = player.subscribe(({ source }) => {
-            // console.log(source);
             // send to all peers peerjs message
         })
+
+        const currentTimeState = player.subscribe(({ seeking }) => {
+            // if (screenShare) {
+            //     return;
+            // }
+            // if (!seeking) {
+            //     Object.values(peers).forEach((peer) => {
+            //         peer.send({
+            //             source: player.src,
+            //             paused: player.paused,
+            //             currentTime: player.currentTime,
+            //             playbackrate: player.playbackRate,
+            //             screenShare: screenShare
+            //         })
+            //     })
+            // }
+        })
+    });
+
+    player.addEventListener('loaded-metadata', (event) => {
+        // Available on all media events!
+        const target = event.trigger?.target;
+        if (target instanceof HTMLVideoElement) {
+            video = target; // `HTMLVideoElement`
+            // console.log(element);
+            // const stream = new MediaStream(element.captureStream(50));
+            // setStreamingSources(stream);
+        }
 
     });
 });
 
 const displayMediaOptions = {
-    video: true,
     audio: true,
+    video: {
+        frameRate: {
+            ideal: 50,
+        },
+    },
 };
 
 let setStream = (stream) => {
     player.src = stream;
     player.muted = true;
     player.paused = false;
-    changeShareButtonState(false)
+    changeShareButtonState(false);
 }
 
 let stopStream = () => {
@@ -127,27 +184,13 @@ let stopStream = () => {
     player.paused = true;
 }
 
-/**
- * Если WebRtc соединение не установлено (первое включение стрима), 
- * устанавливает его, а если установлено, меняет источник стрима.
- * (Разрыв peer соединения и повторная установка)
- * @param {*} streamSource 
- */
-let changeRemoteSources = (streamSource) => {
-    Object.values(peers).forEach((peer) => {
-        peer.peer.setStreams(streamSource);
-    });
-}
-
 rtcPeer.on('open', (id) => {
     localId = id;
 })
 
 rtcPeer.on("call", (call) => {
-    // console.log(call);
     call.answer(null)
     call.on("stream", (stream) => {
-        console.log(stream);
         setStream(stream);
     })
 })
@@ -159,6 +202,12 @@ let connectToNewUser = (id, rtcPeerId) => {
 
     peers[id] = rtcPeer.connect(rtcPeerId);
 
+    if (screenShare) {
+        setStreamingSourceByPeer(peers[id].peer, player.src)
+    }
+
+
+    // TODO: изменить способ возврата id всем вошедшим
     socket.emit("join-room", currentRoom, rtcPeer.id);
 }
 
@@ -167,24 +216,63 @@ rtcPeer.on("connection", (connection) => {
     //     console.log("RTCConnection established!");
     // });
 
-    connection.on('data', function (data) {
-        console.log('Received', data);
-    });
-})
+    // connection.on('data', handlePlayerState)
+});
+
+/**
+         * 
+         * @param {{source: string, paused: boolean, currentTime: number, playbackrate: number}} data 
+         */
+let handlePlayerState = (data) => {
+    player.src = data.source;
+    player.paused = data.paused;
+    player.currentTime = data.currentTime;
+    player.playbackRate = data.playbackrate;
+    screenShare = data.screenShare;
+};
 
 let renderVideo = (stream) => {
     let video = document.createElement("video");
-    document.getElementById("main").appendChild(video);
+    document.getElementById("video-chat").appendChild(video);
     video.srcObject = stream;
     video.onloadedmetadata = () => {
         video.play();
     }
 }
 
+/**
+ * 
+ * @param {MediaSource} content 
+ */
+let setVideoSources = (content) => {
+    Object.values(peers).forEach((peer) => {
+        peer.send({
+            source: content,
+            paused: player.paused,
+            currentTime: player.currentTime,
+            playbackrate: player.playbackRate
+        })
+    })
+}
+
+let setStreamingSources = (stream) => {
+    Object.values(peers).forEach((peer) => {
+        rtcPeer.call(peer.peer, stream);
+    })
+}
+
+let setStreamingSourceByPeer = (peer, stream) => {
+    rtcPeer.call(peer, stream);
+}
+
 let changeStreamingSources = (stream) => {
     Object.values(peers).forEach((peer) => {
-        console.log(`New source for peer ${peer.peer}: ${stream}`);
-        rtcPeer.call(peer.peer, stream);
+        peer.peerConnection.getSenders().forEach((sender) => {
+            stream.getVideoTracks().forEach((track) => {
+                sender.replaceTrack(track)
+            })
+        })
+
     })
 }
 
@@ -198,12 +286,12 @@ let startScreenShare = () => {
         .getDisplayMedia(displayMediaOptions)
         .then((stream) => {
             player.src = stream;
-
-            changeStreamingSources(stream)
+            stream.getVideoTracks()[0].onended = function () {
+                stopScreenShare();
+            };
+            setStreamingSources(stream)
+            changeShareButtonState(true);
         });
-
-    changeShareButtonState(true);
-
 };
 
 /**
@@ -212,10 +300,14 @@ let startScreenShare = () => {
  * @return {Promise<void>} A promise that resolves when the screen sharing is stopped.
  */
 let stopScreenShare = async () => {
-    let tracks = player.src.getTracks();
+    player.src.getTracks().forEach((track) => {
+        track.stop()
+        player.src.removeTrack(track);
+    }
+    )
+    player.src = "";
 
-    tracks.forEach((track) => track.stop());
-    changeStreamingSources("");
+    setStreamingSources(player.src);
     changeShareButtonState(false);
 };
 
@@ -232,4 +324,6 @@ let changeShareButtonState = (state) => {
         button.textContent = "Screenshare";
         button.onclick = startScreenShare;
     }
+
+    screenShare = state;
 }

@@ -54,6 +54,15 @@ let changePlayerSourceUrl = () => {
         return;
     }
 
+    Object.values(peers).forEach((peer) => {
+        peer.send({
+            source: urlChanger.value,
+            paused: player.paused,
+            currentTime: player.currentTime,
+            playbackrate: player.playbackRate,
+        })
+    });
+
     player.src = urlChanger.value;
 }
 

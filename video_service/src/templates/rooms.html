@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block body %}
+<div class="room-list p-0">
+	{% with messages = get_flashed_messages(with_categories=true) %} {% if
+	messages%} {% for category, message in messages %}
+	<div class="notification {{category}}">{{ message }}</div>
+	{% endfor %} {% endif %} {% endwith %} {% for room in rooms %}
+	<div class="room-element m-2">
+		<div class="m-1">{{room[0]}}</div>
+		<a class="btn btn-accent" href="/room/{{room[0]}}">Join</a>
+	</div>
+
+	{% endfor %}
+</div>
+{% endblock %}

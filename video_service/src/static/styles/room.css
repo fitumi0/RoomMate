@@ -1,38 +1,38 @@
 body {
-    height: 100vh !important;
+	height: 100vh !important;
 }
 .btn-accent {
-    color: var(--secondary-color) !important;
-    background-color: var(--accent-color);
+	color: var(--secondary-color) !important;
+	background-color: var(--accent-color);
 }
 
 .btn-accent:hover {
-    color: var(--primary-color) !important;
-    background-color: var(--accent-color-t);
+	color: var(--primary-color) !important;
+	background-color: var(--accent-color-t);
 }
 
 .btn-outline-accent {
-    color: var(--secondary-color) !important;
-    border: 1px solid var(--accent-color) !important;
+	color: var(--secondary-color) !important;
+	border: 1px solid var(--accent-color) !important;
 }
 
 .btn-outline-accent:hover {
-    background-color: var(--accent-color);
+	background-color: var(--accent-color);
 }
 
 /*#region General*/
 
 .hidden {
-    display: none;
-    transition: var(--default-transition);
+	display: none;
+	transition: var(--default-transition);
 }
 
 .title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    padding: 0 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	padding: 0 16px;
 }
 
 /*#endregion General*/
@@ -40,54 +40,54 @@ body {
 /*#region Layout*/
 
 .containerHeader {
-    display: flex;
-    justify-content: center;
-    margin: 4px 0;
-    border-bottom: 1px solid var(--input-color-hover);
+	display: flex;
+	justify-content: center;
+	margin: 4px 0;
+	border-bottom: 1px solid var(--input-color-hover);
 }
 
 .layout {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    max-height: calc(100vh - (74px) - var(--footer-height));
-    overflow: hidden;
-    background-color: var(--background-color);
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	max-height: calc(100vh - (74px) - var(--footer-height));
+	overflow: hidden;
+	background-color: var(--background-color);
 }
 
 .body {
-    display: flex;
-    flex-direction: row;
-    border-radius: var(--border-radius);
-    transition: var(--default-transition);
-    color: var(--text-color);
-    gap: 8px;
-    height: calc(100vh - (74px) - var(--footer-height));
-    overflow: hidden;
-    /* margin: var(--container-margin); */
-    /* overflow: hidden; */
-    /* border: 1px solid var(--accent-color); */
+	display: flex;
+	flex-direction: row;
+	border-radius: var(--border-radius);
+	transition: var(--default-transition);
+	color: var(--text-color);
+	gap: 8px;
+	height: calc(100vh - (74px) - var(--footer-height));
+	overflow: hidden;
+	/* margin: var(--container-margin); */
+	/* overflow: hidden; */
+	/* border: 1px solid var(--accent-color); */
 }
 
 .chat {
-    grid-area: chat;
-    color: var(--text-color);
-    background-color: var(--detail-background-color);
-    border-radius: var(--border-radius);
-    /* border: 1px solid var(--accent-color); */
-    min-width: 300px;
-    max-width: 300px;
-    margin: var(--container-margin);
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    overflow-y: auto;
+	grid-area: chat;
+	color: var(--text-color);
+	background-color: var(--detail-background-color);
+	border-radius: var(--border-radius);
+	/* border: 1px solid var(--accent-color); */
+	min-width: 300px;
+	max-width: 300px;
+	margin: var(--container-margin);
+	display: flex;
+	flex-direction: column;
+	height: auto;
+	overflow-y: auto;
 }
 
 .footer {
-    background-color: var(--footer-background-color);
-    height: var(--footer-height);
-    transition: var(--default-transition);
+	background-color: var(--footer-background-color);
+	height: var(--footer-height);
+	transition: var(--default-transition);
 }
 
 /*#endregion Layout*/
@@ -95,56 +95,56 @@ body {
 /*#region SideNav*/
 
 .sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #111;
-    overflow-x: hidden;
-    transition: var(--default-transition);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+	height: 100%;
+	width: 0;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	background-color: #111;
+	overflow-x: hidden;
+	transition: var(--default-transition);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 .shadow {
-    box-shadow: var(--shadow);
+	box-shadow: var(--shadow);
 }
 
 .sidenav a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: var(--text-color);
-    display: block;
-    transition: 0.3s;
+	padding: 8px 8px 8px 32px;
+	text-decoration: none;
+	font-size: 25px;
+	color: var(--text-color);
+	display: block;
+	transition: 0.3s;
 }
 
 .sidenav a:hover {
-    color: var(--accent-color);
+	color: var(--accent-color);
 }
 
 .sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    left: 8px;
-    font-size: 36px;
-    /* margin-left: 50px; */
-    padding: 8px;
+	position: absolute;
+	top: 0;
+	left: 8px;
+	font-size: 36px;
+	/* margin-left: 50px; */
+	padding: 8px;
 }
 
 #sandwichButton {
-    display: inline-flex;
-    flex-direction: column;
-    font-size: 35px;
-    color: var(--accent-color);
-    cursor: pointer;
-    padding-left: 8px;
-    width: auto;
-    transition: var(--default-transition);
+	display: inline-flex;
+	flex-direction: column;
+	font-size: 35px;
+	color: var(--accent-color);
+	cursor: pointer;
+	padding-left: 8px;
+	width: auto;
+	transition: var(--default-transition);
 }
 
 /*#endregion SideNav*/
@@ -154,40 +154,40 @@ body {
 /*#region Messages*/
 
 .messages {
-    padding-inline-start: 16px;
-    padding-inline-end: 16px;
-    flex: 1;
-    overflow-y: auto;
+	padding-inline-start: 16px;
+	padding-inline-end: 16px;
+	flex: 1;
+	overflow-y: auto;
 }
 
 .message {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    padding: 0 16px 0 16px;
-    margin: 8px 0;
-    word-break: break-all;
-    background-color: var(--message-background-color);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--input-border-color);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	padding: 0 16px 0 16px;
+	margin: 8px 0;
+	word-break: break-all;
+	background-color: var(--message-background-color);
+	border-radius: var(--border-radius);
+	border: 1px solid var(--input-border-color);
 }
 
 .message-sender {
-    font-weight: bold;
-    margin: 4px 0;
+	font-weight: bold;
+	margin: 4px 0;
 }
 
 .message-time {
-    font-weight: lighter;
-    font-size: small;
-    margin-left: 8px;
+	font-weight: lighter;
+	font-size: small;
+	margin-left: 8px;
 }
 
 .message-content {
-    padding-inline-start: 8px;
-    padding-inline-end: 8px;
-    font-size: smaller;
-    word-break: break-word;
+	padding-inline-start: 8px;
+	padding-inline-end: 8px;
+	font-size: smaller;
+	word-break: break-word;
 }
 
 /*#endregion Messages*/
@@ -195,91 +195,91 @@ body {
 /*#region Input*/
 
 .room-settings {
-    color: var(--text-color);
+	color: var(--text-color);
 }
 
 .input-wrapper {
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-    margin: 16px 0;
+	display: flex;
+	align-items: center;
+	padding: 0 16px;
+	margin: 16px 0;
 }
 
 .input {
-    display: flex;
-    flex-direction: row;
-    flex-grow: 1;
-    width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-grow: 1;
+	width: 100%;
 }
 
 .input-content {
-    background-color: var(--message-background-color);
-    border: 1px solid var(--input-border-color);
-    color: var(--text-color);
-    padding: 8px;
-    margin: 0;
-    width: 100%;
-    font-size: 16px;
-    /* font-family: "Roboto", sans-serif; */
-    box-sizing: border-box;
-    outline: none;
-    word-break: break-all;
-    border-radius: var(--border-radius);
+	background-color: var(--message-background-color);
+	border: 1px solid var(--input-border-color);
+	color: var(--text-color);
+	padding: 8px;
+	margin: 0;
+	width: 100%;
+	font-size: 16px;
+	/* font-family: "Roboto", sans-serif; */
+	box-sizing: border-box;
+	outline: none;
+	word-break: break-all;
+	border-radius: var(--border-radius);
 }
 
 .input-content::placeholder {
-    color: var(--text-color);
+	color: var(--text-color);
 }
 
 .input-content:focus {
-    border: 1px solid var(--accent-color);
-    background-color: var(--input-color-hover);
-    transition: var(--input-transition);
+	border: 1px solid var(--accent-color);
+	background-color: var(--input-color-hover);
+	transition: var(--input-transition);
 }
 
 .input-content:hover {
-    background-color: var(--input-color-hover);
-    transition: var(--input-transition);
+	background-color: var(--input-color-hover);
+	transition: var(--input-transition);
 }
 
 .span-controls {
-    display: flex;
-    margin: 0 4px;
-    gap: 4px;
-    cursor: pointer;
+	display: flex;
+	margin: 0 4px;
+	gap: 4px;
+	cursor: pointer;
 }
 
 .chat-btn {
-    appearance: none;
-    border: 1px solid var(--input-border-color);
-    border-radius: var(--border-radius);
-    box-sizing: border-box;
-    color: var(--text-color);
-    background-color: transparent;
+	appearance: none;
+	border: 1px solid var(--input-border-color);
+	border-radius: var(--border-radius);
+	box-sizing: border-box;
+	color: var(--text-color);
+	background-color: transparent;
 
-    cursor: pointer;
-    display: inline-block;
+	cursor: pointer;
+	display: inline-block;
 
-    font-size: 14px;
-    font-weight: 500;
+	font-size: 14px;
+	font-weight: 500;
 
-    line-height: 20px;
-    list-style: none;
-    padding: 6px 16px;
-    position: relative;
+	line-height: 20px;
+	list-style: none;
+	padding: 6px 16px;
+	position: relative;
 
-    transition: var(--input-transition);
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: middle;
-    white-space: nowrap;
-    word-wrap: break-word;
+	transition: var(--input-transition);
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+	vertical-align: middle;
+	white-space: nowrap;
+	word-wrap: break-word;
 }
 
 .chat-btn:hover {
-    background-color: var(--input-color-hover);
-    transition: var(--input-transition);
+	background-color: var(--input-color-hover);
+	transition: var(--input-transition);
 }
 
 /*#endregion Input*/
@@ -289,45 +289,45 @@ body {
 /*#region Player*/
 
 .player-wrapper {
-    width: 100%;
-    height: calc(100vh - var(--header-height) * 3.88);
-    display: flex;
-    align-items: center;
+	width: 100%;
+	height: calc(100vh - var(--header-height) * 3.88);
+	display: flex;
+	align-items: center;
 }
 
 media-player {
-    border: none;
-    border-radius: var(--border-radius);
-    margin: var(--container-margin);
-    height: 100%;
-    width: 100%;
-    max-width: 100%;
-    object-fit: cover;
+	border: none;
+	border-radius: var(--border-radius);
+	margin: var(--container-margin);
+	height: 100%;
+	width: 100%;
+	max-width: 100%;
+	object-fit: cover;
 }
 
 media-player video {
-    height: 100%;
-    width: 100%;
+	height: 100%;
+	width: 100%;
 }
 
 media-time-slider [part="track"] {
-    background-color: var(--input-color-hover);
+	background-color: var(--input-color-hover);
 }
 
 media-time-slider [part~="track-fill"] {
-    background-color: var(--accent-color);
+	background-color: var(--accent-color);
 }
 
 media-time-slider [part="thumb"] {
-    background-color: var(--accent-color);
+	background-color: var(--accent-color);
 }
 
 media-player video {
-    border-radius: var(--border-radius);
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-    object-fit: cover;
+	border-radius: var(--border-radius);
+	width: 100%;
+	height: auto;
+	max-width: 100%;
+	object-fit: cover;
 }
 
 /*#endregion Player*/
@@ -335,35 +335,35 @@ media-player video {
 /*#region Footer*/
 
 .links {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: var(--footer-height);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: var(--footer-height);
 }
 
 .footerLink {
-    color: var(--link-color);
-    cursor: pointer;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
-    margin: 0 8px;
-    transition: var(--input-transition);
+	color: var(--link-color);
+	cursor: pointer;
+	text-decoration: none;
+	font-size: 16px;
+	font-weight: 500;
+	margin: 0 8px;
+	transition: var(--input-transition);
 }
 
 .footerLink:hover {
-    color: var(--accent-color);
+	color: var(--accent-color);
 }
 
 /*#endregion Footer*/
 
 @media screen and (max-height: 450px) {
-    .sidenav {
-        padding-top: 15px;
-    }
+	.sidenav {
+		padding-top: 15px;
+	}
 
-    .sidenav a {
-        font-size: 18px;
-    }
+	.sidenav a {
+		font-size: 18px;
+	}
 }

@@ -34,7 +34,8 @@ db = RoomHelper(config.root_database, config.room_table, config.message_table)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    # TODO: replace db.get_rooms() to api call and dynamic render
+    return render_template("index.html", active_rooms=len(db.get_rooms()))
 
 @app.route("/login")
 def login():
@@ -67,9 +68,12 @@ def create_room():
 # def join_existing_room():
 #     return render_template("room.html")
 
-@app.route("/room")
-def room_without_id():
-    return render_template("room.404.html")
+@app.route("/rooms")
+def rooms():
+    rooms = db.get_rooms()
+    if len(rooms) == 0:
+        flash("No rooms found", "info")
+    return render_template("rooms.html", rooms=db.get_public_rooms())
 
 @app.route("/room/<room_id>")
 def room(room_id):
@@ -77,14 +81,17 @@ def room(room_id):
         return render_template("room.404.html")
     return render_template("room.html", room_id=room_id)
 
-@app.route("/rooms")
+@app.route("/api/get-rooms")
 def get_rooms():
-    return Response(json.dumps(db.get_rooms()), mimetype="application/json")
+    return Response(json.dumps(db.get_rooms(), indent=4), mimetype="application/json")
 
 @app.route("/api/get-messages/room/<room_id>")
 def get_messages(room_id):
     return Response(json.dumps(db.get_history_room(room_id), ensure_ascii=False, indent=4), mimetype="application/json")
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html')
 # endregion routes
 
 # # # # # # # # # # # # # # # # # # # # 
@@ -127,4 +134,4 @@ def on_leave_room(room_id, peer_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='127.0.0.1', port=22334)
+    app.run(debug=True, host='0.0.0.0', port=3002)

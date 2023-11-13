@@ -54,6 +54,10 @@ class RoomHelper:
     def get_rooms(self):
         self.cur.execute(f"SELECT name FROM {self.room_table}")
         return self.cur.fetchall()
+    
+    def get_public_rooms(self):
+        self.cur.execute(f"SELECT name FROM {self.room_table} WHERE public = 1")
+        return self.cur.fetchall()
    
     def add_message(self, room_name, sender, text, time):
         self.cur.execute(f"INSERT INTO {self.message_table} (room_name, sender, message, datetime) VALUES (\'{room_name}\', \'{sender}\', \'{text}\', \'{time}\')")

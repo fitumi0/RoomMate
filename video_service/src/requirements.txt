@@ -9,7 +9,7 @@ importlib-metadata
 itsdangerous
 Jinja2
 MarkupSafe
-python-engineio=
+python-engineio
 python-socketio
 werkzeug
 zipp

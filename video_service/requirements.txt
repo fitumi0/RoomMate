@@ -2,7 +2,7 @@
 blinker==1.6.2
 click==8.1.7
 colorama==0.4.6
-flask>=2.3.3
+flask==2.2.5
 Flask-Cors==4.0.0
 Flask-SocketIO==5.3.6
 importlib-metadata==6.8.0

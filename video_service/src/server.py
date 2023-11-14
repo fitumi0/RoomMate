@@ -3,6 +3,9 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_cors import CORS
 import json
 
+# import config from etc/secrets
+import sys
+sys.path.append("etc/secrets")
 import config
 from db_room_helper import RoomHelper
 

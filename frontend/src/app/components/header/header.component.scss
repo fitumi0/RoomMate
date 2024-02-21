@@ -1,0 +1,58 @@
+@import '../../../styles.scss';
+
+.header {
+    background-color: $accent-color;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 75px;
+    overflow-x: hidden;
+
+}
+
+.header__menu {
+    padding: 0 10px;
+
+    & ul {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    & li {
+        margin-right: 20px;
+    }
+
+    & li:last-child {
+        margin-right: 0;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header__menu {
+        & ul>li {
+            margin-right: 10px;
+        }
+    }
+}
+
+.logo {
+    margin: 0;
+    padding: 0 10px;
+}
+
+.logo__text {
+    color: $green-color;
+    font-size: 1.8rem;
+    margin: 0;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.logo__text--invert {
+    color: $blue-color;
+}

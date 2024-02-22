@@ -1,4 +1,4 @@
-import DataTypes from 'sequelize';
+import DataTypes, { DatabaseError } from 'sequelize';
 
 export default (sequelize) => {
     const Room = sequelize.define('Room', {
@@ -21,9 +21,18 @@ export default (sequelize) => {
             allowNull: false
         },
         updatedAt: {
+            type: DataTypes.DATE, // TOFIX: почему-то устанавливается дата, вместо null по умолчанию
+        },
+        /* TODO: добавить в БД
+        deleted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        deletedAt: {
             type: DataTypes.DATE,
-            defaultValue: null,
+            defaultValue: null
         }
+        */
     });
 
     return Room;

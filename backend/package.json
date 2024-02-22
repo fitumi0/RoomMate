@@ -5,7 +5,6 @@
 		"express": "^4.18.2",
 		"mediasoup": "^3.13.16",
 		"mediasoup-client": "^3.7.2",
-		"nodemon": "^3.0.3",
 		"nunjucks": "^3.2.4",
 		"pg": "^8.11.3",
 		"pg-hstore": "^2.3.4",
@@ -17,6 +16,7 @@
 		"uniq": "^1.0.1"
 	},
 	"devDependencies": {
+		"nodemon": "^3.0.3",
 		"path": "^0.12.7",
 		"webpack": "^5.90.1",
 		"webpack-cli": "^5.1.4"

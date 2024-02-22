@@ -20,16 +20,22 @@ Frontend
 
 Backend
 1) Написать базовый API
-   - [ ] CreateRoom - создать комнату и добавить в БД
-   - [ ] GetRooms - достать из БД список комнат
+   - [X] CreateRoom - создать комнату и добавить в БД
+   - [X] GetRooms - достать из БД список комнат
+   - [ ] Достать историю сообщений, разбитие на чанки
 2) Создать базу данных, следующие таблицы
-   - [ ] Комнаты
+   - [X] Комнаты
+   - [ ] Добавить полей в таблицу с комнатами
    - [ ] Пользователи
    - [ ] История общения в чате
    - [ ] ...
 3) Медиасервер
-4) SocketServer
+   - [ ] rtc
+   - [ ] transport
 
+4) SocketServer
+   - [ ] connect event
+   - [ ] disconnect event
 
 # Screenshots
 ![main](https://github.com/fitumi0/RoomMate/assets/87011164/be59a03b-7a57-40c0-b3f0-a48e6fdb6f11)

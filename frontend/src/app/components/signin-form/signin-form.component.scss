@@ -1,0 +1,35 @@
+@import '../../../styles.scss';
+
+.login-form {
+    background-color: $white;
+    width: 300px;
+    box-shadow: 0 0 10px $accent-color;
+    color: $black;
+    border-radius: 5px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px
+}
+
+.title{
+    text-align: center;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    width: inherit;
+}
+
+label {
+    align-self: flex-start;
+}
+
+.invalid__text{
+    overflow-wrap: break-word; 
+    word-wrap: break-word; 
+    word-break: break-all;
+}

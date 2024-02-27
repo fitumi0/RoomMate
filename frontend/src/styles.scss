@@ -4,6 +4,8 @@ $text-color: #ffffff;
 $text-link-hover: #969696;
 $green-color: #4CAF50;
 $blue-color: #2196F3;
+$white: #f0f0f0;
+$black: #0f0f0f;
 
 html,
 body {
@@ -36,6 +38,14 @@ body {
 
     &:focus {
         outline: none;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+
+        &:hover {
+            background-color: $green-color;
+        }
     }
 }
 
@@ -79,7 +89,7 @@ body {
     height: 2px;
     border: none;
     background-color: $green-color;
-    margin:  0;
+    margin: 0;
 }
 
 @media screen and (max-width: 480px) {
@@ -87,4 +97,27 @@ body {
         padding: 10px 5px;
         font-size: 0.9rem;
     }
+}
+
+.input {
+    border: 1px solid $accent-color;
+    border-radius: 5px;
+    padding: 10px 10px;
+    font-size: 1rem;
+}
+
+.btn--secondary {
+    background-color: $accent-color;
+    border-color: $accent-color;
+
+    &:hover {
+        background-color: $green-color;
+        border-color: $green-color;
+    }
+}
+
+.invalid {
+    color: red;
+    margin-top: 2px;
+    min-width: 1rem;
 }

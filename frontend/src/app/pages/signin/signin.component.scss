@@ -1,0 +1,38 @@
+@import '../../../styles.scss';
+@import '../../components/header/header.component.scss';
+
+.logo__text--center {
+    text-align: center;
+    font-size: 2.5rem;
+    text-shadow: 0 0 10px $accent-color;
+
+    &:hover {
+        cursor: default;
+    }
+
+    margin-bottom: 10px;
+}
+
+.footer--bg-oppacity ::ng-deep .footer {
+    background-color: $base-color;
+}
+
+.wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+
+    a {
+        cursor: pointer;
+    }
+}

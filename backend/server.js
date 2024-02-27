@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import * as mediasoup from 'mediasoup';
 import express from 'express';
+import cors from 'cors';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
 
@@ -49,6 +50,9 @@ async function createExpressApp() {
 
     expressApp = express();
     expressApp.use(express.json());
+    expressApp.use(cors(
+        config.corsOptions
+    ));
 
     /**
      * @swagger

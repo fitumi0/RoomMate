@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthServiceService } from '../../services/auth-service.service';
 
 @Component({
   selector: 'app-header',
@@ -10,7 +11,9 @@ import { Router } from '@angular/router';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-  constructor(private router: Router) {}
+  data: any;
+  constructor(private router: Router,
+    private auth: AuthServiceService) {}
 
   goSignin(){
     this.router.navigate(['/signin']);

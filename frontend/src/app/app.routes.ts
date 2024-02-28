@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { SigninComponent } from './pages/signin/signin.component';
+import { RoomComponent } from './pages/room/room.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Home' },
@@ -16,5 +17,6 @@ export const routes: Routes = [
       import('./pages/signup/signup.component').then((m) => m.SignupComponent),
     title: 'Sign in',
   },
+  { path: 'room/:uid', component: RoomComponent, title: 'Room' },
   { path: '**', redirectTo: '' },
 ];

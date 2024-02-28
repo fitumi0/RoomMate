@@ -1,0 +1,16 @@
+<div class="settings-wrapper">
+    <h2 class="title">Settings</h2>
+    <div class="flex-row">
+        <select class="select select--start" name="provider-select" id="provider-select" [(ngModel)]="selectedProvider"
+            title="Select provider">
+            <option value="youtube">Youtube</option>
+            <option value="vimeo">Vimeo</option>
+            <option value="video">Video</option>
+            <option value="hls">HLS</option>
+        </select>
+        <button type="button" class="btn" (click)="clickPlay()">Play</button>
+    </div>
+    <input *ngIf="this.arrayProvidersWithUrl.includes(this.selectedProvider)" type="text" class="input input--start"
+        placeholder="URL" [(ngModel)]="videoUrl">
+
+</div>

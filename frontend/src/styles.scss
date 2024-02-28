@@ -1,3 +1,5 @@
+@import 'ngx-toastr/toastr';
+
 $base-color: #4e5163;
 $accent-color: #1f1f1f;
 $text-color: #ffffff;
@@ -6,6 +8,8 @@ $green-color: #4CAF50;
 $blue-color: #2196F3;
 $white: #f0f0f0;
 $black: #0f0f0f;
+$info-bg: rgba(233, 189, 67, 0.5);
+
 
 html,
 body {
@@ -120,4 +124,29 @@ body {
     color: red;
     margin-top: 2px;
     min-width: 1rem;
+}
+
+.select {
+    border: 1px solid $accent-color;
+    border-radius: 5px;
+    padding: 10px 10px;
+    font-size: 1rem;
+}
+
+.info {
+    background-color: $info-bg ;
+    margin-top: 2px;
+    padding: 10px 20px;
+    width: 50%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 1px solid yellow;
+    border-radius: 5px;
+    & h2{
+        margin: 0;
+    }
+
 }

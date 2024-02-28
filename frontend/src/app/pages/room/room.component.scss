@@ -1,0 +1,21 @@
+@import '../../../styles.scss';
+
+.player-section {
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+    gap: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .player-section {
+        width: 100%;
+    }
+    
+}
+
+.room{
+    padding: 20px 10px;
+}
+

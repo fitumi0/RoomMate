@@ -3,7 +3,7 @@
 .footer {
     background-color: $accent-color;
     color: $text-color;
-    padding: 10px;
+    padding: 10px 0;
     text-align: center;
     width: 100%;
     position: fixed;
@@ -20,6 +20,16 @@
     margin: 0;
     padding: 0;
     font-size: 1.1rem;
+}
+
+@media screen and (max-width: 480px) {
+    .title-wrapper {
+        display: none;
+    }
+
+    .footer{
+        padding: 5px 0;
+    }
 }
 
 .footer__link--wrapper {

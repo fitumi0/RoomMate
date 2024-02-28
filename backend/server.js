@@ -72,6 +72,7 @@ async function createExpressApp() {
      *                   updatedAt: null
      */
     expressApp.get('/api/get-public-rooms-list', async (req, res) => {
+        console.log(req)
         const rooms = await Room(sequelize).findAll({
             where: { public: true }
         })
@@ -124,6 +125,17 @@ async function createExpressApp() {
     expressApp.get('/api/generate-uuid', (req, res) => {
         return res.send(uuidv4());
     })
+
+    // Middleware для отлова всех входящих запросов
+    expressApp.use((req, res, next) => {
+    console.log('Запрос на:', req);
+    next(); // Передаем управление следующему middleware в цепочке
+});
+
+// Это обработчик маршрута
+expressApp.get('/', (req, res) => {
+    res.send('Добро пожаловать на главную страницу');
+});
 
     /** 
      * @swagger

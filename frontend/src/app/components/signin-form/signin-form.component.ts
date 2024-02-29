@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { AuthServiceService } from '../../services/auth-service.service';
+import { ToastrService } from 'ngx-toastr';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-signin-form',
@@ -14,10 +17,15 @@ import {
   templateUrl: './signin-form.component.html',
   styleUrl: './signin-form.component.scss',
 })
-export class SigninFormComponent {
+export class SigninFormComponent implements OnDestroy {
+  $unsubscribe = new Subject<void>();
+
   userData: FormGroup;
 
-  constructor() {
+  constructor(
+    private readonly auth: AuthServiceService,
+    private readonly toastr: ToastrService
+  ) {
     this.userData = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [
@@ -28,11 +36,21 @@ export class SigninFormComponent {
   }
 
   onSubmit() {
-    console.log(this.userData.value);
     if (this.userData.valid) {
       console.log('Form submitted');
+      this.auth
+        .signIn(this.userData.value)
+        .pipe(takeUntil(this.$unsubscribe))
+        .subscribe(() => {
+          this.toastr.success('Sign in successful', 'Success');
+        });
     } else {
       console.log('Form not submitted');
     }
+  }
+
+  ngOnDestroy(): void {
+    this.$unsubscribe.next();
+    this.$unsubscribe.complete();
   }
 }

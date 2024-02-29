@@ -7,7 +7,7 @@
         </a>
     </div>
     <menu class="header__menu">
-        <ul>
+        <ul *ngIf="!($user | async)">
             <li><button class="btn" (click)="goSignin()">Log in</button></li>
             <li><button class="btn btn--invert" (click)="goSignup()">Sign up</button></li>
         </ul>

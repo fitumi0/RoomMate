@@ -1,15 +1,28 @@
 <header class="header">
     <div class="logo">
-        <a class="link" routerLink="">
+        <a class="link" routerLink="/">
             <h1 class="logo__text">
                 ROOM<span class="logo__text--invert">MATE</span>
             </h1>
         </a>
     </div>
     <menu class="header__menu">
+        @if (!($user | async)) {
         <ul>
             <li><button class="btn" (click)="goSignin()">Log in</button></li>
             <li><button class="btn btn--invert" (click)="goSignup()">Sign up</button></li>
         </ul>
+        } @else {
+        @defer () {
+        <ul>
+            <li><button class="btn btn--invert" (click)="goProfile()" style="display: flex; align-items: center"
+                    title="Profile">
+                    <mat-icon>person</mat-icon>
+                </button></li>
+        </ul>
+        }
+
+        }
+
     </menu>
 </header>

@@ -57,5 +57,7 @@
         </div>
     </div>
 
-    <button class="btn" style="margin-top: 5px;" type="submit" [disabled]="!userData.valid">Sign up</button>
+    <div *ngIf="isSubmitting" class="loader"></div>
+    <button *ngIf="!isSubmitting" class="btn" style="margin-top: 5px;" type="submit" [disabled]="!userData.valid">Sign
+        up</button>
 </form>

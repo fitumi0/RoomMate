@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { SigninComponent } from './pages/signin/signin.component';
 import { RoomComponent } from './pages/room/room.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Home' },
@@ -18,5 +20,11 @@ export const routes: Routes = [
     title: 'Sign in',
   },
   { path: 'room/:uid', component: RoomComponent, title: 'Room' },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    title: 'Profile',
+    canActivate: [authGuard()],
+  },
   { path: '**', redirectTo: '' },
 ];

@@ -75,6 +75,11 @@ async function createExpressApp() {
     //     res.send('Добро пожаловать на главную страницу');
     // });
 
+expressApp.post('/api/login', (req, res) => {
+    console.log(req.body)
+    res.send('Добро пожаловать на главную страницу');
+});
+
     /** 
      * @swagger
      * /api/create-room:

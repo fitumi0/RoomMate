@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { AuthServiceService } from '../../services/auth-service.service';
+import { ToastrService } from 'ngx-toastr';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-signup-form',
@@ -17,10 +20,16 @@ import {
   templateUrl: './signup-form.component.html',
   styleUrl: './signup-form.component.scss',
 })
-export class SignupFormComponent {
+export class SignupFormComponent implements OnDestroy {
   userData: FormGroup;
+  $unsubscribe = new Subject<void>();
+  isSubmitting = false;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private readonly auth: AuthServiceService,
+    private readonly toastr: ToastrService
+  ) {
     this.userData = this.formBuilder.group(
       {
         username: new FormControl('', [
@@ -39,8 +48,26 @@ export class SignupFormComponent {
   }
 
   onSubmit() {
-    console.log(this.userData.value);
     if (this.userData.valid) {
+      this.isSubmitting = true;
+      this.userData.get('email')?.disable();
+      this.userData.get('password')?.disable();
+      this.userData.get('confirmPassword')?.disable();
+      this.userData.get('username')?.disable();
+      this.auth
+        .signUpTest(this.userData.value)
+        .pipe(takeUntil(this.$unsubscribe))
+        .subscribe(() => {
+          this.toastr.success('Sign up successful', 'Success');
+        })
+        .add(() => {
+          console.log('Method add called');
+          this.isSubmitting = false;
+          this.userData.get('email')?.enable();
+          this.userData.get('password')?.enable();
+          this.userData.get('confirmPassword')?.enable();
+          this.userData.get('username')?.enable();
+        });
       console.log('Form submitted');
     } else {
       console.log('Form not submitted');
@@ -51,14 +78,19 @@ export class SignupFormComponent {
     return (formGroup: FormGroup) => {
       const control = formGroup.controls[controlName];
       const matchingControl = formGroup.controls[matchingControlName];
-      if (matchingControl.errors && !matchingControl.errors['mustMatch']){
-        return 
+      if (matchingControl.errors && !matchingControl.errors['mustMatch']) {
+        return;
       }
-      if (control.value !== matchingControl.value){
+      if (control.value !== matchingControl.value) {
         matchingControl.setErrors({ mustMatch: true });
       } else {
         matchingControl.setErrors(null);
       }
     };
+  }
+
+  ngOnDestroy(): void {
+    this.$unsubscribe.next();
+    this.$unsubscribe.complete();
   }
 }

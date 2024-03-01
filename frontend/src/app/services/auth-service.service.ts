@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ISignInDto } from '../interfaces/ISignInDto';
-import { catchError, map, tap } from 'rxjs';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { ISignUpDto } from '../interfaces/ISignUpDto';
 import { environment } from '../../environments/environment';
@@ -21,9 +21,11 @@ export class AuthServiceService {
     private readonly store: Store
   ) {}
 
-  signIn(userData: ISignInDto) {
+  signIn(userData: ISignInDto): Observable<IUser> {
     return this.http
-      .post<IUser>(`${environment.apiUrl}/api/login`, userData)
+      .post<IUser>(`${environment.apiUrl}/api/login`, userData, {
+        headers: { withCredentials: 'true' },
+      })
       .pipe(
         tap((user: IUser) => {
           localStorage.setItem('token', user.token);
@@ -37,9 +39,11 @@ export class AuthServiceService {
       );
   }
 
-  signUp(userData: ISignUpDto) {
+  signUp(userData: ISignUpDto): Observable<IUser> {
     return this.http
-      .post<IUser>(`${environment.apiUrl}/api/sign-up`, userData)
+      .post<IUser>(`${environment.apiUrl}/api/sign-up`, userData, {
+        headers: { withCredentials: 'true' },
+      })
       .pipe(
         tap((user: IUser) => {
           localStorage.setItem('token', user.token);
@@ -53,49 +57,81 @@ export class AuthServiceService {
       );
   }
 
-  signUpTest(userData: ISignUpDto) {
+  getUser(): Observable<IUser | null> {
     return this.http
-      .post<IUser>(`${environment.apiUrl}/api/sign-up`, userData)
+      .get<IUser | null>(`${environment.apiUrl}/api/user`, {
+        headers: { withCredentials: 'true' },
+      })
       .pipe(
-        map(() => ({
-          id: 'test',
-          username: 'test',
-          token: 'test',
-          name: 'test',
-          email: 'test@test.test',
-        })),
-        tap((user: IUser) => {
-          localStorage.setItem('token', user.token);
-          this.store.dispatch(changeUser(user));
-          this.router.navigate(['/']);
+        tap((user: IUser | null) => {
+          if (user) {
+            localStorage.setItem('token', user.token);
+            this.store.dispatch(changeUser(user));
+          }
         }),
         catchError((err) => {
-          this.toastr.error(err.error.message, 'Error');
           throw new Error(err.message);
         })
       );
   }
 
-  signInTest(userData: ISignInDto) {
-    return this.http
-      .post<IUser>(`${environment.apiUrl}/api/login`, userData)
-      .pipe(
-        map(() => ({
-          id: 'test',
-          username: 'test',
-          token: 'test',
-          name: 'test',
-          email: 'test@test.test',
-        })),
-        tap((user: IUser) => {
+  signUpTest(userData: ISignUpDto): Observable<IUser> {
+    return of({
+      id: userData.email,
+      username: userData.username,
+      token: 'test',
+      name: 'test',
+      email: userData.email,
+    }).pipe(
+      tap((user: IUser) => {
+        localStorage.setItem('token', user.token);
+        this.store.dispatch(changeUser(user));
+        this.router.navigate(['/']);
+      }),
+      catchError((err) => {
+        this.toastr.error(err.error.message, 'Error');
+        throw new Error(err.message);
+      })
+    );
+  }
+
+  signInTest(userData: ISignInDto): Observable<IUser> {
+    return of({
+      id: userData.email,
+      username: 'test',
+      token: 'test',
+      name: 'test',
+      email: userData.email,
+    }).pipe(
+      tap((user: IUser) => {
+        localStorage.setItem('token', user.token);
+        this.store.dispatch(changeUser(user));
+        this.router.navigate(['/']);
+      }),
+      catchError((err) => {
+        this.toastr.error(err.error.message, 'Error');
+        throw new Error(err.message);
+      })
+    );
+  }
+
+  getUserTest(): Observable<IUser | null> {
+    return of({
+      id: 'test',
+      username: 'test',
+      token: 'test',
+      name: 'test',
+      email: 'test@test.test',
+    }).pipe(
+      tap((user: IUser | null) => {
+        if (user && localStorage.getItem('token')) {
           localStorage.setItem('token', user.token);
           this.store.dispatch(changeUser(user));
-          this.router.navigate(['/']);
-        }),
-        catchError((err) => {
-          this.toastr.error(err.error.message, 'Error');
-          throw new Error(err.message);
-        })
-      );
+        }
+      }),
+      catchError((err) => {
+        throw new Error(err.message);
+      })
+    );
   }
 }

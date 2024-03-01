@@ -23,6 +23,7 @@ import { Subject } from 'rxjs';
 export class SignupFormComponent implements OnDestroy {
   userData: FormGroup;
   $unsubscribe = new Subject<void>();
+  isSubmitting = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -48,11 +49,24 @@ export class SignupFormComponent implements OnDestroy {
 
   onSubmit() {
     if (this.userData.valid) {
+      this.isSubmitting = true;
+      this.userData.get('email')?.disable();
+      this.userData.get('password')?.disable();
+      this.userData.get('confirmPassword')?.disable();
+      this.userData.get('username')?.disable();
       this.auth
-        .signUp(this.userData.value)
+        .signUpTest(this.userData.value)
         .pipe(takeUntil(this.$unsubscribe))
         .subscribe(() => {
           this.toastr.success('Sign up successful', 'Success');
+        })
+        .add(() => {
+          console.log('Method add called');
+          this.isSubmitting = false;
+          this.userData.get('email')?.enable();
+          this.userData.get('password')?.enable();
+          this.userData.get('confirmPassword')?.enable();
+          this.userData.get('username')?.enable();
         });
       console.log('Form submitted');
     } else {

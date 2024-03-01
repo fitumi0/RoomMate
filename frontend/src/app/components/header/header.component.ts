@@ -1,15 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, isDevMode } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthServiceService } from '../../services/auth-service.service';
+import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { userSelector } from '../../reducers/user';
 import { map, tap } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+import { IconSizeDirective } from '../../directives/icon-size.directive';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule, IconSizeDirective, RouterLink],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
@@ -30,5 +31,9 @@ export class HeaderComponent {
 
   goSignup() {
     this.router.navigate(['/signup']);
+  }
+
+  goProfile() {
+    this.router.navigate(['/profile']);
   }
 }

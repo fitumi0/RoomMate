@@ -19,7 +19,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class SigninFormComponent implements OnDestroy {
   $unsubscribe = new Subject<void>();
-
+  isSubmitting = false;
   userData: FormGroup;
 
   constructor(
@@ -38,11 +38,21 @@ export class SigninFormComponent implements OnDestroy {
   onSubmit() {
     if (this.userData.valid) {
       console.log('Form submitted');
+
+      this.isSubmitting = true;
+      this.userData.get('email')?.disable();
+      this.userData.get('password')?.disable();
       this.auth
-        .signIn(this.userData.value)
+        .signInTest(this.userData.value)
         .pipe(takeUntil(this.$unsubscribe))
         .subscribe(() => {
           this.toastr.success('Sign in successful', 'Success');
+        })
+        .add(() => {
+          console.log('Method add called');
+          this.isSubmitting = false;
+          this.userData.get('email')?.enable();
+          this.userData.get('password')?.enable();
         });
     } else {
       console.log('Form not submitted');

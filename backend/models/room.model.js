@@ -1,4 +1,4 @@
-import DataTypes, { DatabaseError } from 'sequelize';
+import DataTypes from 'sequelize';
 
 export default (sequelize) => {
     const Room = sequelize.define('Room', {

@@ -6,18 +6,18 @@ import http from 'http';
 import { Server, Socket } from 'socket.io';
 
 import { Sequelize, DataTypes, Model } from 'sequelize';
-import Room from './models/room.js';
-
 import { v4 as uuidv4 } from 'uuid';
+import { createHash } from 'node:crypto';
 
 import swaggerJsDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 
 import { config } from './config.js';
+import Room from './models/room.model.js';
+import User from './models/user.model.js';
 
 // db instance
 let sequelize;
-let models = {};
 
 // HTTP server.
 let httpServer;
@@ -41,8 +41,13 @@ async function initDatabase() {
             ssl: {
                 require: false,
             }
-        }
+        },
+        models: [
+            Room,
+            User
+        ],
     });
+    await sequelize.sync();
 }
 
 async function createExpressApp() {
@@ -54,92 +59,21 @@ async function createExpressApp() {
         config.corsOptions
     ));
 
-    /**
-     * @swagger
-     * /api/get-public-rooms-list:
-     *   get:
-     *     tags:
-     *       - Room API
-     *     description: Возвращает список комнат.
-     *     responses:
-     *       200:
-     *         description: Success
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: array
-     *               example:
-     *                 - id: 00000000-0000-0000-0000-000000000000
-     *                   name: My room
-     *                   public: true
-     *                   createdAt: 2022-01-01T00:00:00.000Z
-     *                   updatedAt: null
-     */
-    expressApp.get('/api/get-public-rooms-list', async (req, res) => {
-        console.log(req)
-        const rooms = await Room(sequelize).findAll({
-            where: { public: true }
-        })
-        res.json(rooms);
-    });
+    const swaggerDocs = swaggerJsDoc(config.swaggerOptions);
+    expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-    /**
- * @swagger
- * /api/get-all-rooms-list:
- *   get:
- *     tags:
- *       - Room API
- *     description: Возвращает список комнат.
- *     responses:
- *       200:
- *         description: Success
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               example:
- *                 - id: 00000000-0000-0000-0000-000000000000
- *                   name: My room
- *                   public: true
- *                   createdAt: 2022-01-01T00:00:00.000Z
- *                   updatedAt: null
- */
-    expressApp.get('/api/get-all-rooms-list', async (req, res) => {
-        const rooms = await Room(sequelize).findAll({})
-        res.json(rooms);
-    });
 
-    /**
-     * @swagger
-     * /api/generate-uuid:
-     *   get:
-     *     tags:
-     *       - Room API
-     *     description: Возвращает уникальный идентификатор (uuid v4) комнаты.
-     *     responses:
-     *       200:
-     *         description: Success
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: string
-     *               example: 00000000-0000-0000-0000-000000000000
-     *        
-     */
-    expressApp.get('/api/generate-uuid', (req, res) => {
-        return res.send(uuidv4());
-    })
 
-    // Middleware для отлова всех входящих запросов
-    expressApp.use((req, res, next) => {
-    console.log('Запрос на:', req);
-    next(); // Передаем управление следующему middleware в цепочке
-});
+    // // Middleware для отлова всех входящих запросов
+    // expressApp.use((req, res, next) => {
+    //     console.log('Запрос на:', req);
+    //     next(); // Передаем управление следующему middleware в цепочке
+    // });
 
-// Это обработчик маршрута
-expressApp.get('/', (req, res) => {
-    res.send('Добро пожаловать на главную страницу');
-});
+    // // Это обработчик маршрута
+    // expressApp.get('/', (req, res) => {
+    //     res.send('Добро пожаловать на главную страницу');
+    // });
 
 expressApp.post('/api/login', (req, res) => {
     console.log(req.body)
@@ -200,8 +134,111 @@ expressApp.post('/api/login', (req, res) => {
         res.sendStatus(204);
     })
 
-    const swaggerDocs = swaggerJsDoc(config.swaggerOptions);
-    expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+    expressApp.get('/api/get-room', async (req, res) => {
+        if (!req.query.id || uuidv4().match(req.query.id)) {
+            return res.sendStatus(400);
+        }
+
+        const room = await Room(sequelize).findOne({
+            where: { id: req.query.id, public: true }
+        })
+
+        if (!room) {
+            return res.sendStatus(404);
+        }
+
+        res.json(room);
+    })
+
+    /**
+    * @swagger
+    * /get-public-rooms-list:
+    *   get:
+    *     tags:
+    *       - Room API
+    *     description: Возвращает список комнат.
+    *     responses:
+    *       200:
+    *         description: Success
+    *         content:
+    *           application/json:
+    *             schema:
+    *               type: array
+    *               example:
+    *                 - id: 00000000-0000-0000-0000-000000000000
+    *                   name: My room
+    *                   public: true
+    *                   createdAt: 2022-01-01T00:00:00.000Z
+    *                   updatedAt: null
+    */
+    expressApp.get('/api/get-public-rooms', async (req, res) => {
+        const rooms = await Room(sequelize).findAll({
+            where: { public: true }
+        })
+        res.json(rooms);
+    });
+
+    /**
+     * @swagger
+     * /get-all-rooms-list:
+     *   get:
+     *     tags:
+     *       - Room API
+     *     description: Возвращает список комнат.
+     *     responses:
+     *       200:
+     *         description: Success
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               example:
+     *                 - id: 00000000-0000-0000-0000-000000000000
+     *                   name: My room
+     *                   public: true
+     *                   createdAt: 2022-01-01T00:00:00.000Z
+     *                   updatedAt: null
+    */
+    expressApp.get('/api/get-all-rooms', async (req, res) => {
+        const rooms = await Room(sequelize).findAll({})
+        res.json(rooms);
+    });
+
+    /**
+     * @swagger
+     * /generate-uuid:
+     *   get:
+     *     tags:
+     *       - Room API
+     *     description: Возвращает уникальный идентификатор (uuid v4) комнаты.
+     *     responses:
+     *       200:
+     *         description: Success
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: string
+     *               example: 00000000-0000-0000-0000-000000000000
+     *        
+     */
+    expressApp.get('/api/generate-uuid', (req, res) => {
+        return res.send(uuidv4());
+    });
+    // пока не работает, разбираюсь с орм
+    // expressApp.post('/api/login', async (req, res) => {
+    //     let email = req.body.email;
+    //     let password = req.body.password;
+    //     let passwordHash = createHash('sha256').update(password).digest('hex');
+    //     console.log(passwordHash);
+
+    //     const user = await User(sequelize).findOne({
+    //         where: {
+    //             email: email,
+    //             passwordHash: passwordHash
+    //         }
+    //     });
+
+    // });
 }
 
 async function runHttpsServer() {
@@ -213,6 +250,5 @@ async function runHttpsServer() {
         httpServer.listen(
             Number(config.http.listenPort), config.http.listenIp, resolve);
     });
-    await sequelize.sync();
     console.info(`HTTP server listening on http://127.0.0.1:${config.http.listenPort}`);
 }

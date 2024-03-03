@@ -24,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideAnimations(),
     provideToastr(),
-    provideHttpClient(withInterceptorsFromDi() , withFetch()),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    provideHttpClient(withInterceptorsFromDi(), withFetch()),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, provideAnimationsAsync(),
   ],
 };

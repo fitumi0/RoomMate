@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { ISignInDto } from '../interfaces/ISignInDto';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -14,6 +14,7 @@ import { changeUser } from '../reducers/user';
   providedIn: 'root',
 })
 export class AuthServiceService {
+  isAuthSig = signal<boolean>(false);
   constructor(
     private readonly http: HttpClient,
     private readonly toastr: ToastrService,
@@ -30,6 +31,7 @@ export class AuthServiceService {
         tap((user: IUser) => {
           localStorage.setItem('token', user.token);
           this.store.dispatch(changeUser(user));
+          this.isAuthSig.set(true);
           this.router.navigate(['/']);
         }),
         catchError((err) => {
@@ -48,6 +50,7 @@ export class AuthServiceService {
         tap((user: IUser) => {
           localStorage.setItem('token', user.token);
           this.store.dispatch(changeUser(user));
+          this.isAuthSig.set(true);
           this.router.navigate(['/']);
         }),
         catchError((err) => {
@@ -66,6 +69,7 @@ export class AuthServiceService {
         tap((user: IUser | null) => {
           if (user) {
             localStorage.setItem('token', user.token);
+            this.isAuthSig.set(true);
             this.store.dispatch(changeUser(user));
           }
         }),
@@ -86,6 +90,7 @@ export class AuthServiceService {
       tap((user: IUser) => {
         localStorage.setItem('token', user.token);
         this.store.dispatch(changeUser(user));
+        this.isAuthSig.set(true);
         this.router.navigate(['/']);
       }),
       catchError((err) => {
@@ -106,6 +111,7 @@ export class AuthServiceService {
       tap((user: IUser) => {
         localStorage.setItem('token', user.token);
         this.store.dispatch(changeUser(user));
+        this.isAuthSig.set(true);
         this.router.navigate(['/']);
       }),
       catchError((err) => {
@@ -126,6 +132,7 @@ export class AuthServiceService {
       tap((user: IUser | null) => {
         if (user && localStorage.getItem('token')) {
           localStorage.setItem('token', user.token);
+          this.isAuthSig.set(true);
           this.store.dispatch(changeUser(user));
         }
       }),

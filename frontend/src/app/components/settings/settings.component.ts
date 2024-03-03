@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, DoCheck, OnChanges } from '@angular/core';
-import { FormsModule, NgModel } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ProvidersEnum } from './providers.enum';
 import { Store } from '@ngrx/store';
 import { changeUrl } from '../../reducers/videoUrl';
-import { ToastrService, provideToastr } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-settings',

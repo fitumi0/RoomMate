@@ -4,6 +4,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { Store } from '@ngrx/store';
 import { changeUser } from '../../reducers/user';
 import { Router } from '@angular/router';
+import { AuthServiceService } from '../../services/auth-service.service';
 
 @Component({
   selector: 'app-profile',
@@ -13,14 +14,18 @@ import { Router } from '@angular/router';
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent {
-  constructor(private readonly store: Store,
-    private readonly router: Router) {}
+  constructor(
+    private readonly store: Store,
+    private readonly router: Router,
+    private readonly auth: AuthServiceService
+  ) {}
 
   logOut() {
     this.store.dispatch(
       changeUser({ id: '', username: '', email: '', token: '' })
     );
     localStorage.removeItem('token');
-    this.router.navigate(['/'])
+    this.auth.isAuthSig.set(false);
+    this.router.navigate(['/']);
   }
 }

@@ -7,7 +7,8 @@
         </a>
     </div>
     <menu class="header__menu">
-        @if (!($user | async)) {
+
+        @if (!(auth.isAuthSig())) {
         <ul>
             <li><button class="btn" (click)="goSignin()">Log in</button></li>
             <li><button class="btn btn--invert" (click)="goSignup()">Sign up</button></li>

@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, isDevMode } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { userSelector } from '../../reducers/user';
-import { map, tap } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { IconSizeDirective } from '../../directives/icon-size.directive';
+import { AuthServiceService } from '../../services/auth-service.service';
 
 @Component({
   selector: 'app-header',
@@ -15,15 +14,11 @@ import { IconSizeDirective } from '../../directives/icon-size.directive';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-  constructor(private router: Router, public store: Store) {}
-  $user = this.store.select(userSelector).pipe(
-    map((user) => (user.id ? true : false)),
-    tap((user) => {
-      if (isDevMode()) {
-        console.log('User from header: ', user);
-      }
-    })
-  );
+  constructor(
+    private readonly router: Router,
+    public readonly store: Store,
+    public readonly auth: AuthServiceService
+  ) {}
 
   goSignin() {
     this.router.navigate(['/signin']);

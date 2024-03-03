@@ -3,7 +3,7 @@
 
     <div class="form-group">
         <label for="emailInput">Email:</label>
-        <input id="emailInput" class="input" type="email" formControlName="email" required >
+        <input id="emailInput" class="input" type="email" formControlName="email" required>
         <div *ngIf="userData.controls['email'].invalid && (userData.controls['email'].dirty || userData.controls['email'].touched)"
             class="invalid">
             <span *ngIf="userData.controls['email'].hasError('required')">

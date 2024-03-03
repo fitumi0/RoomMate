@@ -7,8 +7,6 @@ import { IconSizeDirective } from '../../directives/icon-size.directive';
   standalone: true,
   imports: [MatIconModule, IconSizeDirective],
   templateUrl: './formats.component.html',
-  styleUrl: './formats.component.scss'
+  styleUrl: './formats.component.scss',
 })
-export class FormatsComponent {
-
-}
+export class FormatsComponent {}

@@ -7,7 +7,7 @@ import 'vidstack/player/ui';
 import { Store } from '@ngrx/store';
 import { videoUrlSelector } from '../../reducers/videoUrl';
 import { CommonModule } from '@angular/common';
-import { map, tap } from 'rxjs';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-player',

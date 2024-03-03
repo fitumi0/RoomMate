@@ -2,12 +2,14 @@
     <div>
         <h2 class="title">Watch videos together with friends anywhere.</h2>
         <p>No registration or download required.</p>
+        <form [formGroup]="roomsGroup" (ngSubmit)="onSubmit()">
         <div class="rooms-wrapper">
-            <button type="button" class="btn btn--secondary">Create a room</button>
+            <button type="button" class="btn btn--secondary" (click)="openDialog()">Create a room</button>
             <p class="rooms__or-text">or</p>
-            <button type="button" class="btn btn--secondary">Join a room</button>
-            <input class="input" type="text" placeholder="Room id">
-        </div>
+                <button type="submit" class="btn btn--secondary">Join a room</button>
+                <input class="input" type="text" placeholder="Room id" formControlName="roomUid" required>
+            </div>
+        </form>
     </div>
     <div class="activity-wrapper">
         <div class="activity-wrapper__inner">

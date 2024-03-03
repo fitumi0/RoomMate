@@ -1,5 +1,5 @@
 export interface ISignUpDto {
-    username: string;
-    email: string;
-    password: string;
+  username: string;
+  email: string;
+  password: string;
 }

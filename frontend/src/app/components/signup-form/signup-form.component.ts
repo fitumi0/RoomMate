@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import {
+  AbstractControl,
+  AbstractControlOptions,
   FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { AuthServiceService } from '../../services/auth-service.service';
+import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -26,10 +29,10 @@ export class SignupFormComponent implements OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private readonly auth: AuthServiceService,
+    private readonly auth: AuthService,
     private readonly toastr: ToastrService
   ) {
-    this.userData = this.formBuilder.group(
+    this.userData = new FormGroup(
       {
         username: new FormControl('', [
           Validators.required,
@@ -73,18 +76,20 @@ export class SignupFormComponent implements OnDestroy {
     }
   }
 
-  mustMatch(controlName: string, matchingControlName: string) {
-    return (formGroup: FormGroup) => {
-      const control = formGroup.controls[controlName];
+  mustMatch(controlName: string, matchingControlName: string): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const formGroup = control as FormGroup;
+      const controlToMatch = formGroup.controls[controlName];
       const matchingControl = formGroup.controls[matchingControlName];
-      if (matchingControl.errors && !matchingControl.errors['mustMatch']) {
-        return;
+
+      if (
+        matchingControl &&
+        controlToMatch &&
+        controlToMatch.value !== matchingControl.value
+      ) {
+        return { mustMatch: true };
       }
-      if (control.value !== matchingControl.value) {
-        matchingControl.setErrors({ mustMatch: true });
-      } else {
-        matchingControl.setErrors(null);
-      }
+      return null;
     };
   }
 

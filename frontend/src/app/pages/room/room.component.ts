@@ -14,7 +14,6 @@ import { SettingsComponent } from '../../components/settings/settings.component'
 })
 export class RoomComponent implements OnInit {
   roomId: string = '';
-
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {

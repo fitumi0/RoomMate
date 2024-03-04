@@ -46,12 +46,12 @@
     <div class="form-group">
         <label for="confirmPasswordInput">Confirm password:</label>
         <input id="confirmPasswordInput" class="input" type="password" formControlName="confirmPassword" required>
-        <div *ngIf="userData.controls['confirmPassword'].invalid && 
+        <div *ngIf=" 
         (userData.controls['confirmPassword'].dirty || userData.controls['confirmPassword'].touched)" class="invalid">
             <span *ngIf="userData.controls['confirmPassword'].hasError('required')">
                 Password is required
             </span>
-            <span *ngIf="userData.controls['confirmPassword'].hasError('mustMatch')">
+            <span *ngIf="userData.hasError('mustMatch')">
                 Passwords do not match
             </span>
         </div>

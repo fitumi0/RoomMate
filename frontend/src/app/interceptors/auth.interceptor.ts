@@ -6,7 +6,8 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { isDevMode } from '@angular/core';
+import { PLATFORM_ID, inject, isDevMode } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 export class AuthInterceptor implements HttpInterceptor {
   constructor() {}
@@ -15,7 +16,11 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem('token');
+    const platformId = inject(PLATFORM_ID)
+    let token = '';
+    if (isPlatformBrowser(platformId)) {
+      token = localStorage.getItem('token') as string;
+    }
     if (isDevMode()) {
       console.log('From interceptor: ', token);
     }

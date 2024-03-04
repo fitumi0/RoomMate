@@ -35,3 +35,10 @@
     box-sizing: border-box; 
     width: 100%;
 }
+
+
+@media screen and (max-width: 1140px) {
+    .input--player{
+        width: 50%;
+    }
+}

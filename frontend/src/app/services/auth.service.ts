@@ -4,7 +4,6 @@ import { ISignInDto } from '../interfaces/ISignInDto';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { ISignUpDto } from '../interfaces/ISignUpDto';
-import { environment } from '../../environments/environment';
 import { IUser } from '../interfaces/IUser';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -13,7 +12,7 @@ import { changeUser } from '../reducers/user';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthServiceService {
+export class AuthService {
   isAuthSig = signal<boolean>(false);
   constructor(
     private readonly http: HttpClient,
@@ -24,7 +23,7 @@ export class AuthServiceService {
 
   signIn(userData: ISignInDto): Observable<IUser> {
     return this.http
-      .post<IUser>(`${environment.apiUrl}/api/login`, userData, {
+      .post<IUser>(`/api/login`, userData, {
         headers: { withCredentials: 'true' },
       })
       .pipe(
@@ -43,7 +42,7 @@ export class AuthServiceService {
 
   signUp(userData: ISignUpDto): Observable<IUser> {
     return this.http
-      .post<IUser>(`${environment.apiUrl}/api/sign-up`, userData, {
+      .post<IUser>(`/api/sign-up`, userData, {
         headers: { withCredentials: 'true' },
       })
       .pipe(
@@ -62,7 +61,7 @@ export class AuthServiceService {
 
   getUser(): Observable<IUser | null> {
     return this.http
-      .get<IUser | null>(`${environment.apiUrl}/api/user`, {
+      .get<IUser | null>(`/api/user`, {
         headers: { withCredentials: 'true' },
       })
       .pipe(

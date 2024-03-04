@@ -38,23 +38,20 @@ export class RoomComponent implements OnInit {
     console.log('Room component initialized');
     this.route.params.subscribe((params) => {
       this.roomId = params['uid'];
+      this.room = this.roomService
+        .getRoom(this.roomId)
+        .pipe(
+          take(1),
+          catchError(() => {
+            this.router.navigate(['/']);
+            throw new Error('Room not found');
+          })
+        )
+        .subscribe(() => {
+          console.log('Room found');
+        });
       console.log(`Room UID: ${this.roomId}`);
     });
-
-    this.room = this.roomService
-      .getRoom(this.roomId)
-      .pipe(
-        take(1),
-        catchError(() => {
-          console.log('Room not found');
-          this.enableDimmer = true;
-          this.cdr.detectChanges();
-          throw new Error('Room not found');
-        })
-      )
-      .subscribe(() => {
-        console.log('Room found');
-      });
   }
 
   onExit(): void {

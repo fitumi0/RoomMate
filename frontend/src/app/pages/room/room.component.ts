@@ -4,6 +4,8 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { CommonModule } from '@angular/common';
 import { PlayerComponent } from '../../components/player/player.component';
 import { SettingsComponent } from '../../components/settings/settings.component';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-room',
@@ -14,12 +16,17 @@ import { SettingsComponent } from '../../components/settings/settings.component'
 })
 export class RoomComponent implements OnInit {
   roomId: string = '';
-
-  constructor(private route: ActivatedRoute) {}
+  test: any;
+  constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.roomId = params['uid'];
+      this.test = this.http
+        .get(`api/get-room/${this.roomId}`)
+        .subscribe((data) => {
+          console.log(data);
+        });
       console.log(`Room UID: ${this.roomId}`);
     });
   }

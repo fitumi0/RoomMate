@@ -1,7 +1,19 @@
 <app-header></app-header>
+@defer () {
+<div *ngIf="enableDimmer" class="dimmer">
+    <h3 class="dimmer__title">Room not found</h3>
+    <button (click)="onExit()" type="button" class="btn dimmer__btn"><mat-icon appIconSize="32px" app
+            class="close-icon">home</mat-icon> Go to home page</button>
+</div>
 <main class="room">
-    <section class="player-section">
+    <section *ngIf="!enableDimmer" class="player-section">
+    
         <app-player class="player"></app-player>
         <app-settings class="settings"></app-settings>
+        
     </section>
 </main>
+}
+@placeholder {
+<div class="loader loader--fixed"></div>
+}

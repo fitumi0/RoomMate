@@ -4,6 +4,11 @@ import { catchError, of, take } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 
+/**
+ * @deprecated this guard is no longer used
+ * 
+ * @returns CanActivateFn
+ */
 export function roomValidateGuard(): CanActivateFn {
   return (route, state) => {
     const http: HttpClient = inject(HttpClient);
@@ -18,17 +23,17 @@ export function roomValidateGuard(): CanActivateFn {
       .get(`api/get-room/${roomId}`)
       .pipe(
         catchError((err: HttpErrorResponse) => {
-          toastr.error('No access to this room', 'Error');
           router.navigate(['/']);
+          toastr.error('No access to this room', 'Error');
           throw new Error(err.message);
         }),
         take(1)
-
       )
       .subscribe((data) => {
         if (data) {
           authentecated = true;
-        }
+          router.navigate(['/room', roomId]);
+        } 
       });
 
     return authentecated;

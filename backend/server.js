@@ -7,7 +7,8 @@ import { Server, Socket } from 'socket.io';
 
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
-import { createHash } from 'node:crypto';
+
+import * as jwtModule from './libs/jwt.module.js';
 
 import swaggerJsDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
@@ -16,23 +17,27 @@ import { config } from './config.js';
 import Room from './models/room.model.js';
 import User from './models/user.model.js';
 
-// db instance
 let sequelize;
-
-// HTTP server.
 let httpServer;
-
-// Express application.
 let expressApp;
+let socketServer;
+let mediasoupWorker;
+let mediasoupRouter;
+let producer;
+let consumer;
+let producerTransport;
+let consumerTransport;
+// let workers = [];
+
 
 run()
 
 async function run() {
     await initDatabase();
-
+    await createMediaServer();
     await createExpressApp();
-
-    await runHttpsServer();
+    await createHttpsServer();
+    await createSocketServer();
 }
 
 async function initDatabase() {
@@ -50,6 +55,30 @@ async function initDatabase() {
     await sequelize.sync();
 }
 
+async function createMediaServer() {
+    mediasoupWorker = await mediasoup.createWorker({
+        logLevel: config.mediasoup.workerSettings.logLevel,
+        logTags: config.mediasoup.workerSettings.logTags,
+        rtcMinPort: Number(config.mediasoup.workerSettings.rtcMinPort),
+        rtcMaxPort: Number(config.mediasoup.workerSettings.rtcMaxPort)
+    });
+
+    mediasoupWorker.on('died', () => {
+        console.error(
+            `mediasoup Worker [${mediasoupWorker.pid}] died, exiting  in 2 seconds... `);
+
+        setTimeout(() => process.exit(1), 2000);
+    });
+    const mediaCodecs = config.mediasoup.routerOptions.mediaCodecs;
+    mediasoupRouter = await mediasoupWorker.createRouter({ mediaCodecs });
+
+
+    // TODO: add logger
+    // TODO: add multiple workers
+
+
+}
+
 async function createExpressApp() {
     console.info('creating Express app...');
 
@@ -64,21 +93,11 @@ async function createExpressApp() {
 
 
 
-    // // Middleware для отлова всех входящих запросов
-    // expressApp.use((req, res, next) => {
-    //     console.log('Запрос на:', req);
-    //     next(); // Передаем управление следующему middleware в цепочке
-    // });
-
-    // // Это обработчик маршрута
-    // expressApp.get('/', (req, res) => {
-    //     res.send('Добро пожаловать на главную страницу');
-    // });
-
-expressApp.post('/api/login', (req, res) => {
-    console.log(req.body)
-    res.send('Добро пожаловать на главную страницу');
-});
+    // Middleware для отлова всех входящих запросов
+    expressApp.use((req, res, next) => {
+        console.log(`[${req.method}]:`, req.url);
+        next(); // Передаем управление следующему middleware в цепочке
+    });
 
     /** 
      * @swagger
@@ -134,13 +153,29 @@ expressApp.post('/api/login', (req, res) => {
         res.sendStatus(204);
     })
 
-    expressApp.get('/api/get-room', async (req, res) => {
-        if (!req.query.id || uuidv4().match(req.query.id)) {
+    /**
+     * @swagger
+     * /api/get-room/:id:
+     *   get:
+     *     tags:
+     *       - Room API
+     *     description: Возвращает комнату по id.
+     *     responses:
+     *       200:
+     *         description: Success
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     */
+    expressApp.get('/api/get-room/:id', async (req, res) => {
+        // todo: validate uuid or fix db query
+        if (!req.params.id || uuidv4().match(req.params.id)) {
             return res.sendStatus(400);
         }
 
         const room = await Room(sequelize).findOne({
-            where: { id: req.query.id, public: true }
+            where: { id: req.params.id, public: true }
         })
 
         if (!room) {
@@ -241,7 +276,7 @@ expressApp.post('/api/login', (req, res) => {
     // });
 }
 
-async function runHttpsServer() {
+async function createHttpsServer() {
     console.info('running HTTP server...');
 
     httpServer = http.createServer(expressApp);
@@ -251,4 +286,135 @@ async function runHttpsServer() {
             Number(config.http.listenPort), config.http.listenIp, resolve);
     });
     console.info(`HTTP server listening on http://127.0.0.1:${config.http.listenPort}`);
+}
+
+async function createSocketServer() {
+    socketServer = new Server(httpServer, {
+        cors: {
+            origin: ["https://127.0.0.1:4443", "https://localhost:4443"],
+            methods: ["GET", "POST"]
+        }
+    });
+
+    socketServer.on('connection', (socket) => {
+        socket.on('getRouterRtpCapabilities', async (callback) => {
+            callback(mediasoupRouter.rtpCapabilities);
+        });
+
+        socket.on('createProducerTransport', async (data, callback) => {
+            try {
+                const { transport, params } = await createWebRtcTransport();
+                producerTransport = transport;
+                callback(params);
+            } catch (err) {
+                console.error(err);
+                callback({ error: err.message });
+            }
+        });
+
+        socket.on('createConsumerTransport', async (data, callback) => {
+            try {
+                const { transport, params } = await createWebRtcTransport();
+                consumerTransport = transport;
+                callback(params);
+            } catch (err) {
+                console.error(err);
+                callback({ error: err.message });
+            }
+        });
+
+        socket.on('connectProducerTransport', async (data, callback) => {
+            await producerTransport.connect({ dtlsParameters: data.dtlsParameters });
+            callback();
+        });
+
+        socket.on('connectConsumerTransport', async (data, callback) => {
+            await consumerTransport.connect({ dtlsParameters: data.dtlsParameters });
+            callback();
+        });
+
+        socket.on('produce', async (data, callback) => {
+            const { kind, rtpParameters } = data;
+            producer = await producerTransport.produce({ kind, rtpParameters });
+            callback({ id: producer.id });
+
+            // inform clients about new producer
+            socket.broadcast.emit('newProducer');
+        });
+
+        socket.on('consume', async (data, callback) => {
+            callback(await createConsumer(producer, data.rtpCapabilities));
+        });
+
+        socket.on('resume', async (data, callback) => {
+            await consumer.resume();
+            callback();
+        });
+
+    })
+}
+
+async function createWebRtcTransport() {
+    const {
+        maxIncomingBitrate,
+        initialAvailableOutgoingBitrate
+    } = config.mediasoup.webRtcTransport;
+
+    const transport = await mediasoupRouter.createWebRtcTransport({
+        listenIps: config.mediasoup.webRtcTransport.listenIps,
+        enableUdp: true,
+        enableTcp: true,
+        preferUdp: true,
+        initialAvailableOutgoingBitrate,
+    });
+    if (maxIncomingBitrate) {
+        try {
+            await transport.setMaxIncomingBitrate(maxIncomingBitrate);
+        } catch (error) {
+        }
+    }
+    return {
+        transport,
+        params: {
+            id: transport.id,
+            iceParameters: transport.iceParameters,
+            iceCandidates: transport.iceCandidates,
+            dtlsParameters: transport.dtlsParameters
+        },
+    };
+}
+
+async function createConsumer(producer, rtpCapabilities) {
+    if (!mediasoupRouter.canConsume(
+        {
+            producerId: producer.id,
+            rtpCapabilities,
+        })
+    ) {
+        console.error('can not consume');
+        return;
+    }
+    try {
+        consumer = await consumerTransport.consume({
+            producerId: producer.id,
+            rtpCapabilities,
+            paused: producer.kind === 'video',
+        });
+    } catch (error) {
+        console.error('consume failed', error);
+        return;
+    }
+
+    if (consumer.type === 'simulcast') {
+        await consumer.setPreferredLayers({ spatialLayer: 2, temporalLayer: 2 });
+    }
+
+    return {
+        producerId: producer.id,
+        id: consumer.id,
+        kind: consumer.kind,
+        rtpParameters: consumer.rtpParameters,
+        type: consumer.type,
+        producerPaused: consumer.producerPaused
+    };
 }

@@ -3,6 +3,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { RoomComponent } from './pages/room/room.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { authGuard } from './guards/auth.guard';
+import { roomValidateGuard } from './guards/room.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Home' },
@@ -18,7 +19,12 @@ export const routes: Routes = [
       import('./pages/signup/signup.component').then((m) => m.SignupComponent),
     title: 'Sign in',
   },
-  { path: 'room/:uid', component: RoomComponent, title: 'Room' },
+  {
+    path: 'room/:uid',
+    component: RoomComponent,
+    title: 'Room',
+    canActivate: [roomValidateGuard()],
+  },
   {
     path: 'profile',
     component: ProfileComponent,

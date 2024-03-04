@@ -7,7 +7,8 @@ import { Server, Socket } from 'socket.io';
 
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
-import { createHash } from 'node:crypto';
+
+import * as jwtModule from './libs/jwt.module.js';
 
 import swaggerJsDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
@@ -15,7 +16,6 @@ import * as swaggerUi from 'swagger-ui-express';
 import { config } from './config.js';
 import Room from './models/room.model.js';
 import User from './models/user.model.js';
-
 
 let sequelize;
 let httpServer;

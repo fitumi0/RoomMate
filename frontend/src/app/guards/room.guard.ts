@@ -23,6 +23,7 @@ export function roomValidateGuard(): CanActivateFn {
           throw new Error(err.message);
         }),
         take(1)
+
       )
       .subscribe((data) => {
         if (data) {

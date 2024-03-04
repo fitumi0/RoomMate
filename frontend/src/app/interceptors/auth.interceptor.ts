@@ -16,7 +16,9 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+
     const platformId = inject(PLATFORM_ID)
+
     let token = '';
     if (isPlatformBrowser(platformId)) {
       token = localStorage.getItem('token') as string;

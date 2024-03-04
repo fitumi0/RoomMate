@@ -93,11 +93,11 @@ async function createExpressApp() {
 
 
 
-    // // Middleware для отлова всех входящих запросов
-    // expressApp.use((req, res, next) => {
-    //     console.log('Запрос на:', req);
-    //     next(); // Передаем управление следующему middleware в цепочке
-    // });
+    // Middleware для отлова всех входящих запросов
+    expressApp.use((req, res, next) => {
+        console.log(`[${req.method}]:`, req.url);
+        next(); // Передаем управление следующему middleware в цепочке
+    });
 
     /** 
      * @swagger
@@ -153,13 +153,29 @@ async function createExpressApp() {
         res.sendStatus(204);
     })
 
-    expressApp.get('/api/get-room', async (req, res) => {
-        if (!req.query.id || uuidv4().match(req.query.id)) {
+    /**
+     * @swagger
+     * /api/get-room/:id:
+     *   get:
+     *     tags:
+     *       - Room API
+     *     description: Возвращает комнату по id.
+     *     responses:
+     *       200:
+     *         description: Success
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     */
+    expressApp.get('/api/get-room/:id', async (req, res) => {
+        // todo: validate uuid or fix db query
+        if (!req.params.id || uuidv4().match(req.params.id)) {
             return res.sendStatus(400);
         }
 
         const room = await Room(sequelize).findOne({
-            where: { id: req.query.id, public: true }
+            where: { id: req.params.id, public: true }
         })
 
         if (!room) {

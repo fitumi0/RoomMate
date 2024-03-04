@@ -21,6 +21,8 @@ import { CreateRoomComponent } from '../create-room/create-room.component';
 })
 export class RoomsComponent {
   roomsGroup: FormGroup;
+  test: any;
+  roomId = 'test';
   constructor(
     private readonly toastr: ToastrService,
     private readonly router: Router,
@@ -47,12 +49,12 @@ export class RoomsComponent {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateRoomComponent, {
-      width: '400px', 
+      width: '400px',
       disableClose: true,
-      data: {  }
+      data: {},
     });
-  
-    dialogRef.afterClosed().subscribe(result => {
+
+    dialogRef.afterClosed().subscribe((result) => {
       console.log('Modal closed', result);
     });
   }

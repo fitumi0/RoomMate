@@ -8,14 +8,21 @@
     gap: 10px;
 }
 
-@media screen and (max-width: 768px) {
-    .player-section {
-        width: 100%;
-    }
-    
-}
+
 
 .room{
     padding: 20px 10px;
 }
 
+@media screen and (max-width: 1140px) {
+    .player {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .player-section{
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+}

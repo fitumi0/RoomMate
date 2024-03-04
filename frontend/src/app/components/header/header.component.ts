@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MatIconModule } from '@angular/material/icon';
 import { IconSizeDirective } from '../../directives/icon-size.directive';
-import { AuthServiceService } from '../../services/auth-service.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -17,7 +17,7 @@ export class HeaderComponent {
   constructor(
     private readonly router: Router,
     public readonly store: Store,
-    public readonly auth: AuthServiceService
+    public readonly auth: AuthService
   ) {}
 
   goSignin() {

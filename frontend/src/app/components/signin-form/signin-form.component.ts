@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { AuthServiceService } from '../../services/auth-service.service';
+import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -23,7 +23,7 @@ export class SigninFormComponent implements OnDestroy {
   userData: FormGroup;
 
   constructor(
-    private readonly auth: AuthServiceService,
+    private readonly auth: AuthService,
     private readonly toastr: ToastrService
   ) {
     this.userData = new FormGroup({

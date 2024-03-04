@@ -10,7 +10,7 @@
         </select>
         <button type="button" class="btn" (click)="clickPlay()">Play</button>
     </div>
-    <input *ngIf="this.arrayProvidersWithUrl.includes(this.selectedProvider)" type="text" class="input input--start"
+    <input *ngIf="this.arrayProvidersWithUrl.includes(this.selectedProvider)" type="text" class="input input--start input--player"
         placeholder="URL" [(ngModel)]="videoUrl">
 
 </div>

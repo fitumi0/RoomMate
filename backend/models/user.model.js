@@ -1,7 +1,9 @@
-import DataTypes from 'sequelize';
+import { Sequelize, DataTypes, Model } from 'sequelize';
 
-export default (sequelize) => {
-    const User = sequelize.define('User', {
+export default class User extends Model { }
+
+export function initUserModel(sequelize) {
+    User.init({
         id: {
             primaryKey: true,
             type: DataTypes.UUID,
@@ -31,7 +33,11 @@ export default (sequelize) => {
             type: DataTypes.DATE,
             allowNull: true
         }
-    });
-
-    return User;
+    }, {
+        sequelize,
+        modelName: 'User'
+    })
 }
+
+
+

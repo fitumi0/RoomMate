@@ -49,8 +49,49 @@ export class RoomComponent implements OnInit {
       }
     );
 
-    // this.socketService.sendMessage('createProducerTransport', null);
-    // this.socketService.sendMessage('createConsumerTransport', null);
+    this.socketService.sendMessage('createProducerTransport', (params: any) => {
+      if (params.error) {
+        console.error('createProducerTransport: ', params.error);
+      }
+
+      console.log('createProducerTransport: ', params);
+
+      const transport = this.device.createSendTransport(params);
+
+      transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+        try {
+          this.socketService.sendMessage('connectProducerTransport', {
+            transportId: transport.id,
+            dtlsParameters,
+          });
+        } catch (err) {
+          console.error(err);
+        }
+        callback();
+      });
+    });
+
+    this.socketService.sendMessage('createConsumerTransport', (params: any) => {
+      if (params.error) {
+        console.error('createProducerTransport: ', params.error);
+      }
+
+      console.log('createConsumerTransport: ', params);
+
+      const transport = this.device.createSendTransport(params);
+
+      transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+        try {
+          this.socketService.sendMessage('connectConsumerTransport', {
+            transportId: transport.id,
+            dtlsParameters,
+          });
+        } catch (err) {
+          console.error(err);
+        }
+        callback();
+      });
+    });
   }
 
   async loadDevice(routerRtpCapabilities: RtpCapabilities): Promise<void> {

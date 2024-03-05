@@ -20,7 +20,6 @@ export class SocketService {
     });
   }
 
-  // Отправка сообщения
   public sendMessage(event: string, message: any): void {
     this.socket.emit(event, message);
   }

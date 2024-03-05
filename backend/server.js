@@ -36,7 +36,7 @@ async function run() {
     await initDatabase();
     await createMediaServer();
     await createExpressApp();
-    await createHttpsServer();
+    await createHttpServer();
     await createSocketServer();
 }
 
@@ -277,7 +277,7 @@ async function createExpressApp() {
     // });
 }
 
-async function createHttpsServer() {
+async function createHttpServer() {
     console.info('running HTTP server...');
 
     httpServer = http.createServer(expressApp);
@@ -300,7 +300,7 @@ async function createSocketServer() {
             callback(mediasoupRouter.rtpCapabilities);
         });
 
-        socket.on('createProducerTransport', async (data, callback) => {
+        socket.on('createProducerTransport', async (callback) => {
             try {
                 const { transport, params } = await createWebRtcTransport();
                 producerTransport = transport;
@@ -311,7 +311,7 @@ async function createSocketServer() {
             }
         });
 
-        socket.on('createConsumerTransport', async (data, callback) => {
+        socket.on('createConsumerTransport', async (callback) => {
             try {
                 const { transport, params } = await createWebRtcTransport();
                 consumerTransport = transport;
@@ -357,10 +357,10 @@ async function createWebRtcTransport() {
     const {
         maxIncomingBitrate,
         initialAvailableOutgoingBitrate
-    } = config.mediasoup.webRtcTransport;
+    } = config.mediasoup.webRtcTransportOptions;
 
     const transport = await mediasoupRouter.createWebRtcTransport({
-        listenIps: config.mediasoup.webRtcTransport.listenIps,
+        listenIps: config.mediasoup.webRtcTransportOptions.listenIps,
         enableUdp: true,
         enableTcp: true,
         preferUdp: true,

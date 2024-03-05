@@ -1,7 +1,11 @@
 <app-header></app-header>
+@defer () {
 <main class="room">
-    <section class="player-section">
-        <app-player class="player"></app-player>
-        <app-settings class="settings"></app-settings>
-    </section>
+  <section class="player-section">
+    <app-player class="player"></app-player>
+    <app-settings class="settings"></app-settings>
+  </section>
 </main>
+} @placeholder {
+<div class="loader loader--fixed"></div>
+}

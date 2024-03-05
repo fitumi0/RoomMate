@@ -1,7 +1,11 @@
-import DataTypes from 'sequelize';
+import { Sequelize, DataTypes, Model } from 'sequelize';
+import { config } from '../config.js';
+const sequelize = new Sequelize(config.databaseOptions.connectionString);
 
-export default (sequelize) => {
-    const Room = sequelize.define('Room', {
+export default class Room extends Model { }
+
+export function initRoomModel(sequelize) {
+    Room.init({
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
@@ -23,7 +27,6 @@ export default (sequelize) => {
         updatedAt: {
             type: DataTypes.DATE, // TOFIX: почему-то устанавливается дата, вместо null по умолчанию
         },
-        /* TODO: добавить в БД
         deleted: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
@@ -32,10 +35,11 @@ export default (sequelize) => {
             type: DataTypes.DATE,
             defaultValue: null
         }
-        */
-    });
+    }, {
+        sequelize,
+        modelName: 'Room'
+    })
+}
 
-    return Room;
-};
 
 

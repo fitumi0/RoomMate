@@ -14,8 +14,8 @@ import swaggerJsDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 
 import { config } from './config.js';
-import Room from './models/room.model.js';
-import User from './models/user.model.js';
+import Room, { initRoomModel } from './models/room.model.js';
+import User, { initUserModel } from './models/user.model.js';
 
 let sequelize;
 let httpServer;
@@ -52,7 +52,11 @@ async function initDatabase() {
             User
         ],
     });
-    await sequelize.sync();
+    initUserModel(sequelize);
+    initRoomModel(sequelize);
+    Room.sync();
+    User.sync();
+    await sequelize.sync({ force: true });
 }
 
 async function createMediaServer() {

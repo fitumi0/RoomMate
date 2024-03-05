@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { CommonModule } from '@angular/common';
 import { PlayerComponent } from '../../components/player/player.component';
@@ -26,7 +26,6 @@ import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
 })
 export class RoomComponent implements OnInit {
   roomId: string = '';
-  constructor(private readonly route: ActivatedRoute) {}
   device: mediasoupClient.Device = new mediasoupClient.Device();
   constructor(
     private readonly route: ActivatedRoute,

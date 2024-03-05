@@ -1,7 +1,7 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { catchError, of, map } from 'rxjs';
-import { RoomService } from '../services/room.service';
+import { catchError, of, map, take } from 'rxjs';
+import { RoomService } from '../services/room/room.service';
 
 export function roomValidateGuard(): CanActivateFn {
   return (route, state) => {
@@ -10,6 +10,7 @@ export function roomValidateGuard(): CanActivateFn {
 
     const roomId = route.params['uid'];
     return roomService.getRoom(roomId).pipe(
+      take(1),
       map((exists) => {
         if (exists) {
           // If the room exists, return true

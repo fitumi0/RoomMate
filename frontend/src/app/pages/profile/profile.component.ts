@@ -4,7 +4,7 @@ import { FooterComponent } from '../../components/footer/footer.component';
 import { Store } from '@ngrx/store';
 import { changeUser } from '../../reducers/user';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-profile',

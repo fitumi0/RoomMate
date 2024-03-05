@@ -8,9 +8,10 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-
+import { map, take } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CreateRoomComponent } from '../create-room/create-room.component';
+import { RoomService } from '../../services/room/room.service';
 
 @Component({
   selector: 'app-rooms',
@@ -46,6 +47,16 @@ export class RoomsComponent {
       this.toastr.error('Invalid room ID', 'Error');
     }
   }
+
+  //   getPublicRooms() {
+  //     this.roomService.getPublicRooms().pipe(
+  //       take(100),
+  //       map((rooms) => {
+  //         console.log(rooms);
+  //         return rooms;
+  //       })
+  //     );
+  //   }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateRoomComponent, {

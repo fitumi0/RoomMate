@@ -1,7 +1,7 @@
 <app-header />
 <main class="main">
-    <app-rooms></app-rooms>
-    <app-features></app-features>
-    <app-formats></app-formats>
+  <app-rooms></app-rooms>
+  <app-info-block [items]="features" [block]="'FEATURES'"></app-info-block>
+  <app-info-block [items]="formats" [block]="'FORMATS'"></app-info-block>
 </main>
 <app-footer />

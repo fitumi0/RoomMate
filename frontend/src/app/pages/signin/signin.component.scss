@@ -1,38 +1,41 @@
-@import '../../../styles.scss';
-@import '../../components/header/header.component.scss';
+@import "../../../styles.scss";
+@import "../../components/header/header.component.scss";
 
 .logo__text--center {
-    text-align: center;
-    font-size: 2.5rem;
-    text-shadow: 0 0 10px $accent-color;
+  text-align: center;
+  font-size: 2.5rem;
+  text-shadow: 0 0 10px $accent-color;
 
-    &:hover {
-        cursor: default;
-    }
+  &:hover {
+    cursor: default;
+  }
 
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .footer--bg-oppacity ::ng-deep .footer {
-    background-color: $base-color;
+  position: relative;
+  bottom: 0;
+  background-color: $secondary-accent-color;
 }
 
 .wrapper {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(100% - 70px);
 }
 
 .links {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
 
-    a {
-        cursor: pointer;
-    }
+  a {
+    cursor: pointer;
+  }
 }

@@ -1,208 +1,211 @@
-@import 'ngx-toastr/toastr';
+@import "ngx-toastr/toastr";
 
-$base-color: #4e5163;
-$accent-color: #1f1f1f;
-$text-color: #ffffff;
-$text-link-hover: #969696;
-$green-color: #4CAF50;
-$blue-color: #2196F3;
-$white: #f0f0f0;
-$black: #0f0f0f;
-$info-bg: rgba(233, 189, 67, 0.5);
-
+$white: #fffffc;
+$black: #000000;
+$base-color: #e3c6f0;
+$accent-color: #111214;
+$secondary-accent-color: #232428;
+$background-color: #313338;
+$text-color: #ebf2fa;
+$text-link-hover: #b2b2b0;
+// $pink-color: #ffadad;
+// $orange-color: #ffd6a5;
+// $yellow-color: #fdffb6;
+$green-color: #679436;
+$salad-color: #a5be00;
+// $cyan-color: #9bf6ff;
+$blue-color: #05668d;
+$light-blue-color: #427aa1;
+// $purple-color: #bdb2ff;
+// $magenta-color: #ffc6ff;
+$info-bg: rgba($salad-color, 0.6);
 
 html,
 body {
-    width: 100%;
-    height: 100%;
-    color: $text-color;
-    margin: 0;
+  width: 100%;
+  color: $text-color;
+  margin: 0;
 }
 
 body {
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-    background-color: $base-color;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: $background-color;
 }
 
 .btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: 1px solid $green-color;
-    border-radius: 5px;
-    background-color: $green-color;
-    color: $text-color;
-    cursor: pointer;
-    box-sizing: border-box;
-    transition: background-color 0.3s ease;
+  padding: 0.5rem 0.75rem;
+  font-size: 16px;
+  border: 1px solid $green-color;
+  border-radius: 5px;
+  background-color: $green-color;
+  color: $text-color;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $accent-color;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    opacity: 0.6;
 
     &:hover {
-        background-color: $accent-color;
-
+      background-color: $green-color;
     }
-
-    &:focus {
-        outline: none;
-    }
-
-    &:disabled {
-        opacity: 0.6;
-
-        &:hover {
-            background-color: $green-color;
-        }
-    }
+  }
 }
 
 .btn--invert {
-    background-color: $accent-color;
+  background-color: $accent-color;
 
-    &:hover {
-        background-color: $green-color;
-    }
+  &:hover {
+    background-color: $salad-color;
+    color: $accent-color;
+  }
 }
 
 html,
 body {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 .link {
-    color: $text-color;
-    text-decoration: none;
+  color: $text-color;
+  text-decoration: none;
 
-    &:hover {
-        color: $text-link-hover;
-        position: relative;
-        bottom: 1.5px;
-    }
+  &:hover {
+    color: $text-link-hover;
+  }
 }
 
 .main {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  height: max-content;
 }
 
 .divider {
-    width: 100%;
-    height: 2px;
-    border: none;
-    background-color: $green-color;
-    margin: 0;
+  width: 100%;
+  height: 2px;
+  border: none;
+  background-color: $green-color;
+  margin: 0;
 }
 
 @media screen and (max-width: 480px) {
-    .btn {
-        padding: 10px 5px;
-        font-size: 0.9rem;
-    }
+  .btn {
+    font-size: 1rem;
+  }
 }
 
 .input {
-    border: 1px solid $accent-color;
-    border-radius: 5px;
-    padding: 10px 10px;
-    font-size: 1rem;
+  border: 1px solid $accent-color;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  font-size: 1rem;
 }
 
 .btn--secondary {
-    background-color: $accent-color;
-    border-color: $accent-color;
+  background-color: $accent-color;
+  border-color: $accent-color;
 
-    &:hover {
-        background-color: $green-color;
-        border-color: $green-color;
-    }
+  &:hover {
+    background-color: $green-color;
+    border-color: $green-color;
+  }
 }
 
 .invalid {
-    color: red;
-    margin-top: 2px;
-    min-width: 1rem;
+  color: red;
+  margin-top: 2px;
+  min-width: 1rem;
 }
 
 .select {
-    border: 1px solid $accent-color;
-    border-radius: 5px;
-    padding: 10px 10px;
-    font-size: 1rem;
+  border: 1px solid $accent-color;
+  border-radius: 0.5rem;
+  padding: 10px 10px;
+  font-size: 1rem;
 }
 
 .info {
-    background-color: $info-bg ;
-    margin-top: 2px;
-    padding: 10px 20px;
-    width: 50%;
-    height: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    border: 1px solid yellow;
-    border-radius: 5px;
+  background-color: $info-bg;
+  margin-top: 2px;
+  padding: 10px 20px;
+  width: 50%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 1px solid yellow;
+  border-radius: 0.5rem;
 
-    & h2 {
-        margin: 0;
-    }
-
+  & h2 {
+    margin: 0;
+  }
 }
 
 .loader {
-    width: 50px;
-    height: 50px;
-    border: 4px solid $blue-color;
-    border-top: 4px solid $white;
-    border-radius: 50%;
-    animation: spin 2s linear infinite;
+  width: 50px;
+  height: 50px;
+  border: 4px solid $blue-color;
+  border-top: 4px solid $white;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
+  0% {
+    transform: rotate(0deg);
+  }
 
-    100% {
-        transform: rotate(360deg);
-
-    }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loader--fixed {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.dimmer{
-
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
+.dimmer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 .dimmer__btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
 }
 
-.dimmer__title{
-    margin: 0;
-    font-size: 2rem;
+.dimmer__title {
+  margin: 0;
+  font-size: 2rem;
 }

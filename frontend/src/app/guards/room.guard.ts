@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { catchError, of, take, map } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { RoomService } from '../services/room.service';
+import { RoomService } from '../services/room/room.service';
 
 export function roomValidateGuard(): CanActivateFn {
   return (route, state) => {

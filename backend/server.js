@@ -259,6 +259,7 @@ async function createExpressApp() {
     expressApp.get('/api/generate-uuid', (req, res) => {
         return res.send(uuidv4());
     });
+
     // пока не работает, разбираюсь с орм
     // expressApp.post('/api/login', async (req, res) => {
     //     let email = req.body.email;
@@ -290,10 +291,8 @@ async function createHttpsServer() {
 
 async function createSocketServer() {
     socketServer = new Server(httpServer, {
-        cors: {
-            origin: ["https://127.0.0.1:4443", "https://localhost:4443"],
-            methods: ["GET", "POST"]
-        }
+        cors: config.corsOptions
+
     });
 
     socketServer.on('connection', (socket) => {

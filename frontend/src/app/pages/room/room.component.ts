@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { CommonModule } from '@angular/common';
@@ -20,8 +20,6 @@ import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
     CommonModule,
     PlayerComponent,
     SettingsComponent,
-    MatIconModule,
-    IconSizeDirective,
   ],
   templateUrl: './room.component.html',
   styleUrl: './room.component.scss',
@@ -39,6 +37,10 @@ export class RoomComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Room component initialized');
+    this.route.params.subscribe((params) => {
+      this.roomId = params['uid'];
+      console.log(`Room UID: ${this.roomId}`);
+    });
 
     this.socketService.sendMessage(
       'getRouterRtpCapabilities',
@@ -96,9 +98,5 @@ export class RoomComponent implements OnInit {
 
   async loadDevice(routerRtpCapabilities: RtpCapabilities): Promise<void> {
     await this.device.load({ routerRtpCapabilities });
-  }
-
-  onExit(): void {
-    this.router.navigate(['/']);
   }
 }

@@ -22,8 +22,8 @@ export const routes: Routes = [
   {
     path: 'room/:uid',
     component: RoomComponent,
-    title: 'Room',
     canActivate: [roomValidateGuard()],
+    title: 'Room',
   },
   {
     path: 'profile',

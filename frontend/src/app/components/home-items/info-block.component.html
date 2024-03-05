@@ -1,0 +1,12 @@
+<section class="info-block">
+  <div class="title__wrapper">
+    <h2 class="title">{{ block }}</h2>
+  </div>
+  <ul class="wrapper">
+    <li class="item" *ngFor="let item of items">
+      <mat-icon appIconSize="32px">{{ item.icon }}</mat-icon>
+      <h3 class="item-title">{{ item.title }}</h3>
+      <p class="description">{{ item.description }}</p>
+    </li>
+  </ul>
+</section>

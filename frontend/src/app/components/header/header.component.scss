@@ -1,58 +1,68 @@
-@import '../../../styles.scss';
+@import "../../../styles.scss";
 
 .header {
-    background-color: $accent-color;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 75px;
-    overflow-x: hidden;
-
+  background-color: $accent-color;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 75px;
+  overflow-x: hidden;
 }
 
 .header__menu {
-    padding: 0 10px;
-
-    & ul {
-        display: flex;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    & li {
-        margin-right: 20px;
-    }
-
-    & li:last-child {
-        margin-right: 0;
-    }
+  padding: 0.25rem;
+  margin: 0;
+  padding: 0 1rem;
+  & ul {
+    display: flex;
+    list-style: none;
+    // padding: 0 0.5rem;
+  }
+  & ul > li {
+    margin: 0 0.5rem;
+  }
 }
 
 @media screen and (max-width: 480px) {
-    .header__menu {
-        & ul>li {
-            margin-right: 10px;
-        }
+  .header__menu {
+    & ul > li {
+      margin-right: 10px;
     }
+  }
 }
 
 .logo {
-    margin: 0;
-    padding: 0 10px;
-}
+  margin: 0;
+  padding: 0 2rem;
+  a {
+    display: flex;
+    align-items: center;
+  }
 
-.logo__text {
+  .logo__text {
     color: $green-color;
     font-size: 1.8rem;
+    font-weight: 700;
     margin: 0;
-
     &:hover {
-        cursor: pointer;
+      color: $salad-color;
     }
-}
-
-.logo__text--invert {
+  }
+  .logo__text--invert {
     color: $blue-color;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  &:hover {
+    cursor: pointer;
+    .logo__text {
+      color: $salad-color;
+    }
+    .logo__text--invert {
+      color: $light-blue-color;
+    }
+  }
 }

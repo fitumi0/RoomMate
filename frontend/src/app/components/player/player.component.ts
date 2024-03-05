@@ -25,7 +25,7 @@ export class PlayerComponent implements OnDestroy {
     .pipe(
       tap((url) => {
         this.url = url;
-        console.log('From pleyer: ', this.url);
+        console.log('From player: ', this.url);
       })
     )
     .subscribe();

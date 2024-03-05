@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
-import { ISignInDto } from '../interfaces/ISignInDto';
+import { ISignInDto } from '../../interfaces/ISignInDto';
 import { Observable, catchError, of, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { ISignUpDto } from '../interfaces/ISignUpDto';
-import { IUser } from '../interfaces/IUser';
+import { ISignUpDto } from '../../interfaces/ISignUpDto';
+import { IUser } from '../../interfaces/IUser';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { changeUser } from '../reducers/user';
+import { changeUser } from '../../reducers/user';
 /**
  * Service responsible for user authentication and related functionality.
  *

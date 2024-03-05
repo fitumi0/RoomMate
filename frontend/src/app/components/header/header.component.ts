@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MatIconModule } from '@angular/material/icon';
 import { IconSizeDirective } from '../../directives/icon-size.directive';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-header',

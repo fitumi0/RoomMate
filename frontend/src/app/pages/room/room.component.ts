@@ -4,10 +4,13 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { CommonModule } from '@angular/common';
 import { PlayerComponent } from '../../components/player/player.component';
 import { SettingsComponent } from '../../components/settings/settings.component';
-import { Subscription, catchError, take } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { IconSizeDirective } from '../../directives/icon-size.directive';
-import { RoomService } from '../../services/room.service';
+import { RoomService } from '../../services/room/room.service';
+import { SocketService } from '../../services/sockets/socket.service';
+import * as mediasoupClient from 'mediasoup-client';
+import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
 
 @Component({
   selector: 'app-room',
@@ -25,33 +28,33 @@ import { RoomService } from '../../services/room.service';
 })
 export class RoomComponent implements OnInit {
   roomId: string = '';
-  room: Subscription | null = null;
-  enableDimmer = false;
+  device: mediasoupClient.Device = new mediasoupClient.Device();
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly roomService: RoomService
-  ) {}
+    private socketService: SocketService
+  ) {
+    (window as any)['device'] = this.device;
+  }
 
   ngOnInit(): void {
     console.log('Room component initialized');
-    this.route.params.subscribe((params) => {
-      this.roomId = params['uid'];
-      this.room = this.roomService
-        .getRoom(this.roomId)
-        .pipe(
-          take(1),
-          catchError(() => {
-            this.router.navigate(['/']);
-            throw new Error('Room not found');
-          })
-        )
-        .subscribe(() => {
-          console.log('Room found');
-        });
-      console.log(`Room UID: ${this.roomId}`);
-    });
+
+    this.socketService.sendMessage(
+      'getRouterRtpCapabilities',
+      (rtpCapabilities: RtpCapabilities) => {
+        console.log('RTP Capabilities: ', rtpCapabilities);
+
+        this.loadDevice(rtpCapabilities);
+      }
+    );
+
+    // this.socketService.sendMessage('createProducerTransport', null);
+    // this.socketService.sendMessage('createConsumerTransport', null);
+  }
+
+  async loadDevice(routerRtpCapabilities: RtpCapabilities): Promise<void> {
+    await this.device.load({ routerRtpCapabilities });
   }
 
   onExit(): void {

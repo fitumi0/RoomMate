@@ -1,8 +1,6 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { catchError, of, take, map } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ToastrService } from 'ngx-toastr';
+import { catchError, of, map } from 'rxjs';
 import { RoomService } from '../services/room.service';
 
 export function roomValidateGuard(): CanActivateFn {
@@ -15,14 +13,18 @@ export function roomValidateGuard(): CanActivateFn {
       map((exists) => {
         if (exists) {
           // If the room exists, return true
+          console.log('From room guard: exist');
           return true;
         } else {
           // If the room does not exist, return a UrlTree to redirect
+          // This condition does not occur!
+          console.log('From room guard: not exist');
           return router.createUrlTree(['/room-404']);
         }
       }),
       catchError((err) => {
         // On error, redirect to a different route
+        console.log('From room guard: error');
         return of(router.createUrlTree(['/']));
       })
     );

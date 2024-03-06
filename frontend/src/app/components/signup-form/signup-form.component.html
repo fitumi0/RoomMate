@@ -16,6 +16,20 @@
     </div>
 
     <div class="form-group">
+        <label for="nameInput">Name:</label>
+        <input id="nameInput" class="input" type="text" formControlName="name" required>
+        <div *ngIf="userData.controls['name'].invalid && (userData.controls['name'].dirty || userData.controls['name'].touched)"
+            class="invalid">
+            <span *ngIf="userData.controls['name'].hasError('required')">
+                Name is required
+            </span>
+            <span *ngIf="userData.controls['name'].hasError('minlength')">
+                Name must be more than 8 characters
+            </span>
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="emailInput">Email:</label>
         <input id="emailInput" class="input" type="email" formControlName="email" required>
         <div *ngIf="userData.controls['email'].invalid && (userData.controls['email'].dirty || userData.controls['email'].touched)"
@@ -51,7 +65,7 @@
             <span *ngIf="userData.controls['confirmPassword'].hasError('required')">
                 Password is required
             </span>
-            <span *ngIf="userData.hasError('mustMatch')">
+            <span *ngIf="userData.hasError('mustMatch') && !userData.controls['confirmPassword'].hasError('required')">
                 Passwords do not match
             </span>
         </div>

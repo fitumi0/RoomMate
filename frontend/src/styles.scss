@@ -55,9 +55,9 @@ body {
     background-color: $accent-color;
   }
 
-  &:focus {
-    outline: none;
-  }
+    // &:focus {
+    //   outline: none;
+    // }
 
   &:disabled {
     opacity: 0.6;
@@ -214,4 +214,16 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.update-form {
+  background-color: $white;
+  box-shadow: 0 0 10px $accent-color;
+  padding: 5px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  color: $black;
 }

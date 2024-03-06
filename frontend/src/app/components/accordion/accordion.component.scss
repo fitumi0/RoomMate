@@ -1,0 +1,40 @@
+@import '../../../styles.scss';
+
+.accordion {
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.accordion-button {
+  background-color: $white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+
+
+  &:hover {
+    background-color: $text-color;
+    cursor: pointer;
+  }
+}
+
+.accordion-content {
+  display: none;
+
+}
+
+.accordion-item {
+  border-bottom: 1px solid $black;
+
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+}
+
+.accordion-item.active .accordion-content {
+  display: block;
+
+}

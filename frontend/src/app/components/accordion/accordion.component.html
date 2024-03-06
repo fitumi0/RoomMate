@@ -1,0 +1,8 @@
+<div class="accordion">
+    <div class="accordion-item" *ngFor="let item of accordionItems; let i = index" [class.active]="i === activeIndex">
+      <button class="accordion-button" (click)="toggleAccordion(i)">{{ item.title }}</button>
+      <div class="accordion-content" *ngIf="i === activeIndex">
+        <ng-container  *ngComponentOutlet="item.component"></ng-container>
+      </div>
+    </div>
+  </div>

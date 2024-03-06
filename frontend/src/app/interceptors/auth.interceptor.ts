@@ -55,6 +55,10 @@ export class AuthInterceptor implements HttpInterceptor {
         },
         url: `${environment.apiUrl}/${req.url}`,
       });
+    } else {
+      req = req.clone({
+        url: `${environment.apiUrl}/${req.url}`,
+      });
     }
     return next.handle(req);
   }

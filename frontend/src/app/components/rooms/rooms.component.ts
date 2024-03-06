@@ -8,10 +8,8 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { map, take } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CreateRoomComponent } from '../create-room/create-room.component';
-import { RoomService } from '../../services/room/room.service';
 
 @Component({
   selector: 'app-rooms',
@@ -60,13 +58,16 @@ export class RoomsComponent {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateRoomComponent, {
-      width: '400px',
+      width: '320px',
       disableClose: true,
       data: {},
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log('Modal closed', result);
+      if (result) {
+        console.log('Received room UID: ', result.uid);
+        // this.router.navigate(['room', result]);
+      }
     });
   }
 }

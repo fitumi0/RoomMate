@@ -1,9 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import {
   AbstractControl,
-  AbstractControlOptions,
-  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -28,9 +26,9 @@ export class SignupFormComponent implements OnDestroy {
   isSubmitting = false;
 
   constructor(
-    private formBuilder: FormBuilder,
     private readonly auth: AuthService,
-    private readonly toastr: ToastrService
+    private readonly toastr: ToastrService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.userData = new FormGroup(
       {
@@ -69,6 +67,7 @@ export class SignupFormComponent implements OnDestroy {
           this.userData.get('password')?.enable();
           this.userData.get('confirmPassword')?.enable();
           this.userData.get('username')?.enable();
+          this.cdr.detectChanges();
         });
       console.log('Form submitted');
     } else {

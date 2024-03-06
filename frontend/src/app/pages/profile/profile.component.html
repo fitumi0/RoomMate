@@ -3,10 +3,12 @@
     <main class="main">
         <section>
             <h2>Profile</h2>
-            <p>Будет доделано</p>
+
+            <div style="width: 50%;">
+                <app-accordion [accordionItems]="forms"></app-accordion>
+            </div>
             <button type="button" class="btn" (click)="logOut()">Log Out</button>
         </section>
     </main>
     <app-footer></app-footer>
 </div>
-

@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { MatchValidationService } from '../../services/match-validation/match-validation.service';
 
 @Component({
   selector: 'app-signup-form',
@@ -28,11 +29,16 @@ export class SignupFormComponent implements OnDestroy {
   constructor(
     private readonly auth: AuthService,
     private readonly toastr: ToastrService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly matchService: MatchValidationService
   ) {
     this.userData = new FormGroup(
       {
         username: new FormControl('', [
+          Validators.required,
+          Validators.minLength(8),
+        ]),
+        name: new FormControl('', [
           Validators.required,
           Validators.minLength(8),
         ]),
@@ -43,7 +49,7 @@ export class SignupFormComponent implements OnDestroy {
         ]),
         confirmPassword: new FormControl('', [Validators.required]),
       },
-      { validators: this.mustMatch('password', 'confirmPassword') }
+      { validators: this.matchService.mustMatch('password', 'confirmPassword') }
     );
   }
 
@@ -73,23 +79,6 @@ export class SignupFormComponent implements OnDestroy {
     } else {
       console.log('Form not submitted');
     }
-  }
-
-  mustMatch(controlName: string, matchingControlName: string): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const formGroup = control as FormGroup;
-      const controlToMatch = formGroup.controls[controlName];
-      const matchingControl = formGroup.controls[matchingControlName];
-
-      if (
-        matchingControl &&
-        controlToMatch &&
-        controlToMatch.value !== matchingControl.value
-      ) {
-        return { mustMatch: true };
-      }
-      return null;
-    };
   }
 
   ngOnDestroy(): void {

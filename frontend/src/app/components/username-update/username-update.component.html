@@ -1,0 +1,18 @@
+<form class="update-form" [formGroup]="formData" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="usernameUpdate">Username: </label>
+        <input id="usernameUpdate" name="usernameUpdate" class="input" type="text" formControlName="newUsername">
+        <div *ngIf="formData.controls['newUsername'].invalid && (formData.controls['newUsername'].dirty || formData.controls['newUsername'].touched)"
+            class="invalid">
+            <span *ngIf="formData.controls['newUsername'].hasError('required')">
+                Username is required
+            </span>
+            <span *ngIf="formData.controls['newUsername'].hasError('minlength')">
+                Username must be more than 8 characters
+            </span>
+        </div>
+    </div>
+    <div *ngIf="isSubmitting" class="loader"></div>
+    <button *ngIf="!isSubmitting" class="btn" style="margin-top: 5px;" type="submit"
+        [disabled]="!formData.valid">Submit</button>
+</form>

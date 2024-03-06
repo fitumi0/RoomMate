@@ -14,27 +14,24 @@
   padding: 0.25rem;
   margin: 0;
   padding: 0 1rem;
+
   & ul {
     display: flex;
     list-style: none;
     // padding: 0 0.5rem;
   }
-  & ul > li {
+
+  & ul>li {
     margin: 0 0.5rem;
   }
 }
 
-@media screen and (max-width: 480px) {
-  .header__menu {
-    & ul > li {
-      margin-right: 10px;
-    }
-  }
-}
+
 
 .logo {
   margin: 0;
   padding: 0 2rem;
+
   a {
     display: flex;
     align-items: center;
@@ -45,10 +42,12 @@
     font-size: 1.8rem;
     font-weight: 700;
     margin: 0;
+
     &:hover {
       color: $salad-color;
     }
   }
+
   .logo__text--invert {
     color: $blue-color;
     font-size: 1.8rem;
@@ -58,11 +57,35 @@
 
   &:hover {
     cursor: pointer;
+
     .logo__text {
       color: $salad-color;
     }
+
     .logo__text--invert {
       color: $light-blue-color;
     }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .header__menu {
+    padding-left: 0;
+
+    & ul>li {
+      margin-right: 10px;
+    }
+
+    & ul {
+      padding: 0;
+    }
+
+    & ul>li>button {
+      padding: 0.25rem 0.5rem;
+    }
+  }
+
+  .logo {
+    padding: 0 1rem;
   }
 }

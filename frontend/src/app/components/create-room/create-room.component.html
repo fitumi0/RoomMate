@@ -1,9 +1,38 @@
 <div class="dialog-wrapper">
+    <mat-icon appIconSize="32px" (click)="onExit()" app class="close-icon">close</mat-icon>
     <h3 class="title" mat-dialog-title>Creating room</h3>
-    <div mat-dialog-content>
-        <mat-icon appIconSize="32px" (click)="onExit()" app class="close-icon">close</mat-icon>
-        <p>Test</p>
-    </div>
-    <div class="dialog__footer" mat-dialog-actions>
-    </div>
+    <hr class="hr-divider">
+    <form [formGroup]="roomData" (ngSubmit)="onSubmit()">
+
+        <div mat-dialog-content class="dialog__content">
+            <div class="description">
+                <p>Creating room...</p>
+            </div>
+
+            <div class="form-group">
+                <label for="createRoomName">Room name</label>
+                <input type="text" class="input" formControlName="name" id="createRoomName" name="createRoomName"
+                    required>
+                <div *ngIf="roomData.controls['name'].invalid && (roomData.controls['name'].dirty)" class="invalid">
+                    <span *ngIf="roomData.controls['name'].hasError('required')">
+                        Room name is required
+                    </span>
+
+                </div>
+            </div>
+            <div class="form-group--checkbox">
+                <input class="input-checkbox" type="checkbox" formControlName="onlyLink" id="createRoomOnlyLink"
+                    name="createRoomOnlyLink">
+                <label for="createRoomOnlyLink">Only link/invite access?</label>
+            </div>
+
+        </div>
+        <hr class="hr-divider">
+        
+        <div class="dialog__footer" mat-dialog-actions>
+            <div *ngIf="isSubmitting" class="loader"></div>
+            <button *ngIf="!isSubmitting" class="btn" type="submit" [disabled]="!roomData.valid">Create</button>
+        </div>
+    </form>
+
 </div>

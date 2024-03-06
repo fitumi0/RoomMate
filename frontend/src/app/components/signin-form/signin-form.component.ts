@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -18,13 +18,14 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrl: './signin-form.component.scss',
 })
 export class SigninFormComponent implements OnDestroy {
-  $unsubscribe = new Subject<void>();
+  private $unsubscribe = new Subject<void>();
   isSubmitting = false;
   userData: FormGroup;
 
   constructor(
     private readonly auth: AuthService,
-    private readonly toastr: ToastrService
+    private readonly toastr: ToastrService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.userData = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -43,7 +44,7 @@ export class SigninFormComponent implements OnDestroy {
       this.userData.get('email')?.disable();
       this.userData.get('password')?.disable();
       this.auth
-        .signInTest(this.userData.value)
+        .signIn(this.userData.value)
         .pipe(takeUntil(this.$unsubscribe))
         .subscribe(() => {
           this.toastr.success('Sign in successful', 'Success');
@@ -53,6 +54,7 @@ export class SigninFormComponent implements OnDestroy {
           this.isSubmitting = false;
           this.userData.get('email')?.enable();
           this.userData.get('password')?.enable();
+          this.cdr.detectChanges();
         });
     } else {
       console.log('Form not submitted');

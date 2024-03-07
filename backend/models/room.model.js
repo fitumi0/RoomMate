@@ -1,11 +1,7 @@
-import { Sequelize, DataTypes, Model } from 'sequelize';
-import { config } from '../config.js';
-const sequelize = new Sequelize(config.databaseOptions.connectionString);
+import DataTypes from 'sequelize';
 
-export default class Room extends Model { }
-
-export function initRoomModel(sequelize) {
-    Room.init({
+export default (sequelize) => {
+    const Room = sequelize.define('Room', {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
@@ -35,11 +31,6 @@ export function initRoomModel(sequelize) {
             type: DataTypes.DATE,
             defaultValue: null
         }
-    }, {
-        sequelize,
-        modelName: 'Room'
-    })
-}
-
-
-
+    });
+    return Room;
+};

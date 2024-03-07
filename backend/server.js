@@ -125,11 +125,12 @@ async function createExpressApp() {
      *                   updatedAt: null   
     */
     expressApp.post('/api/create-room', async (req, res) => {
+        console.log(req.body);
         const uuid = uuidv4();
         const room = await Room(sequelize).create({
             id: uuid,
-            name: uuid,
-            public: true
+            name: req.body.name,
+            public: req.body.public
         });
         res.status(201).json(room);
     })

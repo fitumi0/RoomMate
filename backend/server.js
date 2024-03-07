@@ -7,6 +7,7 @@ import { Server, Socket } from 'socket.io';
 
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
+// import { PrismaClient } from '@prisma/client'
 
 import * as jwtModule from './libs/jwt.module.js';
 
@@ -14,8 +15,8 @@ import swaggerJsDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 
 import { config } from './config.js';
-import Room, { initRoomModel } from './models/room.model.js';
-import User, { initUserModel } from './models/user.model.js';
+import Room from './models/room.model.js';
+import User from './models/user.model.js';
 
 let sequelize;
 let httpServer;
@@ -52,11 +53,10 @@ async function initDatabase() {
             User
         ],
     });
-    initUserModel(sequelize);
-    initRoomModel(sequelize);
-    Room.sync();
-    User.sync();
-    await sequelize.sync({ force: true });
+
+    Room(sequelize);
+    User(sequelize);
+    // await sequelize.sync({});
 }
 
 async function createMediaServer() {

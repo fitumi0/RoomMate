@@ -45,7 +45,7 @@ export class CreateRoomComponent implements OnDestroy {
   ) {
     this.roomData = new FormGroup({
       name: new FormControl('', [Validators.required]),
-      onlyLink: new FormControl(false),
+      public: new FormControl(true),
     });
 
     this.store
@@ -67,12 +67,12 @@ export class CreateRoomComponent implements OnDestroy {
   onSubmit() {
     if (this.roomData.valid) {
       this.isSubmitting = true;
-      this.roomData.get('onlyLink')?.disable();
+      this.roomData.get('public')?.disable();
       this.roomData.get('name')?.disable();
       this.roomService
-        .createRoomTest({
+        .createRoom({
           name: this.roomData.get('name')?.value,
-          onlyLink: this.roomData.get('onlyLink')?.value,
+          public: this.roomData.get('public')?.value,
           creatorId: this.user?.id ? this.user?.id : '',
         })
         .pipe(takeUntil(this.$unsubscribe))
@@ -83,7 +83,7 @@ export class CreateRoomComponent implements OnDestroy {
         })
         .add(() => {
           this.isSubmitting = false;
-          this.roomData.get('onlyLink')?.enable();
+          this.roomData.get('public')?.enable();
           this.roomData.get('name')?.enable();
           this.cdr.detectChanges();
         });

@@ -22,7 +22,7 @@ export const routes: Routes = [
   {
     path: 'room/:uid',
     component: RoomComponent,
-    canActivate: [roomValidateGuard()],
+    // canActivate: [roomValidateGuard()],
     title: 'Room',
   },
   {

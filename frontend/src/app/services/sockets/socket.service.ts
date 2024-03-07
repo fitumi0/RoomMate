@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, afterRender } from '@angular/core';
 import { Observable } from 'rxjs';
 import io, { Socket } from 'socket.io-client';
 import { environment } from '../../../environments/environment';
@@ -7,12 +7,14 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class SocketService {
-  private socket: Socket;
+  private socket!: Socket;
   private url = environment.apiUrl;
 
   constructor() {
-    this.socket = io(this.url);
-    (window as any)['socket'] = this.socket;
+    afterRender(() => {
+      this.socket = io(this.url);
+    });
+    // (window as any)['socket'] = this.socket;
   }
 
   public onEvent(event: string): Observable<any> {

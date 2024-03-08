@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, isDevMode } from '@angular/core';
+import { Component, OnInit, isDevMode } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CreateRoomComponent } from '../create-room/create-room.component';
+import { StatisticsService } from '../../services/statistics/statistics.service';
 
 @Component({
   selector: 'app-rooms',
@@ -18,17 +19,26 @@ import { CreateRoomComponent } from '../create-room/create-room.component';
   templateUrl: './rooms.component.html',
   styleUrl: './rooms.component.scss',
 })
-export class RoomsComponent {
+export class RoomsComponent implements OnInit {
   roomsGroup: FormGroup;
   test: any;
   roomId = 'test';
+  activeRooms!: Number;
+
   constructor(
     private readonly toastr: ToastrService,
     private readonly router: Router,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly statisticsService: StatisticsService
   ) {
     this.roomsGroup = new FormGroup({
       roomUid: new FormControl('', [Validators.required]),
+    });
+  }
+
+  ngOnInit(): void {
+    this.statisticsService.getActiveRooms().subscribe((data: any) => {
+      this.activeRooms = data.activeRooms;
     });
   }
 
@@ -45,16 +55,6 @@ export class RoomsComponent {
       this.toastr.error('Invalid room ID', 'Error');
     }
   }
-
-  //   getPublicRooms() {
-  //     this.roomService.getPublicRooms().pipe(
-  //       take(100),
-  //       map((rooms) => {
-  //         console.log(rooms);
-  //         return rooms;
-  //       })
-  //     );
-  //   }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CreateRoomComponent, {

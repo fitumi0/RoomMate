@@ -34,85 +34,77 @@ export class RoomComponent implements OnInit {
     private socketService: SocketService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    afterRender(() => {
+    if (isPlatformBrowser(this.platformId)) {
       this.device = new mediasoupClient.Device();
       (window as any)['device'] = this.device;
-    });
+    }
   }
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      console.log('Room component initialized');
-      this.route.params.subscribe((params) => {
-        this.roomId = params['uid'];
-        console.log(`Room UID: ${this.roomId}`);
-      });
-
-      this.socketService.sendMessage(
-        'getRouterRtpCapabilities',
-        (rtpCapabilities: RtpCapabilities) => {
-          console.log('RTP Capabilities: ', rtpCapabilities);
-
-          this.loadDevice(rtpCapabilities);
-        }
-      );
-
-      this.socketService.sendMessage(
-        'createProducerTransport',
-        (params: any) => {
-          if (params.error) {
-            console.error('createProducerTransport: ', params.error);
-          }
-
-          console.log('createProducerTransport: ', params);
-
-          const transport = this.device.createSendTransport(params);
-
-          transport.on(
-            'connect',
-            async ({ dtlsParameters }, callback, errback) => {
-              try {
-                this.socketService.sendMessage('connectProducerTransport', {
-                  transportId: transport.id,
-                  dtlsParameters,
-                });
-              } catch (err) {
-                console.error(err);
-              }
-              callback();
-            }
-          );
-        }
-      );
-
-      this.socketService.sendMessage(
-        'createConsumerTransport',
-        (params: any) => {
-          if (params.error) {
-            console.error('createProducerTransport: ', params.error);
-          }
-
-          console.log('createConsumerTransport: ', params);
-
-          const transport = this.device.createSendTransport(params);
-
-          transport.on(
-            'connect',
-            async ({ dtlsParameters }, callback, errback) => {
-              try {
-                this.socketService.sendMessage('connectConsumerTransport', {
-                  transportId: transport.id,
-                  dtlsParameters,
-                });
-              } catch (err) {
-                console.error(err);
-              }
-              callback();
-            }
-          );
-        }
-      );
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
     }
+
+    console.log('Room component initialized');
+    this.route.params.subscribe((params) => {
+      this.roomId = params['uid'];
+      console.log(`Room UID: ${this.roomId}`);
+    });
+
+    this.socketService.sendMessage('joinRoom', this.roomId);
+
+    this.socketService.sendMessage(
+      'getRouterRtpCapabilities',
+      (rtpCapabilities: RtpCapabilities) => {
+        console.log('RTP Capabilities: ', rtpCapabilities);
+
+        this.loadDevice(rtpCapabilities);
+      }
+    );
+
+    this.socketService.sendMessage('createProducerTransport', (params: any) => {
+      if (params.error) {
+        console.error('createProducerTransport: ', params.error);
+      }
+
+      console.log('createProducerTransport: ', params);
+
+      const transport = this.device.createSendTransport(params);
+
+      transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+        try {
+          this.socketService.sendMessage('connectProducerTransport', {
+            transportId: transport.id,
+            dtlsParameters,
+          });
+        } catch (err) {
+          console.error(err);
+        }
+        callback();
+      });
+    });
+
+    this.socketService.sendMessage('createConsumerTransport', (params: any) => {
+      if (params.error) {
+        console.error('createProducerTransport: ', params.error);
+      }
+
+      console.log('createConsumerTransport: ', params);
+
+      const transport = this.device.createSendTransport(params);
+
+      transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+        try {
+          this.socketService.sendMessage('connectConsumerTransport', {
+            transportId: transport.id,
+            dtlsParameters,
+          });
+        } catch (err) {
+          console.error(err);
+        }
+        callback();
+      });
+    });
   }
 
   async loadDevice(routerRtpCapabilities: RtpCapabilities): Promise<void> {

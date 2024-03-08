@@ -1,6 +1,7 @@
 {
 	"type": "module",
 	"dependencies": {
+		"@prisma/client": "^5.10.2",
 		"debug": "^4.3.4",
 		"express": "^4.18.2",
 		"jsonwebtoken": "^9.0.2",
@@ -9,7 +10,6 @@
 		"nunjucks": "^3.2.4",
 		"pg": "^8.11.3",
 		"pg-hstore": "^2.3.4",
-		"sequelize": "^6.37.1",
 		"socket.io": "^4.7.4",
 		"socket.io-client": "^4.7.4",
 		"swagger-jsdoc": "^6.2.8",
@@ -19,6 +19,7 @@
 	"devDependencies": {
 		"nodemon": "^3.0.3",
 		"path": "^0.12.7",
+		"prisma": "^5.10.2",
 		"webpack": "^5.90.1",
 		"webpack-cli": "^5.1.4"
 	},

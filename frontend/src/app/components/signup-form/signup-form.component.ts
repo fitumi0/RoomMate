@@ -34,14 +34,14 @@ export class SignupFormComponent implements OnDestroy {
   ) {
     this.userData = new FormGroup(
       {
-        username: new FormControl('', [
-          Validators.required,
-          Validators.minLength(8),
-        ]),
-        name: new FormControl('', [
-          Validators.required,
-          Validators.minLength(8),
-        ]),
+        // username: new FormControl('', [
+        //   Validators.required,
+        //   Validators.minLength(8),
+        // ]),
+        // name: new FormControl('', [
+        //   Validators.required,
+        //   Validators.minLength(8),
+        // ]),
         email: new FormControl('', [Validators.required, Validators.email]),
         password: new FormControl('', [
           Validators.required,
@@ -59,7 +59,7 @@ export class SignupFormComponent implements OnDestroy {
       this.userData.get('email')?.disable();
       this.userData.get('password')?.disable();
       this.userData.get('confirmPassword')?.disable();
-      this.userData.get('username')?.disable();
+      //   this.userData.get('username')?.disable();
       this.auth
         .signUpTest(this.userData.value)
         .pipe(takeUntil(this.$unsubscribe))
@@ -72,7 +72,7 @@ export class SignupFormComponent implements OnDestroy {
           this.userData.get('email')?.enable();
           this.userData.get('password')?.enable();
           this.userData.get('confirmPassword')?.enable();
-          this.userData.get('username')?.enable();
+          //   this.userData.get('username')?.enable();
           this.cdr.detectChanges();
         });
       console.log('Form submitted');

@@ -1,4 +1,9 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Component, OnDestroy } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import 'vidstack/player/styles/default/theme.css';
 import 'vidstack/player/styles/default/layouts/video.css';
 import 'vidstack/player';
@@ -18,13 +23,17 @@ import { tap } from 'rxjs';
   styleUrl: './player.component.scss',
 })
 export class PlayerComponent implements OnDestroy {
-  constructor(private store: Store) {}
-  url = 'https://www.youtube.com/watch?v=FGAQkUS9Yxw';
+  constructor(private store: Store) {
+    this.url = 'https://www.youtube.com/watch?v=FGAQkUS9Yxw';
+    this.src = this.url;
+  }
+  url: string;
+  src!: string;
   $videoUrlChange = this.store
     .select(videoUrlSelector)
     .pipe(
       tap((url) => {
-        this.url = url;
+        this.src = url;
         console.log('From player: ', this.url);
       })
     )

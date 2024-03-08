@@ -5,20 +5,19 @@ import cors from 'cors';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
 
-import { Sequelize, DataTypes, Model } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
-// import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 
 import * as jwtModule from './libs/jwt.module.js';
+import { createHash } from 'node:crypto';
 
 import swaggerJsDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 
 import { config } from './config.js';
-import Room from './models/room.model.js';
-import User from './models/user.model.js';
 
-let sequelize;
+// let sequelize;
+const prisma = new PrismaClient()
 let httpServer;
 let expressApp;
 let socketServer;
@@ -34,29 +33,10 @@ let consumerTransport;
 run()
 
 async function run() {
-    await initDatabase();
     await createMediaServer();
     await createExpressApp();
     await createHttpServer();
     await createSocketServer();
-}
-
-async function initDatabase() {
-    sequelize = new Sequelize(config.databaseOptions.connectionString, {
-        dialectOptions: {
-            ssl: {
-                require: false,
-            }
-        },
-        models: [
-            Room,
-            User
-        ],
-    });
-
-    Room(sequelize);
-    User(sequelize);
-    // await sequelize.sync({});
 }
 
 async function createMediaServer() {
@@ -92,11 +72,6 @@ async function createExpressApp() {
         config.corsOptions
     ));
 
-    const swaggerDocs = swaggerJsDoc(config.swaggerOptions);
-    expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
-
-
     // Middleware для отлова всех входящих запросов
     expressApp.use((req, res, next) => {
         console.log(`[${req.method}]:`, req.url);
@@ -125,13 +100,13 @@ async function createExpressApp() {
      *                   updatedAt: null   
     */
     expressApp.post('/api/create-room', async (req, res) => {
-        console.log(req.body);
-        const uuid = uuidv4();
-        const room = await Room(sequelize).create({
-            id: uuid,
-            name: req.body.name,
-            public: req.body.public
-        });
+        const room = await prisma.room.create({
+            data: {
+                name: req.body.name,
+                public: req.body.public
+            }
+        })
+
         res.status(201).json(room);
     })
 
@@ -141,18 +116,46 @@ async function createExpressApp() {
      *   post:
      *     tags:
      *       - Room API
-     *     description: Удаляет комнату из базы.
+     *     description: Безвозвратно удаляет комнату из базы.
      *     responses:
      *       204:
      *         description: Success
      */
-    expressApp.post('/api/vanish-room', async (req, res) => {
-        const room = await Room(sequelize).findOne({
-            // id from query
-            where: { id: req.query.id }
+    expressApp.post('/api/vanish-room/:id', async (req, res) => {
+        const room = await prisma.room.findUnique({
+            where: { id: req.params.id }
         })
+
         if (room) {
-            await room.destroy();
+            await prisma.room.delete({
+                where: { id: req.params.id }
+            });
+        }
+
+        res.sendStatus(204);
+    })
+
+    /**
+     * @swagger
+     * /api/delete-room:
+     *   post:
+     *     tags:
+     *       - Room API
+     *     description: Изменяет статус комнаты в базе на удалён (deleted = true).
+     *     responses:
+     *       204:
+     *         description: Success
+    */
+    expressApp.post('/api/delete-room/:id', async (req, res) => {
+        const room = await prisma.room.findUnique({
+            where: { id: req.params.id }
+        })
+
+        if (room) {
+            await prisma.room.update({
+                where: { id: req.params.id },
+                data: { deleted: true }
+            })
         }
 
         res.sendStatus(204);
@@ -174,13 +177,12 @@ async function createExpressApp() {
      *               type: object
      */
     expressApp.get('/api/get-room/:id', async (req, res) => {
-        // todo: validate uuid or fix db query
         if (!req.params.id || uuidv4().match(req.params.id)) {
             return res.sendStatus(400);
         }
 
-        const room = await Room(sequelize).findOne({
-            where: { id: req.params.id, public: true }
+        const room = await prisma.room.findUnique({
+            where: { id: req.params.id, deleted: false }
         })
 
         if (!room) {
@@ -212,9 +214,10 @@ async function createExpressApp() {
     *                   updatedAt: null
     */
     expressApp.get('/api/get-public-rooms', async (req, res) => {
-        const rooms = await Room(sequelize).findAll({
-            where: { public: true }
+        const rooms = await prisma.room.findMany({
+            where: { public: true, deleted: false }
         })
+
         res.json(rooms);
     });
 
@@ -240,7 +243,9 @@ async function createExpressApp() {
      *                   updatedAt: null
     */
     expressApp.get('/api/get-all-rooms', async (req, res) => {
-        const rooms = await Room(sequelize).findAll({})
+        const rooms = await prisma.room.findMany({
+            where: { deleted: false }
+        })
         res.json(rooms);
     });
 
@@ -265,21 +270,75 @@ async function createExpressApp() {
         return res.send(uuidv4());
     });
 
-    // пока не работает, разбираюсь с орм
-    // expressApp.post('/api/login', async (req, res) => {
-    //     let email = req.body.email;
-    //     let password = req.body.password;
-    //     let passwordHash = createHash('sha256').update(password).digest('hex');
-    //     console.log(passwordHash);
+    // TODO: вернуть нужные данные
+    expressApp.post('/api/login', async (req, res) => {
+        let email = req.body.email;
+        let password = req.body.password;
+        let passwordHash = createHash('sha256').update(password).digest('hex');
+        console.log(passwordHash);
 
-    //     const user = await User(sequelize).findOne({
-    //         where: {
-    //             email: email,
-    //             passwordHash: passwordHash
-    //         }
-    //     });
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email,
+                passwordHash: passwordHash,
+                // deleted: false
+            }
+        });
 
-    // });
+        if (!user) {
+            return res.sendStatus(404);
+        }
+
+        res.status(200);
+        // res.send(
+        // {id, username, name, email, regDate, lastMod, token}
+        // );
+    });
+
+    // TODO: вернуть нужные данные, сразу авторизовать (мб метод написать отдельно)
+    expressApp.post('/api/signup', async (req, res) => {
+        let email = req.body.email;
+        let password = req.body.password;
+        let passwordHash = createHash('sha256').update(password).digest('hex');
+
+        const user = await prisma.user.create({
+            data: {
+                email: email,
+                passwordHash: passwordHash
+            }
+        });
+
+        res.status(200);
+
+        // res.send(
+        // 
+        // )
+    });
+
+    /**
+     * @swagger
+     * /get-active-rooms:
+     *   get:
+     *     tags:
+     *       - Statistics API
+     *     description: Возвращает количество активных комнат.
+     *     responses:
+     *       200:
+     *         description: Success
+     */
+    expressApp.get('/api/get-active-rooms', async (req, res) => {
+        const activeRooms = await prisma.room.count({
+            where: {
+                public: true,
+                deleted: false
+            }
+        });
+
+        res.status(200).json({ "activeRooms": activeRooms });
+    })
+
+    const swaggerDocs = swaggerJsDoc(config.swaggerOptions);
+    expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 }
 
 async function createHttpServer() {
@@ -301,6 +360,11 @@ async function createSocketServer() {
     });
 
     socketServer.on('connection', (socket) => {
+        socket.on('join-room', async (data) => {
+            socket.join(data.roomId);
+            console.log(`User with ID: ${socket.id} joined room: ${data.roomId}`);
+        })
+
         socket.on('getRouterRtpCapabilities', async (callback) => {
             callback(mediasoupRouter.rtpCapabilities);
         });

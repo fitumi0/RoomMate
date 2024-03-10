@@ -43,9 +43,9 @@ body {
 .btn {
   padding: 0.5rem 0.75rem;
   font-size: 16px;
-  border: 1px solid $green-color;
+  border: 1px solid $salad-color;
   border-radius: 5px;
-  background-color: $green-color;
+  background-color: $salad-color;
   color: $text-color;
   cursor: pointer;
   box-sizing: border-box;
@@ -63,13 +63,14 @@ body {
     opacity: 0.6;
 
     &:hover {
-      background-color: $green-color;
+      background-color: $salad-color;
     }
   }
 }
 
 .btn--invert {
   background-color: $accent-color;
+
 
   &:hover {
     background-color: $salad-color;

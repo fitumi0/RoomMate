@@ -7,7 +7,8 @@
             <div style="width: 50%;">
                 <app-accordion [accordionItems]="forms"></app-accordion>
             </div>
-            <button type="button" class="btn" (click)="logOut()">Log Out</button>
+            <button type="button" class="btn" (click)="auth.logOut()">Log Out</button>
+            <button type="button" class="btn btn--invert" (click)="openDialog()">Delete account</button>
         </section>
     </main>
     <app-footer></app-footer>

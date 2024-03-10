@@ -181,4 +181,22 @@ export class AuthService {
       })
     );
   }
+
+  logOut() {
+    this.store.dispatch(
+      changeUser({ id: '', username: '', email: '', token: '' })
+    );
+    localStorage.removeItem('token');
+    this.isAuthSig.set(false);
+    this.router.navigate(['/']);
+  }
+
+  deleteUser(userUid: string) {
+    return this.http.delete(`/api/user/${userUid}`).pipe(
+      catchError((err) => {
+        this.toastr.error(err.error.message, 'Error');
+        throw new Error(err.message);
+      })
+    );
+  }
 }

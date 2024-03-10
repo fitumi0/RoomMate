@@ -50,7 +50,6 @@ export class SigninFormComponent implements OnDestroy {
           this.toastr.success('Sign in successful', 'Success');
         })
         .add(() => {
-          console.log('Method add called');
           this.isSubmitting = false;
           this.userData.get('email')?.enable();
           this.userData.get('password')?.enable();

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, isDevMode } from '@angular/core';
+import { Component, OnDestroy, OnInit, isDevMode } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CreateRoomComponent } from '../create-room/create-room.component';
 import { StatisticsService } from '../../services/statistics/statistics.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-rooms',
@@ -19,11 +20,12 @@ import { StatisticsService } from '../../services/statistics/statistics.service'
   templateUrl: './rooms.component.html',
   styleUrl: './rooms.component.scss',
 })
-export class RoomsComponent implements OnInit {
+export class RoomsComponent implements OnInit, OnDestroy {
   roomsGroup: FormGroup;
   test: any;
   roomId = 'test';
   activeRooms!: Number;
+  $unsubscribe = new Subject<void>();
 
   constructor(
     private readonly toastr: ToastrService,
@@ -34,6 +36,10 @@ export class RoomsComponent implements OnInit {
     this.roomsGroup = new FormGroup({
       roomUid: new FormControl('', [Validators.required]),
     });
+  }
+  ngOnDestroy(): void {
+    this.$unsubscribe.next();
+    this.$unsubscribe.complete();
   }
 
   ngOnInit(): void {
@@ -63,11 +69,14 @@ export class RoomsComponent implements OnInit {
       data: {},
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        console.log('Received room UID: ', result.uid);
-        // this.router.navigate(['room', result]);
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.$unsubscribe))
+      .subscribe((result) => {
+        if (result) {
+          console.log('Received room UID: ', result.uid);
+          // this.router.navigate(['room', result]);
+        }
+      });
   }
 }

@@ -67,7 +67,6 @@ export class SignupFormComponent implements OnDestroy {
           this.toastr.success('Sign up successful', 'Success');
         })
         .add(() => {
-          console.log('Method add called');
           this.isSubmitting = false;
           this.userData.get('email')?.enable();
           this.userData.get('password')?.enable();

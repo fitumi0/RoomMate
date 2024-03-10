@@ -1,0 +1,17 @@
+<div class="dialog-wrapper">
+    <mat-icon appIconSize="32px" (click)="onExit()" app class="close-icon"
+    >close</mat-icon
+  >
+    <h3 class="title" mat-dialog-title>Delete account</h3>
+    <hr class="hr-divider" />
+      <div mat-dialog-content class="dialog__content dialog__content--block">
+        <h4>Are you sure you want to delete your account?</h4>
+      </div>
+      <hr class="hr-divider" />
+  
+      <div class="dialog__footer" mat-dialog-actions>
+        <button type="button" class="btn btn--invert" (click)="onConfirm()">Yes</button>
+        <button type="button" class="btn" (click)="onExit()">No</button>
+      </div>
+  </div>
+  

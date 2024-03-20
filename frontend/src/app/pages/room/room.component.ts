@@ -1,14 +1,15 @@
 import {
   Component,
   Inject,
+  OnDestroy,
   OnInit,
   PLATFORM_ID,
+  signal,
   afterRender,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { PlayerComponent } from '../../components/player/player.component';
 import { SettingsComponent } from '../../components/settings/settings.component';
 import { Subscription, take } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +18,8 @@ import { RoomService } from '../../services/room/room.service';
 import { SocketService } from '../../services/sockets/socket.service';
 import * as mediasoupClient from 'mediasoup-client';
 import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
+import { Producer, Transport } from 'mediasoup-client/lib/types';
+import { PlayerComponent } from '../../components/player/player.component';
 
 @Component({
   selector: 'app-room',
@@ -25,9 +28,13 @@ import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
   templateUrl: './room.component.html',
   styleUrl: './room.component.scss',
 })
-export class RoomComponent implements OnInit {
+export class RoomComponent implements OnInit, OnDestroy {
+  player!: PlayerComponent;
   roomId: string = '';
   device!: mediasoupClient.Device;
+  stream!: MediaStream;
+  private eventSubscription!: Subscription;
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -37,6 +44,7 @@ export class RoomComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.device = new mediasoupClient.Device();
       (window as any)['device'] = this.device;
+      //   this.player =
     }
   }
 
@@ -51,63 +59,109 @@ export class RoomComponent implements OnInit {
       console.log(`Room UID: ${this.roomId}`);
     });
 
+    this.eventSubscription = this.socketService
+      .onEvent('user-connected')
+      .subscribe((socketId) => {
+        console.log(`User connected with ID: ${socketId}`);
+      });
+
+    this.eventSubscription = this.socketService
+      .onEvent('user-disconnected')
+      .subscribe((socketId) => {
+        console.log(`User disconnected with ID: ${socketId}`);
+      });
+
+    this.eventSubscription = this.socketService
+      .onEvent('newProducer')
+      .subscribe(() => {
+        console.log('New producer created');
+      });
+
     this.socketService.sendMessage('joinRoom', this.roomId);
 
     this.socketService.sendMessage(
       'getRouterRtpCapabilities',
-      (rtpCapabilities: RtpCapabilities) => {
+      async (rtpCapabilities: RtpCapabilities) => {
         console.log('RTP Capabilities: ', rtpCapabilities);
 
-        this.loadDevice(rtpCapabilities);
+        await this.loadDevice(rtpCapabilities);
       }
     );
 
-    this.socketService.sendMessage('createProducerTransport', (params: any) => {
-      if (params.error) {
-        console.error('createProducerTransport: ', params.error);
-      }
+    // this.socketService.sendMessage('createConsumerTransport', (params: any) => {
+    //   if (params.error) {
+    //     console.error('createConsumerTransport: ', params.error);
+    //   }
 
-      console.log('createProducerTransport: ', params);
+    //   console.log('createConsumerTransport: ', params);
 
-      const transport = this.device.createSendTransport(params);
+    //   const transport = this.device.createRecvTransport(params);
 
-      transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
-        try {
-          this.socketService.sendMessage('connectProducerTransport', {
-            transportId: transport.id,
-            dtlsParameters,
-          });
-        } catch (err) {
-          console.error(err);
-        }
-        callback();
-      });
-    });
+    //   transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
+    //     try {
+    //       this.socketService.sendMessage('connectConsumerTransport', {
+    //         transportId: transport.id,
+    //         dtlsParameters,
+    //       });
+    //     } catch (err) {
+    //       console.error(err);
+    //     }
+    //     callback();
+    //   });
 
-    this.socketService.sendMessage('createConsumerTransport', (params: any) => {
-      if (params.error) {
-        console.error('createProducerTransport: ', params.error);
-      }
+    //   this.socketService.sendMessageCallback(
+    //     'consume',
+    //     { rtpCapabilities: this.device.rtpCapabilities },
+    //     async (data: any) => {
+    //       const consumer = await transport.consume({
+    //         id: data.id,
+    //         producerId: data.producerId,
+    //         kind: data.kind,
+    //         rtpParameters: data.rtpParameters,
+    //       });
+    //       const stream = new MediaStream();
+    //       stream.addTrack(consumer.track);
 
-      console.log('createConsumerTransport: ', params);
+    //       console.log(stream);
+    //     }
+    //   );
+    // });
+  }
 
-      const transport = this.device.createSendTransport(params);
-
-      transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
-        try {
-          this.socketService.sendMessage('connectConsumerTransport', {
-            transportId: transport.id,
-            dtlsParameters,
-          });
-        } catch (err) {
-          console.error(err);
-        }
-        callback();
-      });
-    });
+  ngOnDestroy(): void {
+    if (this.eventSubscription) {
+      this.eventSubscription.unsubscribe();
+    }
   }
 
   async loadDevice(routerRtpCapabilities: RtpCapabilities): Promise<void> {
     await this.device.load({ routerRtpCapabilities });
+  }
+
+  async startScreenShare() {
+    this.stream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: true,
+    });
+  }
+
+  async consume(transport: Transport) {
+    const rtpCapabilities = this.device.rtpCapabilities;
+    // emit consume event with data.rtpCapabilities and callback
+    this.socketService.sendMessage('consume', {
+      rtpCapabilities: rtpCapabilities,
+      callback: async (data: any) => {
+        console.log('Consumer created');
+        const consumer = await transport.consume({
+          id: data.id,
+          producerId: data.producerId,
+          kind: data.kind,
+          rtpParameters: data.rtpParameters,
+        });
+        const stream = new MediaStream();
+        stream.addTrack(consumer.track);
+        return stream;
+      },
+    });
   }
 }

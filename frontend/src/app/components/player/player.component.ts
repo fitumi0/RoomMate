@@ -3,6 +3,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  Output,
 } from '@angular/core';
 import 'vidstack/player/styles/default/theme.css';
 import 'vidstack/player/styles/default/layouts/video.css';
@@ -28,7 +29,8 @@ export class PlayerComponent implements OnDestroy {
     this.src = this.url;
   }
   url: string;
-  src!: string;
+  src!: string | MediaStream;
+
   $videoUrlChange = this.store
     .select(videoUrlSelector)
     .pipe(
@@ -38,6 +40,10 @@ export class PlayerComponent implements OnDestroy {
       })
     )
     .subscribe();
+
+  @Output() setStream(stream: MediaStream) {
+    this.src = stream;
+  }
 
   ngOnDestroy(): void {
     this.$videoUrlChange.unsubscribe();

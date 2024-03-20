@@ -27,4 +27,8 @@ export class SocketService {
   public sendMessage(event: string, message: any): void {
     this.socket.emit(event, message);
   }
+
+  public sendMessageCallback(event: string, message: any, callback: any): void {
+    this.socket.emit(event, message, callback);
+  }
 }

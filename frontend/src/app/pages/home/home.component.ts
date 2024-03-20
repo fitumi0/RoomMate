@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { InfoBlockComponent } from '../../../components/home-items/info-block.component';
-import { RoomsComponent } from '../../../components/rooms/rooms.component';
-import { HeaderComponent } from '../../../components/header/header.component';
-import { FooterComponent } from '../../../components/footer/footer.component';
-import { Item } from '../../../types/Item';
+import { InfoBlockComponent } from '../../components/home-items/info-block.component';
+import { RoomsComponent } from '../../components/rooms/rooms.component';
+import { HeaderComponent } from '../../components/header/header.component';
+import { FooterComponent } from '../../components/footer/footer.component';
+import { Item } from '../../types/Item';
 @Component({
   selector: 'app-home',
   standalone: true,

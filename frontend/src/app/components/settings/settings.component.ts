@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProvidersEnum } from './providers.enum';
 import { Store } from '@ngrx/store';
@@ -23,6 +23,7 @@ export class SettingsComponent {
   selectedProvider = ProvidersEnum.YouTube;
   videoUrl = '';
   arrayProvidersWithUrl = [ProvidersEnum.YouTube];
+  @Output() onSetStream = new EventEmitter<string>();
 
   constructor(
     private store: Store,
@@ -47,64 +48,67 @@ export class SettingsComponent {
   }
 
   startScreenShare() {
-    this.socketService.sendMessage(
-      'createProducerTransport',
-      async (params: any) => {
-        if (params.error) {
-          console.error('createProducerTransport: ', params.error);
-        }
+    this.onSetStream.emit("data");
+  
 
-        // console.log('createProducerTransport: ', params);
+    // this.socketService.sendMessage(
+    //   'createProducerTransport',
+    //   async (params: any) => {
+    //     if (params.error) {
+    //       console.error('createProducerTransport: ', params.error);
+    //     }
 
-        const transport = this.device.createSendTransport(params);
+    //     // console.log('createProducerTransport: ', params);
 
-        transport.on(
-          'connect',
-          async ({ dtlsParameters }, callback, errback) => {
-            try {
-              this.socketService.sendMessage('connectProducerTransport', {
-                transportId: transport.id,
-                dtlsParameters,
-              });
-            } catch (err) {
-              console.error(err);
-            }
-            callback();
-          }
-        );
+    //     const transport = this.device.createSendTransport(params);
 
-        transport.on(
-          'produce',
-          async ({ kind, rtpParameters }, callback, errback) => {
-            this.socketService.sendMessageCallback(
-              'produce',
-              {
-                kind,
-                rtpParameters,
-              },
-              (id: any) => {
-                callback({ id });
-              }
-            );
-          }
-        );
+    //     transport.on(
+    //       'connect',
+    //       async ({ dtlsParameters }, callback, errback) => {
+    //         try {
+    //           this.socketService.sendMessage('connectProducerTransport', {
+    //             transportId: transport.id,
+    //             dtlsParameters,
+    //           });
+    //         } catch (err) {
+    //           console.error(err);
+    //         }
+    //         callback();
+    //       }
+    //     );
 
-        const stream = await navigator.mediaDevices.getDisplayMedia({
-          video: true,
-          audio: true,
-        });
+    //     transport.on(
+    //       'produce',
+    //       async ({ kind, rtpParameters }, callback, errback) => {
+    //         this.socketService.sendMessageCallback(
+    //           'produce',
+    //           {
+    //             kind,
+    //             rtpParameters,
+    //           },
+    //           (id: any) => {
+    //             callback({ id });
+    //           }
+    //         );
+    //       }
+    //     );
 
-        transport.produce({
-          track: stream.getVideoTracks()[0],
-        });
+    //     const stream = await navigator.mediaDevices.getDisplayMedia({
+    //       video: true,
+    //       audio: true,
+    //     });
 
-        this.player.setStream(stream);
+    //     transport.produce({
+    //       track: stream.getVideoTracks()[0],
+    //     });
 
-        stream.getVideoTracks()[0].addEventListener('ended', () => {
-          transport.close();
-        });
-      }
-    );
+    //     this.player.setStream(stream);
+
+    //     stream.getVideoTracks()[0].addEventListener('ended', () => {
+    //       transport.close();
+    //     });
+    //   }
+    // );
   }
 
   isValidUrl(url: string): boolean {

@@ -4,10 +4,7 @@
   <main class="main room">
     <section class="player-section">
       <app-player class="player" [stream]="stream"></app-player>
-      <app-settings (onSetStream)="startScreenShare($event)" >
-        [device]="device"
-        [player]="player"
-        class="settings"
+      <app-settings [stream]="stream" [parentSharing]="screenSharing" (onSetStream)="screenShare($event)">
       ></app-settings>
     </section>
   </main>

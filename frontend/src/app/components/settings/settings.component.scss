@@ -1,44 +1,132 @@
 @import '../../../styles.scss';
 
-.settings-wrapper{
+.settings-wrapper {
     background-color: $white;
     width: 100%;
-    background-color: $white;
-    box-shadow: 0 0 10px $accent-color;
+    background-color: $background-color;
     color: $black;
-    border-radius: 5px;
+    border-radius: 0 5px;
     padding: 5px;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
     gap: 15px
 }
 
-.title{
+.title {
     text-align: center;
     margin: 0;
     align-self: center;
 }
 
-.select--start{
+.select--start {
     justify-self: start;
 }
 
 
-.flex-row{
+.flex-row {
     display: flex;
-    gap: 15px;
-}
-
-.input--start{
-    box-sizing: border-box; 
+    gap: 0.5rem;
     width: 100%;
 }
 
+.input--start {
+    box-sizing: border-box;
+}
+
+.input--end {
+    box-sizing: border-box;
+    place-self: end;
+}
 
 @media screen and (max-width: 1140px) {
-    .input--player{
+    .input--player {
         width: 50%;
     }
+}
+
+.label__wrapper--left {
+    background-color: $text-link-hover;
+    border-radius: 5px 0 0 5px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid $accent-color;
+    border-width: 1px 0 1px 1px;
+}
+
+.label__wrapper--right {
+    background-color: $text-link-hover;
+    border-radius: 0 5px 5px 0;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid $accent-color;
+    border-width: 1px 1px 1px 0;
+}
+
+.label__wrapper {
+    display: flex;
+    flex-grow: 1;
+}
+
+.no-left-border {
+    border-radius: 0 5px 5px 0;
+}
+
+.no-right-border {
+    border-radius: 5px 0 0 5px;
+}
+
+.no-border {
+    border-radius: 0;
+}
+
+.btn--border {
+    border: 1px solid $accent-color;
+    border-width: 1px 1px 1px 0;
+    border-radius: 0 5px 5px 0;
+}
+
+.btn--border-black {
+    border: 1px solid $black;
+}
+
+.label--text {
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+.custom-file-input {
+    color: transparent;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.custom-file-input::before {
+    content: 'Pick a file';
+    color: black;
+    display: inline-block;
+    background: $white;
+    border: 1px solid $accent-color;
+    border-radius: 5px 0 0 5px;
+    padding: 10px;
+    font-size: 1.2rem;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    outline: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+}
+
+.custom-file-input:hover::before {
+    border-color: black;
+}
+
+.custom-file-input:active {
+    outline: 0;
+}
+
+.nav-input{
+    width: 100%;
 }

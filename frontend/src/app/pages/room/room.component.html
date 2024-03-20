@@ -1,11 +1,14 @@
 <div class="page-wrapper">
   <app-header></app-header>
   @defer () {
-  <main class="main room">
+    <app-settings [stream]="stream" [parentSharing]="screenSharing" (onSetStream)="screenShare($event)">
+      ></app-settings>
+  <main class="room">
     <section class="player-section">
       <app-player class="player" [stream]="stream"></app-player>
-      <app-settings [stream]="stream" [parentSharing]="screenSharing" (onSetStream)="screenShare($event)">
-      ></app-settings>
+      <div class="chat">
+
+      </div>
     </section>
   </main>
   } @placeholder {

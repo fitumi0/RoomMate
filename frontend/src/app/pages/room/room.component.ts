@@ -6,6 +6,7 @@ import {
   PLATFORM_ID,
   signal,
   afterRender,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -39,6 +40,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private socketService: SocketService,
+    private readonly cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     if (isPlatformBrowser(this.platformId)) {
@@ -128,6 +130,77 @@ export class RoomComponent implements OnInit, OnDestroy {
     // });
   }
 
+  startScreenShare(data: string) {
+    this.socketService.sendMessage(
+      'createProducerTransport',
+      async (params: any) => {
+        if (params.error) {
+          console.error('createProducerTransport: ', params.error);
+        }
+
+        // console.log('createProducerTransport: ', params);
+
+        const transport = this.device.createSendTransport(params);
+
+        transport.on(
+          'connect',
+          async ({ dtlsParameters }, callback, errback) => {
+            try {
+              this.socketService.sendMessage('connectProducerTransport', {
+                transportId: transport.id,
+                dtlsParameters,
+              });
+            } catch (err) {
+              console.error(err);
+            }
+            callback();
+          }
+        );
+
+        transport.on(
+          'produce',
+          async ({ kind, rtpParameters }, callback, errback) => {
+            this.socketService.sendMessageCallback(
+              'produce',
+              {
+                kind,
+                rtpParameters,
+              },
+              (id: any) => {
+                callback({ id });
+              }
+            );
+          }
+        );
+
+        const stream = await navigator.mediaDevices
+          .getDisplayMedia({
+            video: true,
+            audio: true,
+          })
+          .then((stream) => {
+            // stream.getVideoTracks()[0].addEventListener('ended', () => {
+            //   transport.close();
+            // });
+            // return stream
+            this.stream = stream;
+            this.cdr.markForCheck();
+          });
+
+        transport.produce({
+          track: this.stream.getVideoTracks()[0],
+        });
+
+        // this.player.setStream(stream);
+
+        this.stream.getVideoTracks()[0].addEventListener('ended', () => {
+          console.log('ended');
+          transport.close();
+        });
+      }
+    );
+  }
+
   ngOnDestroy(): void {
     if (this.eventSubscription) {
       this.eventSubscription.unsubscribe();
@@ -138,12 +211,12 @@ export class RoomComponent implements OnInit, OnDestroy {
     await this.device.load({ routerRtpCapabilities });
   }
 
-  async startScreenShare() {
-    this.stream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-      audio: true,
-    });
-  }
+  // async startScreenShare() {
+  //   this.stream = await navigator.mediaDevices.getDisplayMedia({
+  //     video: true,
+  //     audio: true,
+  //   });
+  // }
 
   async consume(transport: Transport) {
     const rtpCapabilities = this.device.rtpCapabilities;

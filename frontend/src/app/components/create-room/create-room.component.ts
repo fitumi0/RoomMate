@@ -62,13 +62,15 @@ export class CreateRoomComponent implements OnDestroy {
     this.$unsubscribe.complete();
   }
 
-  onExit(result: UUID): void {
+
+  onExit(result?: UUID): void {
     this.dialogRef.close(result);
 
     if (result) {
       this.router.navigate([`/room/${result}`]);
     }
   }
+  
 
   onSubmit() {
     if (this.roomData.valid) {

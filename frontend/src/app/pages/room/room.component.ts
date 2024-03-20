@@ -13,9 +13,6 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SettingsComponent } from '../../components/settings/settings.component';
 import { Subscription, take } from 'rxjs';
-import { MatIconModule } from '@angular/material/icon';
-import { IconSizeDirective } from '../../directives/icon-size.directive';
-import { RoomService } from '../../services/room/room.service';
 import { SocketService } from '../../services/sockets/socket.service';
 import * as mediasoupClient from 'mediasoup-client';
 import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
@@ -30,10 +27,12 @@ import { PlayerComponent } from '../../components/player/player.component';
   styleUrl: './room.component.scss',
 })
 export class RoomComponent implements OnInit, OnDestroy {
+  stopScreenShare($event: string) {}
   player!: PlayerComponent;
   roomId: string = '';
   device!: mediasoupClient.Device;
   stream!: MediaStream;
+  screenSharing = false;
   private eventSubscription!: Subscription;
 
   constructor(
@@ -129,7 +128,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     // });
   }
 
-  startScreenShare(data: string) {
+  screenShare(data: string) {
     this.socketService.sendMessage(
       'createProducerTransport',
       async (params: any) => {
@@ -177,6 +176,8 @@ export class RoomComponent implements OnInit, OnDestroy {
           })
           .then((stream) => {
             this.stream = stream;
+            console.log('create stream ', this.stream)
+            this.screenSharing = true;
             this.cdr.markForCheck();
           });
 
@@ -187,6 +188,8 @@ export class RoomComponent implements OnInit, OnDestroy {
         this.stream.getVideoTracks()[0].addEventListener('ended', () => {
           console.log('ended');
           transport.close();
+          this.screenSharing = false;
+          this.cdr.markForCheck();
         });
       }
     );

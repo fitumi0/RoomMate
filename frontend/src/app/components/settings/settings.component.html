@@ -14,9 +14,16 @@
       <option value="hls">HLS</option>
     </select>
     <button type="button" class="btn" (click)="clickPlay()">Play</button>
-    <button type="button" class="btn" (click)="startScreenShare()">
-      ScreenShare
+    @if (!screenShared) {
+      <button type="button" class="btn" (click)="startScreenShare()">
+        ScreenShare
     </button>
+    } @else {
+      <button type="button" class="btn btn--invert" (click)="stopScreenShare()">
+        StopScreenShare
+    </button>
+    }
+      
   </div>
   <input
     *ngIf="this.arrayProvidersWithUrl.includes(this.selectedProvider)"

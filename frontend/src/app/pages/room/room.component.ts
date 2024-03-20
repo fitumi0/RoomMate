@@ -30,10 +30,12 @@ import { PlayerComponent } from '../../components/player/player.component';
   styleUrl: './room.component.scss',
 })
 export class RoomComponent implements OnInit, OnDestroy {
+  stopScreenShare($event: string) {}
   player!: PlayerComponent;
   roomId: string = '';
   device!: mediasoupClient.Device;
   stream!: MediaStream;
+  screenSharing = false;
   private eventSubscription!: Subscription;
 
   constructor(
@@ -130,7 +132,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     // });
   }
 
-  startScreenShare(data: string) {
+  screenShare(data: string) {
     this.socketService.sendMessage(
       'createProducerTransport',
       async (params: any) => {
@@ -173,7 +175,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           }
         );
 
-        const stream = await navigator.mediaDevices
+        await navigator.mediaDevices
           .getDisplayMedia({
             video: true,
             audio: true,
@@ -184,6 +186,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             // });
             // return stream
             this.stream = stream;
+            this.screenSharing = true;
             this.cdr.markForCheck();
           });
 
@@ -191,11 +194,11 @@ export class RoomComponent implements OnInit, OnDestroy {
           track: this.stream.getVideoTracks()[0],
         });
 
-        // this.player.setStream(stream);
-
         this.stream.getVideoTracks()[0].addEventListener('ended', () => {
           console.log('ended');
           transport.close();
+          this.screenSharing = false;
+          this.cdr.markForCheck();
         });
       }
     );

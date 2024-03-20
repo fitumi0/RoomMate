@@ -57,9 +57,6 @@ export class PlayerComponent implements OnDestroy, OnChanges {
     )
     .subscribe();
 
-  @Output() setStream(stream: MediaStream) {
-    this.src = stream;
-  }
 
   ngOnDestroy(): void {
     this.$videoUrlChange.unsubscribe();

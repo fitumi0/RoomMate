@@ -1,15 +1,17 @@
-<div  class="page-wrapper">
+<div class="page-wrapper">
   <app-header></app-header>
   @defer () {
   <main class="main room">
     <section class="player-section">
       <app-player class="player"></app-player>
-      <app-settings class="settings"></app-settings>
+      <app-settings
+        [device]="device"
+        [player]="player"
+        class="settings"
+      ></app-settings>
     </section>
   </main>
   } @placeholder {
   <div class="loader loader--fixed"></div>
   }
 </div>
-
-

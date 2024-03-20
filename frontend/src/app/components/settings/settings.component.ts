@@ -8,11 +8,13 @@ import { ToastrService } from 'ngx-toastr';
 import { SocketService } from '../../services/sockets/socket.service';
 import * as mediasoupClient from 'mediasoup-client';
 import { PlayerComponent } from '../player/player.component';
+import { MatIconModule } from '@angular/material/icon';
+import { IconSizeDirective } from '../../directives/icon-size.directive';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule, IconSizeDirective],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
 })
@@ -30,7 +32,7 @@ export class SettingsComponent implements OnChanges {
     private store: Store,
     private readonly toastr: ToastrService,
     private socketService: SocketService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
   ) {}
   ngOnChanges(changes: SimpleChanges): void {
     if (

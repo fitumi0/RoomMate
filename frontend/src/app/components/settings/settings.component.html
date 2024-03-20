@@ -1,35 +1,31 @@
-<div class="settings-wrapper">
-  <h2 class="title">Settings</h2>
+<nav class="settings-wrapper">
   <div class="flex-row">
-    <select
-      class="select select--start"
-      name="provider-select"
-      id="provider-select"
-      [(ngModel)]="selectedProvider"
-      title="Select provider"
-    >
-      <option value="youtube">Youtube</option>
-      <option value="vimeo">Vimeo</option>
-      <option value="video">Video</option>
-      <option value="hls">HLS</option>
-    </select>
-    <button type="button" class="btn" (click)="clickPlay()">Play</button>
+    <div class="label__wrapper">
+      <div class="label__wrapper--left">
+        <label for="videoUrl" class="label--text">Now wathcing: </label>
+      </div>
+      <input *ngIf="this.arrayProvidersWithUrl.includes(this.selectedProvider)" type="text" name="videoUrl"
+        id="videoUrl" class="nav-input input input--start input--player no-border" placeholder="URL" [(ngModel)]="videoUrl" />
+      <button type="button" class="btn no-left-border btn--border" (click)="clickPlay()"><mat-icon
+          appIconSize="24px">done</mat-icon></button>
+    </div>
+    <button type="button" class="btn btn--border-black" style="display: flex; align-items: center; gap: 5px;"><mat-icon
+        appIconSize="24px">format_list_bulleted</mat-icon> Playlist</button>
     @if (!screenShared) {
-      <button type="button" class="btn" (click)="startScreenShare()">
-        ScreenShare
+    <button type="button" class="btn btn--border-black" (click)="startScreenShare()">
+      ScreenShare
     </button>
     } @else {
-      <button type="button" class="btn btn--invert" (click)="stopScreenShare()">
-        StopScreenShare
+    <button type="button" class="btn btn--invert btn--border-black" (click)="stopScreenShare()">
+      StopScreenShare
     </button>
     }
-      
+    <div class="label__wrapper">
+      <input type="file" name="customFile" id="customFile" class="nav-input custom-file-input no-right-border" placeholder="ПОТОМ ПЕРЕДЕЛАЮ НА ФАЙЛ ИНПУТ" />
+      <div class="label__wrapper--right">
+        <label class="label--text" for="customFile">Browse</label>
+      </div>
+    </div>
   </div>
-  <input
-    *ngIf="this.arrayProvidersWithUrl.includes(this.selectedProvider)"
-    type="text"
-    class="input input--start input--player"
-    placeholder="URL"
-    [(ngModel)]="videoUrl"
-  />
-</div>
+
+</nav>

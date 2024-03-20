@@ -4,7 +4,7 @@
     width: 100%;
     height: auto;
     display: grid;
-    grid-template-columns: 5fr 1fr;
+    grid-template-columns: 4fr 1fr;
     gap: 10px;
 }
 
@@ -28,3 +28,9 @@
 }
 
 
+.chat{
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: $white;
+}

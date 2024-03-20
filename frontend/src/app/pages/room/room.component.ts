@@ -46,7 +46,6 @@ export class RoomComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.device = new mediasoupClient.Device();
       (window as any)['device'] = this.device;
-      //   this.player =
     }
   }
 
@@ -138,8 +137,6 @@ export class RoomComponent implements OnInit, OnDestroy {
           console.error('createProducerTransport: ', params.error);
         }
 
-        // console.log('createProducerTransport: ', params);
-
         const transport = this.device.createSendTransport(params);
 
         transport.on(
@@ -173,16 +170,12 @@ export class RoomComponent implements OnInit, OnDestroy {
           }
         );
 
-        const stream = await navigator.mediaDevices
+        await navigator.mediaDevices
           .getDisplayMedia({
             video: true,
             audio: true,
           })
           .then((stream) => {
-            // stream.getVideoTracks()[0].addEventListener('ended', () => {
-            //   transport.close();
-            // });
-            // return stream
             this.stream = stream;
             this.cdr.markForCheck();
           });
@@ -190,8 +183,6 @@ export class RoomComponent implements OnInit, OnDestroy {
         transport.produce({
           track: this.stream.getVideoTracks()[0],
         });
-
-        // this.player.setStream(stream);
 
         this.stream.getVideoTracks()[0].addEventListener('ended', () => {
           console.log('ended');
@@ -211,16 +202,8 @@ export class RoomComponent implements OnInit, OnDestroy {
     await this.device.load({ routerRtpCapabilities });
   }
 
-  // async startScreenShare() {
-  //   this.stream = await navigator.mediaDevices.getDisplayMedia({
-  //     video: true,
-  //     audio: true,
-  //   });
-  // }
-
   async consume(transport: Transport) {
     const rtpCapabilities = this.device.rtpCapabilities;
-    // emit consume event with data.rtpCapabilities and callback
     this.socketService.sendMessage('consume', {
       rtpCapabilities: rtpCapabilities,
       callback: async (data: any) => {

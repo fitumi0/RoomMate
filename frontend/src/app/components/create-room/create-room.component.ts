@@ -16,6 +16,8 @@ import { userSelector } from '../../reducers/user';
 import { IUser } from '../../interfaces/IUser';
 import { Subject, Subscription, delay, takeUntil } from 'rxjs';
 import { IRoomUid } from '../../interfaces/IRoomUid';
+import { Router } from '@angular/router';
+import { UUID } from 'crypto';
 
 @Component({
   selector: 'app-create-room',
@@ -34,9 +36,9 @@ export class CreateRoomComponent implements OnDestroy {
   user: IUser | undefined;
   isSubmitting = false;
   private $unsubscribe = new Subject<void>();
-  private result: IRoomUid | undefined;
   constructor(
     public readonly dialogRef: MatDialogRef<CreateRoomComponent>,
+    private readonly router: Router,
     private readonly toastr: ToastrService,
     private readonly roomService: RoomService,
     private readonly store: Store,
@@ -60,8 +62,12 @@ export class CreateRoomComponent implements OnDestroy {
     this.$unsubscribe.complete();
   }
 
-  onExit(result?: IRoomUid): void {
+  onExit(result: UUID): void {
     this.dialogRef.close(result);
+
+    if (result) {
+      this.router.navigate([`/room/${result}`]);
+    }
   }
 
   onSubmit() {
@@ -76,10 +82,11 @@ export class CreateRoomComponent implements OnDestroy {
           creatorId: this.user?.id ? this.user?.id : '',
         })
         .pipe(takeUntil(this.$unsubscribe))
-        .subscribe((result) => {
-          this.toastr.success('Room created', 'Success');
-          this.result = result as IRoomUid;
-          this.onExit(this.result);
+        .subscribe((result: any) => {
+          console.log('result', result);
+
+          this.toastr.success(`Room created with id ${result.id}`, 'Success');
+          this.onExit(result.id);
         })
         .add(() => {
           this.isSubmitting = false;

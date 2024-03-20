@@ -309,10 +309,6 @@ async function createExpressApp() {
         });
 
         res.status(200);
-
-        // res.send(
-        // 
-        // )
     });
 
     /**
@@ -327,14 +323,9 @@ async function createExpressApp() {
      *         description: Success
      */
     expressApp.get('/api/get-active-rooms', async (req, res) => {
-        const activeRooms = await prisma.room.count({
-            where: {
-                public: true,
-                deleted: false
-            }
-        });
-
-        res.status(200).json({ "activeRooms": activeRooms });
+        const activeRooms = socketServer.sockets.adapter.rooms;
+        // to see rooms: Object.fromEntries(activeRooms)
+        res.status(200).json({ "activeRooms": activeRooms.size });
     })
 
     const swaggerDocs = swaggerJsDoc(config.swaggerOptions);
@@ -356,14 +347,16 @@ async function createHttpServer() {
 async function createSocketServer() {
     socketServer = new Server(httpServer, {
         cors: config.corsOptions
-
     });
 
     socketServer.on('connection', (socket) => {
-        socket.on('join-room', async (data) => {
-            socket.join(data.roomId);
-            console.log(`User with ID: ${socket.id} joined room: ${data.roomId}`);
+        socket.on('joinRoom', async (roomId) => {
+            socket.join(roomId);
+            socket.to(roomId).emit('user-connected', socket.id);
+            console.log(`User with ID: ${socket.id} joined room: ${roomId}`);
         })
+
+
 
         socket.on('getRouterRtpCapabilities', async (callback) => {
             callback(mediasoupRouter.rtpCapabilities);
@@ -393,12 +386,12 @@ async function createSocketServer() {
 
         socket.on('connectProducerTransport', async (data, callback) => {
             await producerTransport.connect({ dtlsParameters: data.dtlsParameters });
-            callback();
+            // callback();
         });
 
         socket.on('connectConsumerTransport', async (data, callback) => {
             await consumerTransport.connect({ dtlsParameters: data.dtlsParameters });
-            callback();
+            // callback();
         });
 
         socket.on('produce', async (data, callback) => {

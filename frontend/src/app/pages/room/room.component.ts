@@ -27,7 +27,7 @@ import { PlayerComponent } from '../../components/player/player.component';
   styleUrl: './room.component.scss',
 })
 export class RoomComponent implements OnInit, OnDestroy {
-  stopScreenShare($event: string) {}
+  stopScreenShare() {}
   player!: PlayerComponent;
   roomId: string = '';
   device!: mediasoupClient.Device;
@@ -45,6 +45,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.device = new mediasoupClient.Device();
       (window as any)['device'] = this.device;
+      (window as any)['stream'] = this.stream;
     }
   }
 
@@ -53,28 +54,79 @@ export class RoomComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('Room component initialized');
     this.route.params.subscribe((params) => {
       this.roomId = params['uid'];
-      console.log(`Room UID: ${this.roomId}`);
+      //   console.log(`Room UID: ${this.roomId}`);
     });
 
     this.eventSubscription = this.socketService
       .onEvent('user-connected')
       .subscribe((socketId) => {
-        console.log(`User connected with ID: ${socketId}`);
+        // console.log(`User connected with ID: ${socketId}`);
       });
 
     this.eventSubscription = this.socketService
       .onEvent('user-disconnected')
       .subscribe((socketId) => {
-        console.log(`User disconnected with ID: ${socketId}`);
+        // console.log(`User disconnected with ID: ${socketId}`);
       });
 
     this.eventSubscription = this.socketService
       .onEvent('newProducer')
       .subscribe(() => {
-        console.log('New producer created');
+        // console.log('New producer created');
+
+        this.socketService.sendMessage(
+          'createConsumerTransport',
+          (params: any) => {
+            if (params.error) {
+              console.error('createConsumerTransport: ', params.error);
+            }
+
+            // console.log('createConsumerTransport: ', params);
+
+            const transport = this.device.createRecvTransport(params);
+
+            transport.on(
+              'connect',
+              async ({ dtlsParameters }, callback, errback) => {
+                try {
+                  this.socketService.sendMessage('connectConsumerTransport', {
+                    transportId: transport.id,
+                    dtlsParameters,
+                  });
+                } catch (err) {
+                  console.error(err);
+                }
+                callback();
+              }
+            );
+
+            this.socketService.sendMessageCallback(
+              'consume',
+              { rtpCapabilities: this.device.rtpCapabilities },
+              async (data: any) => {
+                const consumer = await transport.consume({
+                  id: data.id,
+                  producerId: data.producerId,
+                  kind: data.kind,
+                  rtpParameters: data.rtpParameters,
+                });
+
+                const stream = new MediaStream();
+                stream.addTrack(consumer.track);
+
+                this.stream = stream;
+                this.cdr.markForCheck();
+
+                console.log('shared stream:', {
+                  this: this.stream,
+                  current: stream,
+                });
+              }
+            );
+          }
+        );
       });
 
     this.socketService.sendMessage('joinRoom', this.roomId);
@@ -82,53 +134,12 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.socketService.sendMessage(
       'getRouterRtpCapabilities',
       async (rtpCapabilities: RtpCapabilities) => {
-        console.log('RTP Capabilities: ', rtpCapabilities);
-
         await this.loadDevice(rtpCapabilities);
       }
     );
-
-    // this.socketService.sendMessage('createConsumerTransport', (params: any) => {
-    //   if (params.error) {
-    //     console.error('createConsumerTransport: ', params.error);
-    //   }
-
-    //   console.log('createConsumerTransport: ', params);
-
-    //   const transport = this.device.createRecvTransport(params);
-
-    //   transport.on('connect', async ({ dtlsParameters }, callback, errback) => {
-    //     try {
-    //       this.socketService.sendMessage('connectConsumerTransport', {
-    //         transportId: transport.id,
-    //         dtlsParameters,
-    //       });
-    //     } catch (err) {
-    //       console.error(err);
-    //     }
-    //     callback();
-    //   });
-
-    //   this.socketService.sendMessageCallback(
-    //     'consume',
-    //     { rtpCapabilities: this.device.rtpCapabilities },
-    //     async (data: any) => {
-    //       const consumer = await transport.consume({
-    //         id: data.id,
-    //         producerId: data.producerId,
-    //         kind: data.kind,
-    //         rtpParameters: data.rtpParameters,
-    //       });
-    //       const stream = new MediaStream();
-    //       stream.addTrack(consumer.track);
-
-    //       console.log(stream);
-    //     }
-    //   );
-    // });
   }
 
-  screenShare(data: string) {
+  screenShare() {
     this.socketService.sendMessage(
       'createProducerTransport',
       async (params: any) => {
@@ -169,6 +180,28 @@ export class RoomComponent implements OnInit, OnDestroy {
           }
         );
 
+        transport.on('connectionstatechange', async (state) => {
+          switch (state) {
+            case 'connecting':
+              console.log('Connecting...');
+
+              break;
+
+            case 'connected':
+              console.log('Connected');
+              this.socketService.sendMessage('resume', null);
+              break;
+
+            case 'failed':
+              transport.close();
+              console.log('Failed');
+              break;
+
+            default:
+              break;
+          }
+        });
+
         await navigator.mediaDevices
           .getDisplayMedia({
             video: true,
@@ -176,7 +209,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           })
           .then((stream) => {
             this.stream = stream;
-            console.log('create stream ', this.stream)
+            console.log('create stream ', this.stream);
             this.screenSharing = true;
             this.cdr.markForCheck();
           });
@@ -184,6 +217,8 @@ export class RoomComponent implements OnInit, OnDestroy {
         transport.produce({
           track: this.stream.getVideoTracks()[0],
         });
+
+        console.log('transport produce');
 
         this.stream.getVideoTracks()[0].addEventListener('ended', () => {
           console.log('ended');

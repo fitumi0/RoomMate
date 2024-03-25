@@ -35,10 +35,10 @@ export class PlayerComponent implements OnDestroy, OnChanges {
     this.src = this.url;
   }
   ngOnChanges(changes: SimpleChanges): void {
-    
     if (changes['stream'] && !changes['stream'].firstChange) {
       console.log('From player onChanges: ', changes['stream'].currentValue);
-      this.playerElement.nativeElement.src = changes['stream'].currentValue as MediaStream
+      this.playerElement.nativeElement.src = changes['stream']
+        .currentValue as MediaStream;
       this.playerElement.nativeElement.autoplay = true;
     }
   }
@@ -56,7 +56,6 @@ export class PlayerComponent implements OnDestroy, OnChanges {
       })
     )
     .subscribe();
-
 
   ngOnDestroy(): void {
     this.$videoUrlChange.unsubscribe();

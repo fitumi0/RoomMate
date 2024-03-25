@@ -136,7 +136,13 @@ export class RoomComponent implements OnInit, OnDestroy {
         );
       });
 
-    this.socketService.sendMessage('joinRoom', this.roomId);
+    this.socketService.sendMessageCallback(
+      'joinRoom',
+      this.roomId,
+      (roomId: string) => {
+        console.log(roomId);
+      }
+    );
 
     this.socketService.sendMessage(
       'getRouterRtpCapabilities',

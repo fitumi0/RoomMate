@@ -79,6 +79,8 @@ export class SettingsComponent implements OnChanges {
   stopScreenShare() {
     console.log('stop screen share ', this.stream);
     this.stream?.getVideoTracks()[0].stop();
+    this.stream?.getVideoTracks()[0].dispatchEvent(new Event('ended'));
+    this.stream = null;
     this.screenShared = false;
     this.cdr.markForCheck();
   }

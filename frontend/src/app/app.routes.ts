@@ -21,7 +21,8 @@ export const routes: Routes = [
   },
   {
     path: 'room/:uid',
-    component: RoomComponent,
+    loadComponent: () => 
+    import('./pages/room/room.component').then((m) => m.RoomComponent),
     canActivate: [roomValidateGuard()],
     title: 'Room',
   },

@@ -184,7 +184,7 @@ export class AuthService {
 
   logOut() {
     this.store.dispatch(
-      changeUser({ id: '', username: '', email: '', token: '' })
+      changeUser({ id: '', username: '', email: '', token: '' , name: '' })
     );
     localStorage.removeItem('token');
     this.isAuthSig.set(false);

@@ -26,6 +26,7 @@ export class RoomsComponent implements OnInit, OnDestroy {
   roomId = 'test';
   activeRooms!: Number;
   $unsubscribe = new Subject<void>();
+  isSubmitting = false;
 
   constructor(
     private readonly toastr: ToastrService,
@@ -43,9 +44,12 @@ export class RoomsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.statisticsService.getActiveRooms().subscribe((data: any) => {
-      this.activeRooms = data.activeRooms;
-    });
+    this.statisticsService
+      .getActiveRooms()
+      .pipe(takeUntil(this.$unsubscribe))
+      .subscribe((data: any) => {
+        this.activeRooms = data.activeRooms;
+      });
   }
 
   onSubmit() {
@@ -57,7 +61,9 @@ export class RoomsComponent implements OnInit, OnDestroy {
         );
       }
       this.router.navigate(['room', this.roomsGroup.get('roomUid')?.value]);
+      this.isSubmitting = false;
     } else {
+      this.isSubmitting = false;
       this.toastr.error('Invalid room ID', 'Error');
     }
   }

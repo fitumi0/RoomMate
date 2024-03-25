@@ -1,5 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProvidersEnum } from './providers.enum';
 import { Store } from '@ngrx/store';
@@ -32,7 +42,7 @@ export class SettingsComponent implements OnChanges {
     private store: Store,
     private readonly toastr: ToastrService,
     private socketService: SocketService,
-    private readonly cdr: ChangeDetectorRef,
+    private readonly cdr: ChangeDetectorRef
   ) {}
   ngOnChanges(changes: SimpleChanges): void {
     if (
@@ -41,7 +51,7 @@ export class SettingsComponent implements OnChanges {
       changes['parentSharing'].currentValue
     ) {
       this.screenShared = true;
-    } else if (!changes['parentSharing'].currentValue) {
+    } else {
       this.screenShared = false;
     }
   }
@@ -63,15 +73,15 @@ export class SettingsComponent implements OnChanges {
   }
 
   startScreenShare() {
-    this.onSetStream.emit("data");
+    this.onSetStream.emit('data');
   }
 
   stopScreenShare() {
-    console.log("stop screen share ", this.stream)
+    console.log('stop screen share ', this.stream);
     this.stream?.getVideoTracks()[0].stop();
     this.screenShared = false;
     this.cdr.markForCheck();
-    }
+  }
 
   isValidUrl(url: string): boolean {
     const urlPattern = /^https?:\/\/\S+$/;

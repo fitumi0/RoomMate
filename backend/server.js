@@ -350,14 +350,14 @@ async function createSocketServer() {
     });
 
     socketServer.on('connection', (socket) => {
-        socket.on('joinRoom', async (roomId) => {
+        socket.on('joinRoom', async (roomId, callback) => {
             socket.join(roomId);
             socket.to(roomId).emit('user-connected', socket.id);
             console.log(`User with ID: ${socket.id} joined room: ${roomId}`);
+            callback(roomId);
         })
 
-
-
+        // #region WebRTC
         socket.on('getRouterRtpCapabilities', async (callback) => {
             callback(mediasoupRouter.rtpCapabilities);
         });
@@ -407,11 +407,22 @@ async function createSocketServer() {
             callback(await createConsumer(producer, data.rtpCapabilities));
         });
 
-        socket.on('resume', async (data, callback) => {
+        socket.on('resume', async () => {
             await consumer.resume();
-            callback();
+            console.log("resumed");
         });
 
+        //#endregion
+
+        // #region Chat
+
+        socket.on("message", (data) => {
+            console.log(data);
+            console.log(data.roomId)
+            socket.to(data.roomId).emit("message", data);
+        })
+
+        // #endregion
     })
 }
 

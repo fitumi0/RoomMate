@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { IconSizeDirective } from '../../directives/icon-size.directive';
 import {
@@ -10,7 +10,10 @@ import {
 import { CommonModule } from '@angular/common';
 import { IMessage } from '../../interfaces/IMessage';
 import { SocketService } from '../../services/sockets/socket.service';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { userSelector } from '../../reducers/user';
 
 @Component({
   selector: 'app-chat',
@@ -25,12 +28,17 @@ import { Subscription } from 'rxjs';
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent implements OnInit {
-  private eventSubscription!: Subscription;
   messages: IMessage[] = [];
   msgData: FormGroup;
+  @Input() roomId: string = '';
+  userId: string | undefined = '';
+  userName: string | undefined = '';
+  subscriptionOnSocketMessage: Subscription | undefined;
   constructor(
     private socketService: SocketService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly store: Store
   ) {
     this.msgData = new FormGroup({
       msg: new FormControl('', Validators.required),
@@ -38,14 +46,22 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.eventSubscription = this.socketService
+    this.subscriptionOnSocketMessage = this.socketService
       .onEvent('message')
       .subscribe((data) => {
         console.log(data);
-
         this.addMessage(data);
-
         this.cdr.detectChanges();
+      });
+
+    this.store
+      .select(userSelector)
+      .pipe(take(1))
+      .subscribe((user) => {
+        if (user) {
+          this.userId = user.id;
+          this.userName = user.name || undefined;
+        }
       });
   }
 
@@ -54,15 +70,15 @@ export class ChatComponent implements OnInit {
   }
 
   onSubmit() {
-    let data = {
-      roomId: '9ac8bcea-4707-4471-b7ba-c037196ee49e',
-      senderId: '1',
-      senderName: 'testUser',
+    const data: IMessage = {
+      roomId: this.roomId,
+      senderId: this.userId,
+      senderName: this.userName,
       text: this.msgData.controls['msg'].value,
       date: new Date(),
     };
     this.socketService.sendMessage('message', data);
-
     this.addMessage(data);
+    this.msgData.controls['msg'].setValue('');
   }
 }

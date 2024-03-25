@@ -63,7 +63,6 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     this.route.params.subscribe((params) => {
       this.roomId = params['uid'];
-      //   console.log(`Room UID: ${this.roomId}`);
     });
 
     this.eventSubscription = this.socketService

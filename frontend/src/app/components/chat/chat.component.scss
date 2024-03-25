@@ -12,10 +12,10 @@
 }
 
 .chat__title {
-    margin: 0.5rem 0;
+    margin: 0;
     font-size: 1.5rem;
     text-align: center;
-    border-bottom: 1px solid black;
+    box-shadow: 0 0 5px $black;
 }
 
 .chat__footer {
@@ -26,11 +26,13 @@
 }
 
 .chat__content {
+    height: 100px;
     padding: 0.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     overflow-y: auto;
+    flex-grow: 1;
 }
 
 .input--message {
@@ -48,7 +50,6 @@
     border-radius: 0.5rem;
     padding: 0.25rem;
     font-size: 0.8rem;
-
 }
 
 .message-container__header {
@@ -59,6 +60,10 @@
     & h4 {
         margin: 0;
     }
+
+    & p {
+        margin: 0;
+    }
 }
 
 .message-container__body {
@@ -66,6 +71,20 @@
 
     & p {
         margin: 0;
+        word-wrap: break-word;
+        word-break: break-all;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        overflow: auto;
+        float: left;
+        white-space: pre-wrap;
     }
 
+}
+
+.message-container--my{
+    background-color: $my-msg-bg;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+    font-size: 0.8rem;
 }

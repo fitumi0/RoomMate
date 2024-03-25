@@ -1,0 +1,71 @@
+@import '../../../styles.scss';
+
+.chat {
+    width: 100%;
+    height: 100%;
+    background-color: $white;
+    border: 1px solid $black;
+    border-radius: 5px;
+    color: $black;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat__title {
+    margin: 0.5rem 0;
+    font-size: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+
+.chat__footer {
+    display: flex;
+    padding: 0.5rem;
+    gap: 0.5rem;
+    box-shadow: 0 0 5px $black;
+}
+
+.chat__content {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+}
+
+.input--message {
+    width: 100%;
+    resize: none;
+    font-size: 0.8rem;
+}
+
+.btn--message {
+    border: 1px solid $black;
+}
+
+.message-container {
+    background-color: $another-msg-bg;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+    font-size: 0.8rem;
+
+}
+
+.message-container__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    & h4 {
+        margin: 0;
+    }
+}
+
+.message-container__body {
+    padding: 0.25rem 0.5rem;
+
+    & p {
+        margin: 0;
+    }
+
+}

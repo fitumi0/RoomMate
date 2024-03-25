@@ -1,0 +1,24 @@
+<div class="chat">
+    <h3 class="chat__title">Chat</h3>
+    <div class="chat__content" >
+        <div *ngFor="let message of messagesTest"  class="message-container">
+            <div class="message-container__header">
+                <h4>{{ message.senderName }}</h4>
+                <p>{{ message.date | date: 'short' }}</p>
+            </div>
+            <div class="message-container__body">
+
+                <p>{{ message.text }}</p>
+            </div>
+        </div>
+    </div>
+    <form class="chat__footer" [formGroup]="msgData" (ngSubmit)="onSubmit()">
+
+        <textarea name="msg-input" id="msg-input" rows="1" class="input input--message"
+            formControlName="msg"></textarea>
+
+        <button [disabled]="!msgData.valid || !msgData.controls['msg'].value.trim()" type="submit"
+            class="btn btn--invert btn--message"><mat-icon [appIconSize]="'24px'">arrow_forward</mat-icon></button>
+    </form>
+
+</div>

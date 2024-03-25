@@ -18,11 +18,18 @@ import * as mediasoupClient from 'mediasoup-client';
 import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
 import { Producer, Transport } from 'mediasoup-client/lib/types';
 import { PlayerComponent } from '../../components/player/player.component';
+import { ChatComponent } from '../../components/chat/chat.component';
 
 @Component({
   selector: 'app-room',
   standalone: true,
-  imports: [HeaderComponent, CommonModule, PlayerComponent, SettingsComponent],
+  imports: [
+    HeaderComponent,
+    CommonModule,
+    PlayerComponent,
+    SettingsComponent,
+    ChatComponent,
+  ],
   templateUrl: './room.component.html',
   styleUrl: './room.component.scss',
 })
@@ -176,7 +183,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           })
           .then((stream) => {
             this.stream = stream;
-            console.log('create stream ', this.stream)
+            console.log('create stream ', this.stream);
             this.screenSharing = true;
             this.cdr.markForCheck();
           });

@@ -9,6 +9,7 @@
     color: $black;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .chat__title {
@@ -82,9 +83,55 @@
 
 }
 
-.message-container--my{
+.message-container--my {
     background-color: $my-msg-bg;
     border-radius: 0.5rem;
     padding: 0.25rem;
     font-size: 0.8rem;
+}
+
+.show-toggle {
+    height: 2rem;
+    width: 2rem;
+    background-color: $white;
+    border: 1px solid $black;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+
+.show-toggle__icon {
+    position: relative;
+    right: 2px;
+}
+
+.d-none{
+    display: none;
+    animation-name: slide;
+    animation-duration: 1s;
+}
+
+.d-block{
+    display: block;
+}
+.opacity-0{
+    opacity: 0;
+}
+
+.opacity-1{
+    opacity: 1;
+}
+
+.zeroing{
+    margin: 0;
+    padding: 0;
+    background-color: $background-color;
+    border: none;
 }

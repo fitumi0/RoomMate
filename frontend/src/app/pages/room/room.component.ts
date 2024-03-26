@@ -41,6 +41,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   stream!: MediaStream;
   screenSharing = false;
   private eventSubscription!: Subscription;
+  showChat = true;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -269,5 +270,10 @@ export class RoomComponent implements OnInit, OnDestroy {
         return stream;
       },
     });
+  }
+
+  toggleChat($event: boolean) {
+    this.showChat = $event;
+    this.cdr.markForCheck();
   }
 }

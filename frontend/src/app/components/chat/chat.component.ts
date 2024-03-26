@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { IconSizeDirective } from '../../directives/icon-size.directive';
 import {
@@ -33,6 +40,8 @@ export class ChatComponent implements OnInit {
   @Input() roomId: string = '';
   userId: string | undefined = '';
   userName: string | undefined = '';
+  showChat: boolean = true;
+  @Output() onShowChat = new EventEmitter<boolean>();
   subscriptionOnSocketMessage: Subscription | undefined;
   constructor(
     private socketService: SocketService,
@@ -49,7 +58,6 @@ export class ChatComponent implements OnInit {
     this.subscriptionOnSocketMessage = this.socketService
       .onEvent('message')
       .subscribe((data) => {
-        console.log(data);
         this.addMessage(data);
         this.cdr.detectChanges();
       });
@@ -80,5 +88,10 @@ export class ChatComponent implements OnInit {
     this.socketService.sendMessage('message', data);
     this.addMessage(data);
     this.msgData.controls['msg'].setValue('');
+  }
+
+  toggleShow() {
+    this.showChat = !this.showChat;
+    this.onShowChat.emit(this.showChat);
   }
 }

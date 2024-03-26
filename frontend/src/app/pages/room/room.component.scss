@@ -6,36 +6,20 @@
     display: grid;
     grid-template-columns: 4fr 1fr;
     gap: 10px;
+    transition: all 0.15s linear;
 }
 
 .player-section--no-chat {
-    width: 100%;
-    height: auto;
-    display: flex;
-    gap: 10px;
-    animation-name: slidein;
-    animation-duration: 1s;
+    grid-template-columns: 5fr 0fr;
 }
 
-// @keyframes slidein {
-//     from {
-//         display: grid;
-//         grid-template-columns: 4fr 1fr;
-//         gap: 10px;
-//     }
-
-//     to {
-//         display: flex;
-//         gap: 1rem;
-//     }
-// }
 
 .d-none {
     display: none;
 }
 
 .player {
-    flex-grow: 1;
+    width: 100%;
 }
 
 .room {
@@ -57,4 +41,8 @@
 
 .w-1 {
     width: 1rem;
+}
+
+.w-100 {
+    width: 100%;
 }

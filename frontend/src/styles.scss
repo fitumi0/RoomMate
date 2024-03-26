@@ -7,6 +7,8 @@ $accent-color: #111214;
 $secondary-accent-color: #232428;
 $background-color: #313338;
 $text-color: #ebf2fa;
+$gray: #b2b2b0;
+$light-gray: #e0e0dd;
 $text-link-hover: #b2b2b0;
 // $pink-color: #ffadad;
 // $orange-color: #ffd6a5;
@@ -28,6 +30,7 @@ body {
   width: 100%;
   color: $text-color;
   margin: 0;
+  scrollbar-gutter: stable;
 }
 
 .page-wrapper {

@@ -21,6 +21,7 @@ import { Subscription, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { userSelector } from '../../reducers/user';
+import { OptionsEnum } from './options.enum';
 
 @Component({
   selector: 'app-chat',
@@ -43,6 +44,8 @@ export class ChatComponent implements OnInit {
   showChat: boolean = true;
   @Output() onShowChat = new EventEmitter<boolean>();
   subscriptionOnSocketMessage: Subscription | undefined;
+  selectedOption: OptionsEnum = OptionsEnum.Chat;
+  optionsEnum = OptionsEnum;
   constructor(
     private socketService: SocketService,
     private cdr: ChangeDetectorRef,
@@ -93,5 +96,9 @@ export class ChatComponent implements OnInit {
   toggleShow() {
     this.showChat = !this.showChat;
     this.onShowChat.emit(this.showChat);
+  }
+
+  setSelectedOption(option: OptionsEnum) {
+    this.selectedOption = option;
   }
 }

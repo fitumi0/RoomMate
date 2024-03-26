@@ -20,6 +20,7 @@ import { Store } from '@ngrx/store';
 import { videoUrlSelector } from '../../reducers/videoUrl';
 import { CommonModule } from '@angular/common';
 import { tap } from 'rxjs';
+import { MediaPlayerElement, MediaProviderElement } from 'vidstack/elements';
 
 @Component({
   selector: 'app-player',
@@ -39,10 +40,12 @@ export class PlayerComponent implements OnDestroy, OnChanges {
       console.log('From player onChanges: ', changes['stream'].currentValue);
       this.playerElement.nativeElement.src = changes['stream']
         .currentValue as MediaStream;
-      this.playerElement.nativeElement.autoplay = true;
+      this.playerElement.nativeElement.autoPlay = true;
+      this.cdr.detectChanges();
     }
   }
-  @ViewChild('playerElement') playerElement!: ElementRef;
+  @ViewChild('playerElement') playerElement!: ElementRef<MediaPlayerElement>;
+  @ViewChild('playerProvider') playerProvider!: ElementRef<MediaProviderElement>;
   url: string;
   src!: string | MediaStream;
   @Input() stream: MediaStream | null = null;

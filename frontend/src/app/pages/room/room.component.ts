@@ -124,7 +124,7 @@ export class RoomComponent implements OnInit, OnDestroy {
                 stream.addTrack(consumer.track);
 
                 this.stream = stream;
-                this.cdr.markForCheck();
+                this.cdr.detectChanges();
 
                 console.log('shared stream:', {
                   this: this.stream,

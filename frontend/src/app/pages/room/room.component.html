@@ -5,7 +5,7 @@
     ></app-settings>
   <main class="room">
     <section class="player-section" [ngClass]="{ 'player-section--no-chat': !showChat  }">
-      <app-player class="player" [stream]="stream"></app-player>
+      <app-player  class="player" [stream]="stream"></app-player>
       <app-chat [ngClass]="{ 'w-1': !showChat }" (onShowChat)="toggleChat($event)" [roomId]="roomId"></app-chat>
     </section>
   </main>

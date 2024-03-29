@@ -434,7 +434,7 @@ async function createSocketServer() {
             });
         });
 
-        socket.on('resume', async () => {
+        socket.on('resume', async (data) => {
             await consumer.resume();
             console.log("resumed");
         });

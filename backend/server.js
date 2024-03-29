@@ -16,8 +16,7 @@ import * as swaggerUi from 'swagger-ui-express';
 
 import { config } from './config.js';
 
-// let sequelize;
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 let httpServer;
 let expressApp;
 let socketServer;
@@ -384,14 +383,12 @@ async function createSocketServer() {
             }
         });
 
-        socket.on('connectProducerTransport', async (data, callback) => {
+        socket.on('connectProducerTransport', async (data) => {
             await producerTransport.connect({ dtlsParameters: data.dtlsParameters });
-            // callback();
         });
 
-        socket.on('connectConsumerTransport', async (data, callback) => {
+        socket.on('connectConsumerTransport', async (data) => {
             await consumerTransport.connect({ dtlsParameters: data.dtlsParameters });
-            // callback();
         });
 
         socket.on('produce', async (data, callback) => {
@@ -399,12 +396,42 @@ async function createSocketServer() {
             producer = await producerTransport.produce({ kind, rtpParameters });
             callback({ id: producer.id });
 
-            // inform clients about new producer
             socket.broadcast.emit('newProducer');
         });
 
         socket.on('consume', async (data, callback) => {
-            callback(await createConsumer(producer, data.rtpCapabilities));
+            if (!mediasoupRouter.canConsume(
+                {
+                    producerId: producer.id,
+                    rtpCapabilities: data.rtpCapabilities,
+                })
+            ) {
+                console.error('can not consume');
+                return;
+            }
+            try {
+                consumer = await consumerTransport.consume({
+                    producerId: producer.id,
+                    rtpCapabilities: data.rtpCapabilities,
+                    paused: true,
+                });
+            } catch (error) {
+                console.error('consume failed', error);
+                return;
+            }
+
+            if (consumer.type === 'simulcast') {
+                await consumer.setPreferredLayers({ spatialLayer: 2, temporalLayer: 2 });
+            }
+
+            callback({
+                producerId: producer.id,
+                id: consumer.id,
+                kind: consumer.kind,
+                rtpParameters: consumer.rtpParameters,
+                type: consumer.type,
+                producerPaused: true
+            });
         });
 
         socket.on('resume', async () => {
@@ -417,8 +444,6 @@ async function createSocketServer() {
         // #region Chat
 
         socket.on("message", (data) => {
-            console.log(data);
-            console.log(data.roomId)
             socket.to(data.roomId).emit("message", data);
         })
 
@@ -453,40 +478,5 @@ async function createWebRtcTransport() {
             iceCandidates: transport.iceCandidates,
             dtlsParameters: transport.dtlsParameters
         },
-    };
-}
-
-async function createConsumer(producer, rtpCapabilities) {
-    if (!mediasoupRouter.canConsume(
-        {
-            producerId: producer.id,
-            rtpCapabilities,
-        })
-    ) {
-        console.error('can not consume');
-        return;
-    }
-    try {
-        consumer = await consumerTransport.consume({
-            producerId: producer.id,
-            rtpCapabilities,
-            paused: producer.kind === 'video',
-        });
-    } catch (error) {
-        console.error('consume failed', error);
-        return;
-    }
-
-    if (consumer.type === 'simulcast') {
-        await consumer.setPreferredLayers({ spatialLayer: 2, temporalLayer: 2 });
-    }
-
-    return {
-        producerId: producer.id,
-        id: consumer.id,
-        kind: consumer.kind,
-        rtpParameters: consumer.rtpParameters,
-        type: consumer.type,
-        producerPaused: consumer.producerPaused
     };
 }

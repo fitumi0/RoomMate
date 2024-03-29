@@ -3,13 +3,16 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Inject,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  PLATFORM_ID,
   SimpleChanges,
   ViewChild,
+  isDevMode,
 } from '@angular/core';
 import 'vidstack/player/styles/default/theme.css';
 import 'vidstack/player/styles/default/layouts/video.css';
@@ -18,9 +21,11 @@ import 'vidstack/player/layouts/default';
 import 'vidstack/player/ui';
 import { Store } from '@ngrx/store';
 import { videoUrlSelector } from '../../reducers/videoUrl';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { tap } from 'rxjs';
 import { MediaPlayerElement, MediaProviderElement } from 'vidstack/elements';
+import { EventEmitter } from 'node:stream';
+import { SocketService } from '../../services/sockets/socket.service';
 
 @Component({
   selector: 'app-player',
@@ -31,21 +36,29 @@ import { MediaPlayerElement, MediaProviderElement } from 'vidstack/elements';
   styleUrl: './player.component.scss',
 })
 export class PlayerComponent implements OnDestroy, OnChanges {
-  constructor(private store: Store, private readonly cdr: ChangeDetectorRef) {
+  constructor(
+    private store: Store,
+    private readonly cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: any,
+    private readonly socketService: SocketService
+  ) {
     this.url = 'https://www.youtube.com/watch?v=FGAQkUS9Yxw';
     this.src = this.url;
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['stream'] && !changes['stream'].firstChange) {
-      console.log('From player onChanges: ', changes['stream'].currentValue);
+      console.log('From player change: ');
       this.playerElement.nativeElement.src = changes['stream']
         .currentValue as MediaStream;
+      if (isPlatformBrowser(this.platformId) && isDevMode()) {
+        (window as any)['playerStream'] = this.stream;
+      }
       this.playerElement.nativeElement.autoPlay = true;
-      this.cdr.detectChanges();
     }
   }
   @ViewChild('playerElement') playerElement!: ElementRef<MediaPlayerElement>;
-  @ViewChild('playerProvider') playerProvider!: ElementRef<MediaProviderElement>;
+
+  playerProvider!: ElementRef<MediaProviderElement>;
   url: string;
   src!: string | MediaStream;
   @Input() stream: MediaStream | null = null;

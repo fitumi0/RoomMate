@@ -404,14 +404,15 @@ async function createSocketServer() {
         });
 
         socket.on('consume', async (data, callback) => {
-            callback(await createConsumer(producer, data.rtpCapabilities));
+            const result = await createConsumer(producer, data.rtpCapabilities);
+            callback(result);
         });
 
-        socket.on('resume', async () => {
+        socket.on('resume', async (data) => {
             await consumer.resume();
             console.log("resumed");
         });
-
+ 
         //#endregion
 
         // #region Chat
@@ -471,6 +472,14 @@ async function createConsumer(producer, rtpCapabilities) {
             producerId: producer.id,
             rtpCapabilities,
             paused: producer.kind === 'video',
+        });
+
+        consumer.on('transportclose', () => {
+            console.log('consumer transport closed');
+        });
+    
+        consumer.on('producerclose', () => {
+            console.log('consumer producer closed');
         });
     } catch (error) {
         console.error('consume failed', error);

@@ -1,30 +1,44 @@
-<div class="chat" [ngClass]="{ 'zeroing': !showChat }">
+<div class="chat" [ngClass]="{ zeroing: !showChat }">
   <button type="button" class="show-toggle" (click)="toggleShow()">
     <mat-icon class="show-toggle__icon" [appIconSize]="'24px'">
-      @if (showChat) {
-      chevron_right
-      } @else {
-      chevron_left
-      }
+      @if (showChat) { chevron_right } @else { chevron_left }
     </mat-icon>
   </button>
   <div class="chat__header" [ngClass]="{ 'd-none': !showChat }">
-    <h3 class="chat__title" >{{selectedOption}}</h3>
+    <h3 class="chat__title">{{ selectedOption }}</h3>
     <div class="chat__options">
-      <button (click)="setSelectedOption(optionsEnum.Chat)" type="button"
-        [ngClass]="{ 'options__item--selected': selectedOption === 'Chat'}"
-        class="options__item options__item--left">Chat</button>
-      <button (click)="setSelectedOption(optionsEnum.People)" type="button"
-        [ngClass]="{ 'options__item--selected': selectedOption === 'People'}"
-        class="options__item options__item--right">People</button>
+      <button
+        (click)="setSelectedOption(optionsEnum.Chat)"
+        type="button"
+        [ngClass]="{ 'options__item--selected': selectedOption === 'Chat' }"
+        class="options__item options__item--left"
+      >
+        Chat
+      </button>
+      <button
+        (click)="setSelectedOption(optionsEnum.People)"
+        type="button"
+        [ngClass]="{ 'options__item--selected': selectedOption === 'People' }"
+        class="options__item options__item--right"
+      >
+        People
+      </button>
     </div>
   </div>
   @if (selectedOption === optionsEnum.Chat) {
   <div class="chat__content" [ngClass]="{ 'd-none': !showChat }">
-    <div *ngFor="let message of messages"
-      [ngClass]="message.senderId === userId && message.senderId !== '' ? 'message-container--my' : 'message-container'">
+    <div
+      *ngFor="let message of messages"
+      [ngClass]="
+        message.senderId === userId && message.senderId !== ''
+          ? 'message-container--my'
+          : 'message-container'
+      "
+    >
       <div class="message-container__header">
-        <h4><i>{{ message.senderName || "Unknown"}}</i></h4>
+        <h4>
+          <i>{{ message.senderName || "Unknown" }}</i>
+        </h4>
         <p>{{ message.date | date : "short" }}</p>
       </div>
       <div class="message-container__body">
@@ -32,17 +46,38 @@
       </div>
     </div>
   </div>
-  <form [ngClass]="{ 'd-none': !showChat }" class="chat__footer" [formGroup]="msgData" (ngSubmit)="onSubmit()">
+  <form
+    [ngClass]="{ 'd-none': !showChat }"
+    class="chat__footer"
+    [formGroup]="msgData"
+    (ngSubmit)="onSubmit()"
+  >
     <!-- <textarea name="msg-input" id="msg-input" rows="1" class="input input--message" formControlName="msg"></textarea> -->
-    <input type="text" id="msg-input" class="input input--message" formControlName="msg" autocomplete="off">
-    <button [disabled]="!msgData.valid || !msgData.controls['msg'].value.trim()" type="submit"
-      class="btn btn--invert btn--message">
+    <input
+      type="text"
+      id="msg-input"
+      class="input input--message"
+      formControlName="msg"
+      autocomplete="off"
+    />
+    <button
+      [disabled]="!msgData.valid || !msgData.controls['msg'].value.trim()"
+      type="submit"
+      class="btn btn--invert btn--message"
+    >
       <mat-icon [appIconSize]="'24px'">arrow_forward</mat-icon>
     </button>
   </form>
   } @else {
-  <div class="people__content" [ngClass]="{ 'd-none': !showChat }">fsdsdafsda</div>
-  <div class="people__footer" [ngClass]="{ 'd-none': !showChat }">fsdafsdafsda</div>
+  <button (click)="addVideoPlayer()">Join Video Chat</button>
+  <div class="people__content" [ngClass]="{ 'd-none': !showChat }">
+    <div class="video-players">
+      <ng-container *ngFor="let player of videoPlayers; let i = index">
+        <!-- i: number, fix to able insert strings -->
+        <app-webcam [id]="i" [src]="player"></app-webcam>
+      </ng-container>
+    </div>
+  </div>
+  <div class="people__footer" [ngClass]="{ 'd-none': !showChat }"></div>
   }
-
 </div>

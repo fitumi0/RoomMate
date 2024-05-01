@@ -1,10 +1,12 @@
 import {
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { IconSizeDirective } from '../../directives/icon-size.directive';
@@ -22,6 +24,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { userSelector } from '../../reducers/user';
 import { OptionsEnum } from './options.enum';
+import { defineCustomElement, MediaPlayerElement } from 'vidstack/elements';
+import { WebcamComponent } from '../webcam/webcam.component';
 
 @Component({
   selector: 'app-chat',
@@ -31,12 +35,15 @@ import { OptionsEnum } from './options.enum';
     IconSizeDirective,
     ReactiveFormsModule,
     CommonModule,
+    WebcamComponent,
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent implements OnInit {
   messages: IMessage[] = [];
+  //   @ViewChild('playerElement') videoPlayers: ElementRef<MediaPlayerElement>[] = [];
+  videoPlayers: MediaStream[] = [];
   msgData: FormGroup;
   @Input() roomId: string = '';
   userId: string | undefined = '';
@@ -46,6 +53,7 @@ export class ChatComponent implements OnInit {
   subscriptionOnSocketMessage: Subscription | undefined;
   selectedOption: OptionsEnum = OptionsEnum.Chat;
   optionsEnum = OptionsEnum;
+
   constructor(
     private socketService: SocketService,
     private cdr: ChangeDetectorRef,
@@ -58,6 +66,8 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    defineCustomElement(MediaPlayerElement);
+
     this.subscriptionOnSocketMessage = this.socketService
       .onEvent('message')
       .subscribe((data) => {
@@ -78,6 +88,27 @@ export class ChatComponent implements OnInit {
 
   addMessage(data: IMessage) {
     this.messages.push(data);
+  }
+
+  joinVideoChat() {
+    // this.socketService.sendMessage('joinVideoChat', {});
+  }
+
+  addVideoPlayer() {
+    new Promise(async (resolve) => {
+      resolve(
+        this.videoPlayers.push(
+          await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          })
+        )
+      );
+    }).then(() => {
+      this.cdr.markForCheck();
+    });
+
+    console.log(this.videoPlayers);
   }
 
   onSubmit() {

@@ -85,7 +85,7 @@
     <div class="video-players">
       <ng-container *ngFor="let player of videoPlayers; let i = index">
         <!-- i: number, fix to able insert strings -->
-        <app-webcam [id]="i" [src]="player"></app-webcam>
+        <app-webcam [id]="i.toString()" [stream]="player"></app-webcam>
       </ng-container>
     </div>
   </div>

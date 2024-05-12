@@ -105,10 +105,11 @@ export class ChatComponent implements OnInit {
         )
       );
     }).then(() => {
-      this.cdr.markForCheck();
+      console.log("videoPlayers ", this.videoPlayers);
+      this.cdr.detectChanges();
     });
 
-    console.log(this.videoPlayers);
+
   }
 
   onSubmit() {

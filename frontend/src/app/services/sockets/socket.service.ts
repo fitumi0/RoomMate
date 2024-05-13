@@ -18,9 +18,15 @@ export class SocketService {
     }
   }
 
-  public onEvent(event: string): Observable<any> {
-    return new Observable<Event>((observer) => {
-      this.socket.on(event, (data: Event | undefined) => observer.next(data));
+  public onEvent(event: string, message?: any): Observable<any> {
+    return new Observable<any>((observer) => {
+      this.socket.on(event, (data: any) => {
+        if (message) {
+          observer.next({ message, data });
+        } else {
+          observer.next(data);
+        }
+      });
     });
   }
 

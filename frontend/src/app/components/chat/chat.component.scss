@@ -128,6 +128,18 @@
   font-size: 0.8rem;
 }
 
+.people__content {
+  display: grid;
+  grid-template-areas: "left right";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+}
+
+// toggle below
+
 .show-toggle {
   height: 2rem;
   width: 2rem;

@@ -47,7 +47,7 @@ export class ChatComponent implements OnInit {
   msgData: FormGroup;
   @Input() roomId: string = '';
   userId: string | undefined = '';
-  userName: string | undefined = '';
+  username: string | undefined = '';
   showChat: boolean = true;
   @Output() onShowChat = new EventEmitter<boolean>();
   subscriptionOnSocketMessage: Subscription | undefined;
@@ -80,8 +80,10 @@ export class ChatComponent implements OnInit {
       .pipe(take(1))
       .subscribe((user) => {
         if (user) {
+          console.log('user', user);
+
           this.userId = user.id;
-          this.userName = user.name || undefined;
+          this.username = user.username || undefined;
         }
       });
   }
@@ -105,23 +107,23 @@ export class ChatComponent implements OnInit {
         )
       );
     }).then(() => {
-      console.log("videoPlayers ", this.videoPlayers);
+      console.log('videoPlayers ', this.videoPlayers);
       this.cdr.detectChanges();
     });
-
-
   }
 
   onSubmit() {
     const data: IMessage = {
       roomId: this.roomId,
       senderId: this.userId,
-      senderName: this.userName,
+      senderName: this.username,
       text: this.msgData.controls['msg'].value.trim(),
       date: new Date(),
     };
     this.socketService.sendMessage('message', data);
     this.addMessage(data);
+    console.log('data', data);
+
     this.msgData.controls['msg'].setValue('');
   }
 

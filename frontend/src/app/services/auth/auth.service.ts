@@ -53,7 +53,7 @@ export class AuthService {
    */
   signIn(userData: ISignInDto): Observable<IUser> {
     return this.http
-      .post<IUser>(`/api/login`, userData, {
+      .post<IUser>(`api/login`, userData, {
         headers: { withCredentials: 'true' },
       })
       .pipe(
@@ -78,7 +78,7 @@ export class AuthService {
    */
   signUp(userData: ISignUpDto): Observable<IUser> {
     return this.http
-      .post<IUser>(`/api/sign-up`, userData, {
+      .post<IUser>(`api/sign-up`, userData, {
         headers: { withCredentials: 'true' },
       })
       .pipe(
@@ -184,7 +184,7 @@ export class AuthService {
 
   logOut() {
     this.store.dispatch(
-      changeUser({ id: '', username: '', email: '', token: '' , name: '' })
+      changeUser({ id: '', username: '', email: '', token: '', name: '' })
     );
     localStorage.removeItem('token');
     this.isAuthSig.set(false);

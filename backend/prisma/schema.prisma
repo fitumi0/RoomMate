@@ -15,13 +15,14 @@ datasource db {
 
 model Room {
     id        String    @id @default(uuid())
-    name      String // @unique
+    name      String
     public    Boolean   @default(false)
     createdAt DateTime  @default(now()) @db.Timestamptz(3)
     updatedAt DateTime? @db.Timestamptz(3)
     deleted   Boolean   @default(false)
     deletedAt DateTime? @db.Timestamptz(3)
     // owner     User?     @relation(fields: [ownerId], references: [id])
+    Chat      Chat[]
 }
 
 model User {
@@ -32,8 +33,23 @@ model User {
     email            String    @unique
     registrationDate DateTime  @default(now()) @db.Timestamptz(3)
     dateModified     DateTime? @db.Timestamptz(3)
+    token            String?
     // deleted          Boolean   @default(false)
     // deletedAt        DateTime? @db.Timestamptz(3)
     // rooms            Room[]    @relation(fields: [id], references: [ownerId])
     // roomId           String?
+}
+
+model Chat {
+    id          String   @id @default(uuid())
+    roomId      String // assuming 'roomId' is a foreign key to a 'Room' model
+    senderId    String?
+    senderName  String   @unique
+    timeSend    DateTime @default(now())
+    content     String
+    attachments String? // assuming attachments are stored as a string path or JSON, can be null
+    room        Room     @relation(fields: [roomId], references: [id])
+
+    // Relations here if necessary, e.g., to a User or Room model
+    //   user        User?     @relation(fields: [senderId], references: [id])
 }

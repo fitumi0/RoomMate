@@ -40,11 +40,14 @@ body {
 }
 
 body {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Inter", sans-serif !important;
+  margin: 0;
   background-color: $background-color;
 }
 
 .btn {
+  font-family: "Inter", sans-serif !important;
+  text-wrap: nowrap;
   padding: 0.5rem 0.75rem;
   font-size: 16px;
   border: 1px solid $dark-green-color;
@@ -92,9 +95,13 @@ body {
   }
 }
 
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+.btn--invert {
+  background-color: $accent-color;
+
+  &:hover {
+    background-color: $salad-color;
+    color: $accent-color;
+  }
 }
 
 .link {
@@ -111,6 +118,7 @@ body {
   margin: 0 auto;
   padding: 20px;
   height: max-content;
+  flex: 1 1 auto;
   flex: 1 1 auto;
 }
 

@@ -18,6 +18,11 @@
     
     } @else { @defer () {
     <ul>
+      <!-- TODO: добавить условие для отображения только в комнате -->
+      <li>
+        <button class="btn" (click)="inviteFriend()">Invite friend</button>
+      </li>
+      <!-- TODO END -->
       <li>
         <button class="btn btn--invert" (click)="goProfile()" style="display: flex; align-items: center"
           title="Profile">

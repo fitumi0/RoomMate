@@ -1,48 +1,46 @@
-@import '../../../styles.scss';
+@import "../../../styles.scss";
 
 .player-section {
-    width: 100%;
-    height: auto;
-    display: grid;
-    grid-template-columns: 4fr 1fr;
-    gap: 10px;
-    transition: all 0.15s linear;
+  width: 100%;
+  height: auto;
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  gap: 10px;
+  transition: all 0.15s linear;
 }
 
 .player-section--no-chat {
-    grid-template-columns: 5fr 0fr;
+  grid-template-columns: 5fr 0fr;
 }
 
-
 .d-none {
-    display: none;
+  display: none;
 }
 
 .player {
-    width: 100%;
+  width: 100%;
 }
 
 .room {
-    padding: 20px 10px;
+  padding: 0 4px;
 }
 
 @media screen and (max-width: 1140px) {
-    .player {
-        width: 100%;
-        margin-bottom: 10px;
-    }
+  .player {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 
-    .player-section {
-        grid-template-columns: 1fr;
-        gap: 0;
-    }
-
+  .player-section {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 }
 
 .w-1 {
-    width: 1rem;
+  width: 1rem;
 }
 
 .w-100 {
-    width: 100%;
+  width: 100%;
 }

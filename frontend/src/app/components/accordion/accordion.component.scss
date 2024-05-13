@@ -1,4 +1,4 @@
-@import '../../../styles.scss';
+@import "../../../styles.scss";
 
 .accordion {
   border-radius: 5px;
@@ -11,7 +11,7 @@
   padding: 10px;
   width: 100%;
   text-align: left;
-
+  transition: 0.3s all;
 
   &:hover {
     background-color: $text-color;
@@ -21,20 +21,19 @@
 
 .accordion-content {
   display: none;
-
+  transition: 0.3s all;
 }
 
 .accordion-item {
   border-bottom: 1px solid $black;
-
+  transition: 0.3s all;
 
   &:last-child {
     border-bottom: none;
   }
-
 }
 
 .accordion-item.active .accordion-content {
   display: block;
-
+  transition: 0.3s all;
 }

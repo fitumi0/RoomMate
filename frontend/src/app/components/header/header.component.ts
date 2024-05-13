@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { MatIconModule } from '@angular/material/icon';
 import { IconSizeDirective } from '../../directives/icon-size.directive';
 import { AuthService } from '../../services/auth/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-header',
@@ -17,7 +18,8 @@ export class HeaderComponent {
   constructor(
     private readonly router: Router,
     public readonly store: Store,
-    public readonly auth: AuthService
+    public readonly auth: AuthService,
+    public readonly toast: ToastrService
   ) {}
 
   goSignin() {
@@ -30,5 +32,13 @@ export class HeaderComponent {
 
   goProfile() {
     this.router.navigate(['/profile']);
+  }
+
+  inviteFriend() {
+    // copy url to clipboard
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+
+    this.toast.success('Invite link copied to clipboard!');
   }
 }

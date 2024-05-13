@@ -14,7 +14,8 @@
 		"socket.io-client": "^4.7.4",
 		"swagger-jsdoc": "^6.2.8",
 		"swagger-ui-express": "^5.0.0",
-		"uniq": "^1.0.1"
+		"uniq": "^1.0.1",
+		"upgrade": "^1.1.0"
 	},
 	"devDependencies": {
 		"nodemon": "^3.0.3",

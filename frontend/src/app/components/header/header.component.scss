@@ -21,12 +21,10 @@
     // padding: 0 0.5rem;
   }
 
-  & ul>li {
+  & ul > li {
     margin: 0 0.5rem;
   }
 }
-
-
 
 .logo {
   margin: 0;
@@ -44,7 +42,7 @@
     margin: 0;
 
     &:hover {
-      color: $salad-color;
+      color: $dark-green-color;
     }
   }
 
@@ -59,11 +57,11 @@
     cursor: pointer;
 
     .logo__text {
-      color: $salad-color;
+      color: $dark-green-color;
     }
 
     .logo__text--invert {
-      color: $light-blue-color;
+      color: $dark-blue-color;
     }
   }
 }
@@ -72,7 +70,7 @@
   .header__menu {
     padding-left: 0;
 
-    & ul>li {
+    & ul > li {
       margin-right: 10px;
     }
 
@@ -80,7 +78,7 @@
       padding: 0;
     }
 
-    & ul>li>button {
+    & ul > li > button {
       padding: 0.25rem 0.5rem;
     }
   }

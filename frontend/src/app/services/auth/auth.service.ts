@@ -64,7 +64,11 @@ export class AuthService {
           this.router.navigate(['/']);
         }),
         catchError((err) => {
-          this.toastr.error(err.error.message, 'Error');
+          if (err.status === 404) {
+            this.toastr.error('User not found', 'Error');
+          } else {
+            this.toastr.error(err.error.message, 'Error');
+          }
           throw new Error(err.message);
         })
       );
@@ -89,7 +93,11 @@ export class AuthService {
           this.router.navigate(['/']);
         }),
         catchError((err) => {
-          this.toastr.error(err.error.message, 'Error');
+          if (err.status === 409) {
+            this.toastr.error('User with this email already exists', 'Error');
+          } else {
+            this.toastr.error(err.error.message, 'Error');
+          }
           throw new Error(err.message);
         })
       );
@@ -108,7 +116,6 @@ export class AuthService {
       .pipe(
         tap((user: IUser | null) => {
           if (user) {
-            localStorage.setItem('token', user.token);
             this.isAuthSig.set(true);
             this.store.dispatch(changeUser(user));
           }

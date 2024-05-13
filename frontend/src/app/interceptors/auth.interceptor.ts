@@ -40,7 +40,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     const platformId = inject(PLATFORM_ID)
 
-    let token = '';
+    let token;
     if (isPlatformBrowser(platformId)) {
       token = localStorage.getItem('token') as string;
     }
@@ -48,7 +48,7 @@ export class AuthInterceptor implements HttpInterceptor {
       console.log('From interceptor: ', token);
     }
 
-    if (token) {
+    if (token && token !== 'undefined') {
       req = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,

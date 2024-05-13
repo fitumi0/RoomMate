@@ -7,21 +7,20 @@
   </div>
   <menu class="header__menu">
     @if (!(auth.isAuthSig())) {
-    <ul>
-      <li><button class="btn" (click)="goSignin()">Log in</button></li>
-      <li>
-        <button class="btn btn--invert" (click)="goSignup()">Sign up</button>
-      </li>
-    </ul>
+      @defer () {
+        <ul>
+          <li><button class="btn" (click)="goSignin()">Log in</button></li>
+          <li>
+            <button class="btn btn--invert" (click)="goSignup()">Sign up</button>
+          </li>
+        </ul>
+      }
+    
     } @else { @defer () {
     <ul>
       <li>
-        <button
-          class="btn btn--invert"
-          (click)="goProfile()"
-          style="display: flex; align-items: center"
-          title="Profile"
-        >
+        <button class="btn btn--invert" (click)="goProfile()" style="display: flex; align-items: center"
+          title="Profile">
           <mat-icon appIconSize="24px">person</mat-icon>
         </button>
       </li>

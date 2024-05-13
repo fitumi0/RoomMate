@@ -3,9 +3,9 @@
 $white: #fffffc;
 $black: #000000;
 $base-color: #e3c6f0;
-$accent-color: #111214;
+$accent-color: #1e1e1e;
 $secondary-accent-color: #232428;
-$background-color: #313338;
+$background-color: #303030;
 $text-color: #ebf2fa;
 $gray: #b2b2b0;
 $light-gray: #e0e0dd;
@@ -13,16 +13,16 @@ $text-link-hover: #b2b2b0;
 // $pink-color: #ffadad;
 // $orange-color: #ffd6a5;
 // $yellow-color: #fdffb6;
-$green-color: #679436;
-$salad-color: #a5be00;
+$green-color: #689f38;
+$dark-green-color: #558b2f;
 // $cyan-color: #9bf6ff;
-$blue-color: #05668d;
-$light-blue-color: #427aa1;
+$blue-color: #1976d2;
+$dark-blue-color: #1565c0;
 // $purple-color: #bdb2ff;
 // $magenta-color: #ffc6ff;
-$info-bg: rgba($salad-color, 0.6);
-$another-msg-bg: rgba($blue-color, 0.25);
-$my-msg-bg: rgba($salad-color, 0.6);
+// $info-bg: rgba($dark-green-color, 0.6);
+// $another-msg-bg: rgba($blue-color, 0.25);
+// $my-msg-bg: rgba($dark-green-color, 0.6);
 
 html,
 body {
@@ -50,27 +50,47 @@ body {
   text-wrap: nowrap;
   padding: 0.5rem 0.75rem;
   font-size: 16px;
-  border: 1px solid $salad-color;
-  border-radius: 5px;
-  background-color: $salad-color;
+  border: 1px solid $dark-green-color;
+  border-radius: 0.5rem;
+  background-color: $dark-green-color;
   color: $text-color;
   cursor: pointer;
   box-sizing: border-box;
   transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+
+  &--rounded {
+    border-radius: 50%;
+  }
 
   &:hover {
     background-color: $accent-color;
   }
 
-  // &:focus {
-  //   outline: none;
-  // }
+  &--invert {
+    background-color: $accent-color;
+
+    &:hover {
+      background-color: $dark-green-color;
+      color: $accent-color;
+    }
+  }
+
+  &--transparent {
+    background-color: transparent;
+
+    &:hover {
+      background-color: transparent;
+      color: red;
+    }
+  }
 
   &:disabled {
     opacity: 0.6;
 
     &:hover {
-      background-color: $salad-color;
+      background-color: $dark-green-color;
     }
   }
 }
@@ -99,6 +119,7 @@ body {
   padding: 20px;
   height: max-content;
   flex: 1 1 auto;
+  flex: 1 1 auto;
 }
 
 .divider {
@@ -118,7 +139,7 @@ body {
 
 .input {
   border: 1px solid $accent-color;
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   padding: 0.5rem;
   font-size: 1rem;
 }
@@ -147,7 +168,7 @@ body {
 }
 
 .info {
-  background-color: $info-bg;
+  background-color: $dark-green-color;
   margin-top: 2px;
   padding: 10px 20px;
   width: 50%;
@@ -194,7 +215,7 @@ body {
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
-  width: inherit;
+  width: 100%;
 }
 
 .input-checkbox {

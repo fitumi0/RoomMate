@@ -61,7 +61,7 @@ export class SignupFormComponent implements OnDestroy {
       this.userData.get('confirmPassword')?.disable();
       //   this.userData.get('username')?.disable();
       this.auth
-        .signUpTest(this.userData.value)
+        .signUp(this.userData.value)
         .pipe(takeUntil(this.$unsubscribe))
         .subscribe(() => {
           this.toastr.success('Sign up successful', 'Success');

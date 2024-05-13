@@ -22,8 +22,11 @@ let expressApp;
 let socketServer;
 let mediasoupWorker;
 let mediasoupRouter;
-let producer;
-let consumer;
+
+/**
+ * @type {Map<Socket, { producerTransport: Transport, consumerTransport: Transport }>}
+ */
+const sessions = new Map();
 let producerTransport;
 let consumerTransport;
 // let workers = [];
@@ -288,26 +291,70 @@ async function createExpressApp() {
             return res.sendStatus(404);
         }
 
+        user.token = jwtModule.generateAccessToken(user);
+
+        // TODO: update user
+
+        await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                token: user.token
+            }
+        })
+
         res.status(200);
-        // res.send(
-        // {id, username, name, email, regDate, lastMod, token}
-        // );
+        res.send(
+            {
+                id: user.id,
+                username: user.username,
+                name: user.name,
+                email: user.email,
+                registrationData: user.registrationDate,
+                dateModified: user.dateModified,
+                token: user.token
+            }
+        );
+    });
+
+    expressApp.get('/api/get-user', (req, res) => {
+        // get bearer from header
+        const token = req.headers.authorization?.split('Bearer ')[1];
+        return res.send(jwtModule.decodeAccessToken(token));
     });
 
     // TODO: вернуть нужные данные, сразу авторизовать (мб метод написать отдельно)
-    expressApp.post('/api/signup', async (req, res) => {
-        let email = req.body.email;
-        let password = req.body.password;
-        let passwordHash = createHash('sha256').update(password).digest('hex');
+    expressApp.post('/api/sign-up', async (req, res) => {
+        const email = req.body.email;
+        const password = req.body.password;
+        const passwordHash = createHash('sha256').update(password).digest('hex');
+
+        const username = email.split('@')[0];
+
+        if (await prisma.user.findUnique({ where: { email: email } })) {
+            return res.status(409).send('User with this email already exists');
+        }
 
         const user = await prisma.user.create({
             data: {
                 email: email,
-                passwordHash: passwordHash
+                passwordHash: passwordHash,
+                username: username,
             }
         });
 
-        res.status(200);
+        res.status(200).send(
+            {
+                id: user.id,
+                username: user.username,
+                name: user.name,
+                email: user.email,
+                registrationData: user.registrationDate,
+                dateModified: user.dateModified,
+                token: user.token
+            }
+        );
     });
 
     /**
@@ -340,7 +387,7 @@ async function createHttpServer() {
         httpServer.listen(
             Number(config.http.listenPort), config.http.listenIp, resolve);
     });
-    console.info(`HTTP server listening on http://127.0.0.1:${config.http.listenPort}`);
+    console.info(`HTTP server listening on http://${config.http.announcedIp}:${config.http.listenPort}`);
 }
 
 async function createSocketServer() {
@@ -364,7 +411,7 @@ async function createSocketServer() {
         socket.on('createProducerTransport', async (callback) => {
             try {
                 const { transport, params } = await createWebRtcTransport();
-                producerTransport = transport;
+                sessions.set(socket.id, { producerTransport: transport });
                 callback(params);
             } catch (err) {
                 console.error(err);
@@ -375,7 +422,7 @@ async function createSocketServer() {
         socket.on('createConsumerTransport', async (callback) => {
             try {
                 const { transport, params } = await createWebRtcTransport();
-                consumerTransport = transport;
+                sessions.set(socket.id, { consumerTransport: transport });
                 callback(params);
             } catch (err) {
                 console.error(err);
@@ -384,36 +431,56 @@ async function createSocketServer() {
         });
 
         socket.on('connectProducerTransport', async (data) => {
-            await producerTransport.connect({ dtlsParameters: data.dtlsParameters });
+            const session = sessions.get(socket.id);
+            if (session && session.producerTransport) {
+                await session.producerTransport.connect({ dtlsParameters: data.dtlsParameters });
+            }
         });
 
         socket.on('connectConsumerTransport', async (data) => {
-            await consumerTransport.connect({ dtlsParameters: data.dtlsParameters });
+            const session = sessions.get(socket.id);
+            if (session && session.consumerTransport) {
+                await session.consumerTransport.connect({ dtlsParameters: data.dtlsParameters });
+            }
         });
 
         socket.on('produce', async (data, callback) => {
-            const { kind, rtpParameters } = data;
-            producer = await producerTransport.produce({ kind, rtpParameters });
-            callback({ id: producer.id });
+            const session = sessions.get(socket.id);
+            if (session && session.producerTransport) {
+                const { kind, rtpParameters } = data;
+                const producer = await session.producerTransport.produce({ kind, rtpParameters });
+                callback({ id: producer.id });
+                socket.broadcast.emit('newProducer', socket.id);
+            }
+        });
 
-            socket.broadcast.emit('newProducer');
+        socket.on('stopProducing', async (producerId) => {
+            const session = sessions.get(producerId);
+            if (session && session.producer) {
+                await session.producer.close();
+            }
         });
 
         socket.on('consume', async (data, callback) => {
+            const session = sessions.get(socket.id);
+
             if (!mediasoupRouter.canConsume(
                 {
-                    producerId: producer.id,
+                    producerId: data.producerId,
                     rtpCapabilities: data.rtpCapabilities,
                 })
             ) {
                 console.error('can not consume');
                 return;
             }
+
+            let consumer;
+
             try {
-                consumer = await consumerTransport.consume({
-                    producerId: producer.id,
+                consumer = await session.consumerTransport.consume({
+                    producerId: data.producerId,
                     rtpCapabilities: data.rtpCapabilities,
-                    paused: true,
+                    paused: false,
                 });
             } catch (error) {
                 console.error('consume failed', error);
@@ -430,13 +497,29 @@ async function createSocketServer() {
                 kind: consumer.kind,
                 rtpParameters: consumer.rtpParameters,
                 type: consumer.type,
-                producerPaused: true
+                producerPaused: false
             });
         });
 
-        socket.on('resume', async (data) => {
-            await consumer.resume();
-            console.log("resumed");
+        socket.on('stopConsuming', async (consumerId) => {
+            const session = sessions.get(consumerId);
+            if (session && session.consumer) {
+                await session.producer.close();
+            }
+        })
+
+        socket.on('resume', async () => {
+            const session = sessions.get(socket.id);
+            if (session && session.consumer) {
+                try {
+                    await session.consumer.resume();
+                    console.log("Resumed consumer successfully");
+                } catch (err) {
+                    console.error("Error resuming consumer:", err);
+                }
+            } else {
+                console.error("No consumer found in the session");
+            }
         });
 
         //#endregion

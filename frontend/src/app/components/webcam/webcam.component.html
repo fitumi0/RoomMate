@@ -1,0 +1,13 @@
+<div class="webcam-wrapper">
+  <media-player #webcamElement id="webcam" class="webcam">
+    <media-provider></media-provider>
+  </media-player>
+
+  <button class="btn btn--rounded btn--transparent mute" (click)="toggleMic()">
+    @if(!muted){
+    <mat-icon appIconSize="24px">mic</mat-icon>
+    } @else {
+    <mat-icon appIconSize="24px">mic_off</mat-icon>
+    }
+  </button>
+</div>

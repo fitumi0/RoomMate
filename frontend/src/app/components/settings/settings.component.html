@@ -4,28 +4,58 @@
       <div class="label__wrapper--left">
         <label for="videoUrl" class="label--text">Now wathcing: </label>
       </div>
-      <input *ngIf="this.arrayProvidersWithUrl.includes(this.selectedProvider)" type="text" name="videoUrl"
-        id="videoUrl" class="nav-input input input--start input--player no-border" placeholder="URL" [(ngModel)]="videoUrl" />
-      <button type="button" class="btn no-left-border btn--border" (click)="clickPlay()"><mat-icon
-          appIconSize="24px">done</mat-icon></button>
+      <input
+        *ngIf="this.arrayProvidersWithUrl.includes(this.selectedProvider)"
+        type="text"
+        name="videoUrl"
+        id="videoUrl"
+        class="nav-input input input--start input--player no-border"
+        placeholder="URL"
+        [(ngModel)]="videoUrl"
+      />
+      <button
+        type="button"
+        class="btn no-left-border btn--border"
+        (click)="clickPlay()"
+      >
+        <mat-icon appIconSize="24px">done</mat-icon>
+      </button>
     </div>
-    <button type="button" class="btn btn--border-black" style="display: flex; align-items: center; gap: 5px;"><mat-icon
-        appIconSize="24px">format_list_bulleted</mat-icon> Playlist</button>
+    <button
+      type="button"
+      class="btn btn--border-black"
+      style="display: flex; align-items: center; gap: 5px"
+    >
+      <mat-icon appIconSize="24px">format_list_bulleted</mat-icon> Playlist
+    </button>
     @if (!screenShared) {
-    <button type="button" class="btn btn--border-black" (click)="startScreenShare()">
+    <button
+      type="button"
+      class="btn btn--border-black"
+      (click)="startScreenShare()"
+    >
       ScreenShare
     </button>
     } @else {
-    <button type="button" class="btn btn--invert btn--border-black" (click)="stopScreenShare()">
+    <button
+      type="button"
+      class="btn btn--invert btn--border-black"
+      (click)="stopScreenShare()"
+    >
       StopScreenShare
     </button>
     }
     <div class="label__wrapper">
-      <input type="file" name="customFile" id="customFile" class="nav-input custom-file-input no-right-border" placeholder="ПОТОМ ПЕРЕДЕЛАЮ НА ФАЙЛ ИНПУТ" />
+      <input
+        type="file"
+        name="customFile"
+        id="customFile"
+        class="nav-input custom-file-input no-right-border"
+        placeholder="ПОТОМ ПЕРЕДЕЛАЮ НА ФАЙЛ ИНПУТ"
+      />
       <div class="label__wrapper--right">
         <label class="label--text" for="customFile">Browse</label>
       </div>
     </div>
   </div>
-
 </nav>

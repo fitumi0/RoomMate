@@ -5,8 +5,8 @@
   width: 100%;
   background-color: $background-color;
   color: $black;
-  border-radius: 0 5px;
-  padding: 4px;
+  border-radius: 0 0.1rem;
+  padding: 5px;
   box-sizing: border-box;
   gap: 15px;
 }
@@ -43,10 +43,8 @@
 }
 
 .label__wrapper--left {
-  font-size: large;
-  font-weight: 600;
   background-color: $text-link-hover;
-  border-radius: 5px 0 0 5px;
+  border-radius: 0.5rem 0 0 0.5rem;
   padding: 10px;
   box-sizing: border-box;
   border: 1px solid $accent-color;
@@ -54,9 +52,8 @@
 }
 
 .label__wrapper--right {
-  font-weight: 600;
   background-color: $text-link-hover;
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 0.5rem 0.5rem 0;
   padding: 10px;
   box-sizing: border-box;
   border: 1px solid $accent-color;
@@ -65,15 +62,16 @@
 
 .label__wrapper {
   display: flex;
+  line-height: 2em;
   flex-grow: 1;
 }
 
 .no-left-border {
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 0.5rem 0.5rem 0;
 }
 
 .no-right-border {
-  border-radius: 5px 0 0 5px;
+  border-radius: 0.5rem 0 0 0.5rem;
 }
 
 .no-border {
@@ -83,7 +81,7 @@
 .btn--border {
   border: 1px solid $accent-color;
   border-width: 1px 1px 1px 0;
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 0.5rem 0.5rem 0;
 }
 
 .btn--border-black {
@@ -109,7 +107,7 @@
   display: inline-block;
   background: $white;
   border: 1px solid $accent-color;
-  border-radius: 5px 0 0 5px;
+  border-radius: 0.5rem 0 0 0.5rem;
   padding: 10px;
   font-size: 1.2rem;
   box-sizing: border-box;

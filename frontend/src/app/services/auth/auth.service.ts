@@ -102,7 +102,7 @@ export class AuthService {
    */
   getUser(): Observable<IUser | null> {
     return this.http
-      .get<IUser | null>(`/api/user`, {
+      .get<IUser | null>(`api/get-user`, {
         headers: { withCredentials: 'true' },
       })
       .pipe(

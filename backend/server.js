@@ -291,6 +291,19 @@ async function createExpressApp() {
             return res.sendStatus(404);
         }
 
+        user.token = jwtModule.generateAccessToken(user);
+
+        // TODO: update user
+
+        await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                token: user.token
+            }
+        })
+
         res.status(200);
         res.send(
             {
@@ -303,6 +316,12 @@ async function createExpressApp() {
                 token: user.token
             }
         );
+    });
+
+    expressApp.get('/api/get-user', (req, res) => {
+        // get bearer from header
+        const token = req.headers.authorization?.split('Bearer ')[1];
+        return res.send(jwtModule.decodeAccessToken(token));
     });
 
     // TODO: вернуть нужные данные, сразу авторизовать (мб метод написать отдельно)
@@ -321,7 +340,7 @@ async function createExpressApp() {
             data: {
                 email: email,
                 passwordHash: passwordHash,
-                username: username
+                username: username,
             }
         });
 

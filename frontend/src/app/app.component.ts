@@ -31,7 +31,7 @@ export class AppComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     console.log(this.platformId);
     if (isPlatformBrowser(this.platformId)) {
-      this.auth.getUserTest().pipe(takeUntil(this.$unsubscribe)).subscribe();
+      this.auth.getUser().pipe(takeUntil(this.$unsubscribe)).subscribe();
     }
   }
 

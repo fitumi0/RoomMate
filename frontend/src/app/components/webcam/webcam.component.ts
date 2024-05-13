@@ -19,25 +19,25 @@ import 'vidstack/player/layouts/default';
 import 'vidstack/player/ui';
 import { MediaPlayerElement, MediaProviderElement } from 'vidstack/elements';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-webcam',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './webcam.component.html',
   styleUrl: './webcam.component.scss',
 })
-export class WebcamComponent implements  AfterViewInit {
+export class WebcamComponent implements AfterViewInit {
+  @Input() muted = true;
   @Input() stream: MediaStream | null = null;
   @Input() id: string | number = '';
   @ViewChild('webcamElement') webcamElement: ElementRef | undefined;
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: any,
-  ) {
-    
-  }
+    @Inject(PLATFORM_ID) private platformId: any
+  ) {}
   ngAfterViewInit(): void {
     if (this.webcamElement && this.stream) {
       this.webcamElement.nativeElement.src = this.stream;
@@ -46,4 +46,7 @@ export class WebcamComponent implements  AfterViewInit {
     }
   }
 
+  toggleMic() {
+    this.muted = !this.muted;
+  }
 }

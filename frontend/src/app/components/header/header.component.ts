@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MatIconModule } from '@angular/material/icon';
 import { IconSizeDirective } from '../../directives/icon-size.directive';
@@ -14,13 +14,22 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  isRoomPage = false;
   constructor(
     private readonly router: Router,
     public readonly store: Store,
     public readonly auth: AuthService,
-    public readonly toast: ToastrService
+    public readonly toast: ToastrService,
+    private readonly activatedRoute: ActivatedRoute
   ) {}
+  ngOnInit(): void {
+    this.activatedRoute.url.subscribe((segments) => {
+      if (segments.length > 0 && segments[0].path === 'room') {
+        this.isRoomPage = true;
+      }
+    });
+  }
 
   goSignin() {
     this.router.navigate(['/signin']);

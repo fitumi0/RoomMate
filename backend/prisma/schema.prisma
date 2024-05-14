@@ -33,6 +33,7 @@ model User {
     email            String    @unique
     registrationDate DateTime  @default(now()) @db.Timestamptz(3)
     dateModified     DateTime? @db.Timestamptz(3)
+    deleted          Boolean   @default(false)
     token            String?
     // deleted          Boolean   @default(false)
     // deletedAt        DateTime? @db.Timestamptz(3)

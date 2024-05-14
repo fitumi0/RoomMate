@@ -2,5 +2,8 @@
 cd backend
 cls
 @echo Starting server ...
-nodemon server.js
+call nodemon server.js
+cd ../frontend
+@echo Starting client ...
+call ng serve
 

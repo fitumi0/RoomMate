@@ -1,15 +1,20 @@
 <div class="page-wrapper">
-    <app-header></app-header>
-    <main class="main">
-        <section>
-            <h2>Profile</h2>
+  <app-header></app-header>
+  <main class="main">
+    <section>
+      <h2>Profile</h2>
 
-            <div style="width: 50%;">
-                <app-accordion [accordionItems]="forms"></app-accordion>
-            </div>
-            <button type="button" class="btn" (click)="auth.logOut()">Log Out</button>
-            <button type="button" class="btn btn--invert" (click)="openDialog()">Delete account</button>
-        </section>
-    </main>
-    <app-footer></app-footer>
+      <app-accordion [accordionItems]="forms"></app-accordion>
+
+      <div class="profile-controls">
+        <button type="button" class="btn" (click)="auth.logOut()">
+          Log Out
+        </button>
+        <button type="button" class="btn btn--danger" (click)="openDialog()">
+          Delete account
+        </button>
+      </div>
+    </section>
+  </main>
+  <app-footer></app-footer>
 </div>

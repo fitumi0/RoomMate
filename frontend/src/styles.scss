@@ -18,6 +18,8 @@ $dark-green-color: #558b2f;
 // $cyan-color: #9bf6ff;
 $blue-color: #1976d2;
 $dark-blue-color: #1565c0;
+$danger-color: #b71c1c;
+$dark-danger-color: #9a0007;
 // $purple-color: #bdb2ff;
 // $magenta-color: #ffc6ff;
 // $info-bg: rgba($dark-green-color, 0.6);
@@ -30,7 +32,7 @@ body {
   width: 100%;
   color: $text-color;
   margin: 0;
-  scrollbar-gutter: stable;
+  scrollbar-gutter: auto;
 }
 
 .page-wrapper {
@@ -77,12 +79,22 @@ body {
     }
   }
 
+  &--danger {
+    border: $dark-danger-color;
+    background-color: $danger-color;
+
+    &:hover {
+      background-color: $dark-danger-color;
+      border: $accent-color;
+    }
+  }
+
   &--transparent {
     background-color: transparent;
 
     &:hover {
       background-color: transparent;
-      color: red;
+      color: $dark-green-color;
     }
   }
 
@@ -92,15 +104,6 @@ body {
     &:hover {
       background-color: $dark-green-color;
     }
-  }
-}
-
-.btn--invert {
-  background-color: $accent-color;
-
-  &:hover {
-    background-color: $dark-green-color;
-    color: $accent-color;
   }
 }
 

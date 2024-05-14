@@ -64,11 +64,7 @@ export class AuthService {
           this.router.navigate(['/']);
         }),
         catchError((err) => {
-          if (err.status === 404) {
-            this.toastr.error('User not found', 'Error');
-          } else {
-            this.toastr.error(err.error.message, 'Error');
-          }
+          this.toastr.error(err.error.message, 'Error');
           throw new Error(err.message);
         })
       );

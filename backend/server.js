@@ -290,7 +290,7 @@ async function createExpressApp() {
         const payload = utils.getPayload(req);
 
         if (!payload) {
-            return res.status(400).send("Token not found");
+            return res.status(400).send({ message: "Token not found" });
         }
 
         const user = await prisma.user.update({
@@ -309,7 +309,7 @@ async function createExpressApp() {
         const payload = utils.getPayload(req);
 
         if (!payload) {
-            return res.status(400).send("Token not found");
+            return res.status(400).send({ message: "Token not found" });
         }
 
         const user = await prisma.user.update({
@@ -329,7 +329,7 @@ async function createExpressApp() {
         const payload = utils.getPayload(req);
 
         if (!payload) {
-            return res.status(400).send("Token not found");
+            return res.status(400).send({ message: "Token not found" });
         }
 
         await prisma.user.update({
@@ -357,15 +357,15 @@ async function createExpressApp() {
         });
 
         if (!user) {
-            return res.status(401).send("User not found");
-        }
-
-        if (user.deleted) {
-            return res.status(401).send("User deleted. Recover your account");
+            return res.status(401).send({ message: "User not found" });
         }
 
         if (user.passwordHash !== passwordHash) {
-            return res.status(401).send("Wrong password");
+            return res.status(401).send({ message: "Wrong password" });
+        }
+
+        if (user.deleted) {
+            return res.status(401).send({ message: "User deleted. Recover your account" });
         }
 
         user.token = jwtModule.generateAccessToken(user);

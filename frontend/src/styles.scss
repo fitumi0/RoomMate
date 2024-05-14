@@ -110,6 +110,47 @@ body {
 .link {
   color: $text-color;
   text-decoration: none;
+  position: relative;
+  transition: all 0.2s ease-out;
+
+  // this is the underline
+  &:after {
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background: $text-color;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transition: all 0.2s ease-out;
+  }
+
+  &:before {
+    content: " ";
+    width: 4px;
+    height: 4px;
+    background: $text-color;
+    position: absolute;
+    right: -4px;
+    bottom: 0;
+    opacity: 0;
+  }
+
+  // the stuff we want to happen when we hover the link
+  &:hover {
+    transition: all 0.1s ease-out;
+    padding: 0 0.5rem;
+    &:after {
+      width: 0px;
+      transition: all 0.1s ease-out;
+    }
+
+    &:before {
+      opacity: 1;
+      animation: blink 0.4s infinite 0.1s;
+      transition: all 0.1s ease-out;
+    }
+  }
 
   &:hover {
     color: $text-link-hover;
@@ -252,4 +293,17 @@ body {
   align-items: center;
   gap: 15px;
   color: $black;
+}
+
+// the animation for the blinking before element
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

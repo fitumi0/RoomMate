@@ -54,12 +54,21 @@
 }
 
 .item {
+  cursor: pointer;
   border: 2px solid $dark-blue-color;
   border-radius: 0.5rem;
   padding: 0.5rem;
   text-align: center;
   min-width: 15em;
   width: 20%;
+  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+
+  &:hover {
+    transform: translateY(-0.25rem);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
+    transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+  }
+
   .description {
     word-wrap: normal;
     width: auto;

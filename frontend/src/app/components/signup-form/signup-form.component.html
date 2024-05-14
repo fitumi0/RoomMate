@@ -1,34 +1,6 @@
 <form class="login-form" [formGroup]="userData" (ngSubmit)="onSubmit()">
   <h2 class="title">Sign up to RoomMate</h2>
 
-  <!-- <div class="form-group">
-        <label for="usernameInput">Username:</label>
-        <input id="usernameInput" class="input" type="text" formControlName="username" required>
-        <div *ngIf="userData.controls['username'].invalid && (userData.controls['username'].dirty || userData.controls['username'].touched)"
-            class="invalid">
-            <span *ngIf="userData.controls['username'].hasError('required')">
-                Username is required
-            </span>
-            <span *ngIf="userData.controls['username'].hasError('minlength')">
-                Username must be more than 8 characters
-            </span>
-        </div>
-    </div> -->
-
-  <!-- <div class="form-group">
-        <label for="nameInput">Name:</label>
-        <input id="nameInput" class="input" type="text" formControlName="name" required>
-        <div *ngIf="userData.controls['name'].invalid && (userData.controls['name'].dirty || userData.controls['name'].touched)"
-            class="invalid">
-            <span *ngIf="userData.controls['name'].hasError('required')">
-                Name is required
-            </span>
-            <span *ngIf="userData.controls['name'].hasError('minlength')">
-                Name must be more than 8 characters
-            </span>
-        </div>
-    </div> -->
-
   <div class="form-group">
     <label for="emailInput">Email:</label>
     <input

@@ -138,8 +138,6 @@
   overflow-y: auto;
 }
 
-// toggle below
-
 .show-toggle {
   height: 2rem;
   width: 2rem;
@@ -178,6 +176,15 @@
   overflow-y: auto;
   scrollbar-gutter: stable;
 }
+
+@media screen and (max-width: 1140px) {
+  .show-toggle {
+    display: none;
+  }
+}
+
+// checkbox below
+
 .checkbox-wrapper .tgl {
   display: none;
 }

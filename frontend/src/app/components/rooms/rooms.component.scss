@@ -1,71 +1,78 @@
-@import '../../../styles.scss';
+@import "../../../styles.scss";
 
 .title {
-    margin: 0;
-    font-size: 1.5rem;
+  margin: 0;
+  font-size: 1.5rem;
 }
 
 .rooms-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .rooms__or-text {
-    margin: 0;
+  margin: 0;
 }
 
 .rooms {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-    margin-bottom: 50px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+  margin-bottom: 50px;
 }
 
 .activity-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
 
 .activity-wrapper__inner {
-    text-align: center;
+  text-align: center;
 }
 
 #active-users,
 #active-rooms {
-    margin: 0;
-    font-size: 1.75rem;
+  margin: 0;
+  font-size: 1.75rem;
 }
 
 @media screen and (max-width: 1140px) {
-    .rooms {
-        grid-template-columns:  1fr; 
-    }
+  .rooms {
+    grid-template-columns: 1fr;
+  }
 
-    .activity-wrapper__inner{
-        display: flex;
-        flex-direction: row-reverse;
-        justify-content: start;
-        align-items: start;
-        gap: 10px;
-    }
+  .rooms-wrapper {
+    justify-content: center;
+  }
 
-    .activity-wrapper{
-        display: block;
-        margin-top: 10px;
-    }
+  .activity-wrapper__inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .activity-wrapper {
+    display: block;
+    margin-top: 10px;
+  }
 }
 
 @media screen and (max-width: 480px) {
-    .rooms-wrapper {
-        flex-direction: column;
-    }
-    
+  .rooms-wrapper {
+    flex-direction: column;
+  }
+
+  .activity-wrapper__inner {
+    flex-direction: column;
+  }
 }
 
-.btn--border{
-    border: 1px solid $black;
+.btn--border {
+  border: 1px solid $black;
 }

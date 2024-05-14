@@ -23,7 +23,7 @@
 
 .flex-row {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
   width: 100%;
 }
 
@@ -39,6 +39,12 @@
 @media screen and (max-width: 1140px) {
   .input--player {
     width: 50%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .flex-row {
+    flex-direction: column;
   }
 }
 

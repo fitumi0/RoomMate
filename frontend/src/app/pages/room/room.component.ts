@@ -19,11 +19,10 @@ import { Subscription, take } from 'rxjs';
 import { SocketService } from '../../services/sockets/socket.service';
 import * as mediasoupClient from 'mediasoup-client';
 import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
-import { Producer, Transport } from 'mediasoup-client/lib/types';
+import { Producer, Transport, Consumer } from 'mediasoup-client/lib/types';
 import { PlayerComponent } from '../../components/player/player.component';
 import { ChatComponent } from '../../components/chat/chat.component';
 import { MediaPlayerElement, MediaProviderElement } from 'vidstack/elements';
-
 
 @Component({
   selector: 'app-room',
@@ -41,9 +40,6 @@ import { MediaPlayerElement, MediaProviderElement } from 'vidstack/elements';
   styleUrl: './room.component.scss',
 })
 export class RoomComponent implements OnInit, OnDestroy {
-  url: string;
-  src!: string | MediaStream;
-  stopScreenShare() {}
   player!: PlayerComponent;
   roomId: string = '';
   device!: mediasoupClient.Device;
@@ -51,7 +47,14 @@ export class RoomComponent implements OnInit, OnDestroy {
   screenSharing = false;
   private eventSubscription!: Subscription;
   showChat = true;
-
+  private sendTransport!: Transport;
+  private recvTransport!: Transport;
+  private micProducer!: Producer;
+  private camProducer!: Producer;
+  private screenVideoProducer!: Producer;
+  private screenAudioProducer!: Producer;
+  private consumers: Map<string, Consumer> = new Map();
+  private webcams: Map<string, MediaDeviceInfo> = new Map();
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -60,8 +63,6 @@ export class RoomComponent implements OnInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    this.url = 'https://www.youtube.com/watch?v=FGAQkUS9Yxw';
-    this.src = this.url;
     if (isPlatformBrowser(this.platformId)) {
       this.device = new mediasoupClient.Device();
       (window as any)['device'] = this.device;
@@ -89,61 +90,12 @@ export class RoomComponent implements OnInit, OnDestroy {
       .subscribe((socketId) => {
         // console.log(`User disconnected with ID: ${socketId}`);
       });
-      
+
     this.eventSubscription = this.socketService
       .onEvent('newProducer')
-      .subscribe(() => {
+      .subscribe((producerId) => {
         console.log('New producer created');
-
-        this.socketService.sendMessage(
-          'createConsumerTransport',
-          (params: any) => {
-            if (params.error) {
-              console.error('createConsumerTransport: ', params.error);
-            }
-            console.log('createConsumerTransport: ', params);
-
-            const transport = this.device.createRecvTransport(params);
-            transport.on(
-              'connect',
-              async ({ dtlsParameters }, callback, errback) => {
-                try {
-                  this.socketService.sendMessage('connectConsumerTransport', {
-                    // transportId: transport.id,
-                    dtlsParameters,
-                  });
-                } catch (err) {
-                  console.error(err);
-                }
-                callback();
-              }
-            );
-
-            this.socketService.sendMessageCallback(
-              'consume',
-              { rtpCapabilities: this.device.rtpCapabilities },
-              async (data: any) => {
-                const consumer = await transport.consume({
-                  id: data.id,
-                  producerId: data.producerId,
-                  kind: data.kind,
-                  rtpParameters: data.rtpParameters,
-                });
-                const stream = new MediaStream();
-                stream.addTrack(consumer.track);
-                this.stream = stream;
-                this.socketService.sendMessage('resume', null);
-                this.cdr.markForCheck();
-                console.log('shared stream:', {
-                  this: this.stream,
-                  current: stream,
-                });
-              }
-            );
-
-            
-          }
-        );
+        this.consume(producerId);
       });
 
     this.socketService.sendMessageCallback(
@@ -162,7 +114,143 @@ export class RoomComponent implements OnInit, OnDestroy {
     );
   }
 
-  screenShare() {
+  async consume(producerId: any) {
+    if (!this.recvTransport) {
+      this.recvTransport = await this.createConsumerTransport();
+    }
+
+    this.socketService.sendMessageCallback(
+      'consume',
+      { producerId: producerId, rtpCapabilities: this.device.rtpCapabilities },
+      async (data: any) => {
+        const consumer = await this.recvTransport.consume({
+          id: data.id,
+          producerId: data.producerId,
+          kind: data.kind,
+          rtpParameters: data.rtpParameters,
+        });
+
+        this.consumers.set(consumer.id, consumer);
+      }
+    );
+
+    const stream = new MediaStream();
+
+    this.consumers.forEach((consumer) => {
+      stream.addTrack(consumer.track);
+    });
+
+    console.log(this.consumers);
+
+    this.stream = stream;
+    this.socketService.sendMessage('resume', null);
+    this.cdr.markForCheck();
+    console.log('shared stream:', {
+      this: this.stream,
+      current: stream,
+    });
+  }
+
+  async startScreenShare() {
+    if (!this.sendTransport) {
+      this.createProducerTransport();
+    }
+
+    await navigator.mediaDevices
+      .getDisplayMedia({
+        video: true,
+        audio: true,
+      })
+      .then((stream) => {
+        this.stream = stream;
+        console.log('create stream ', this.stream);
+        this.screenSharing = true;
+        this.cdr.markForCheck();
+
+        this.stream.getVideoTracks()[0].addEventListener('ended', () => {
+          console.log('stream ended');
+          this.socketService.sendMessage('stopProducing', null);
+          this.screenSharing = false;
+          this.cdr.detectChanges();
+        });
+      });
+
+    this.screenVideoProducer = await this.sendTransport.produce({
+      track: this.stream.getVideoTracks()[0],
+    });
+
+    this.screenAudioProducer = await this.sendTransport.produce({
+      track: this.stream.getAudioTracks()[0],
+    });
+  }
+
+  async stopScreenShare() {}
+
+  /*
+  async startVideo() {
+    if (!this.sendTransport) {
+      this.createProducerTransport();
+    }
+
+    await navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        this.stream = stream;
+        console.log('create stream ', this.stream);
+        this.cdr.markForCheck();
+
+        // this.stream.getVideoTracks()[0].addEventListener('ended', () => {
+        //   console.log('stream ended');
+        //   this.socketService.sendMessage('stopProducing', null);
+        //   this.screenSharing = false;
+        //   this.cdr.detectChanges();
+        // });
+      });
+
+    this.camProducer = await this.sendTransport.produce({
+      track: this.stream.getVideoTracks()[0],
+    });
+
+    this.micProducer = await this.sendTransport.produce({
+      track: this.stream.getAudioTracks()[0],
+    });
+  }
+  */
+
+  //   async disableShare()
+  //   {
+  //       if (!this._shareProducer)
+  //           return;
+
+  //       this._shareProducer.close();
+
+  //       store.dispatch(
+  //           stateActions.removeProducer(this._shareProducer.id));
+
+  //       try
+  //       {
+  //           await this._protoo.request(
+  //               'closeProducer', { producerId: this._shareProducer.id });
+  //       }
+  //       catch (error)
+  //       {
+  //           store.dispatch(requestActions.notify(
+  //               {
+  //                   type : 'error',
+  //                   text : `Error closing server-side share Producer: ${error}`
+  //               }));
+  //       }
+
+  //       this._shareProducer = null;
+  //   }
+
+  ngOnDestroy(): void {
+    if (this.eventSubscription) {
+      this.eventSubscription.unsubscribe();
+    }
+  }
+
+  createProducerTransport() {
     this.socketService.sendMessage(
       'createProducerTransport',
       async (params: any) => {
@@ -170,14 +258,14 @@ export class RoomComponent implements OnInit, OnDestroy {
           console.error('createProducerTransport: ', params.error);
         }
 
-        const transport = this.device.createSendTransport(params);
+        this.sendTransport = this.device.createSendTransport(params);
 
-        transport.on(
+        this.sendTransport.on(
           'connect',
           async ({ dtlsParameters }, callback, errback) => {
             try {
               this.socketService.sendMessage('connectProducerTransport', {
-                transportId: transport.id,
+                transportId: this.sendTransport.id,
                 dtlsParameters,
               });
             } catch (err) {
@@ -187,7 +275,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           }
         );
 
-        transport.on(
+        this.sendTransport.on(
           'produce',
           async ({ kind, rtpParameters }, callback, errback) => {
             this.socketService.sendMessageCallback(
@@ -202,84 +290,44 @@ export class RoomComponent implements OnInit, OnDestroy {
             );
           }
         );
-
-        transport.on('connectionstatechange', async (state) => {
-          switch (state) {
-            case 'connecting':
-              console.log('Connecting...');
-
-              break;
-
-            case 'connected':
-              console.log('Connected');
-              // this.socketService.sendMessage('resume', null);
-              break;
-
-            case 'failed':
-              transport.close();
-              console.log('Failed');
-              break;
-
-            default:
-              break;
-          }
-        });
-
-        await navigator.mediaDevices
-          .getDisplayMedia({
-            video: true,
-            audio: true,
-          })
-          .then((stream) => {
-            this.stream = stream;
-            console.log('create stream ', this.stream);
-            this.screenSharing = true;
-            this.cdr.markForCheck();
-          });
-
-        transport.produce({
-          track: this.stream.getVideoTracks()[0],
-        });
-
-        console.log('transport produce');
-
-        this.stream.getVideoTracks()[0].addEventListener('ended', () => {
-          console.log('ended');
-          transport.close();
-          this.screenSharing = false;
-          this.cdr.detectChanges();
-        });
       }
     );
   }
 
-  ngOnDestroy(): void {
-    if (this.eventSubscription) {
-      this.eventSubscription.unsubscribe();
-    }
+  async createConsumerTransport(): Promise<Transport> {
+    return new Promise<Transport>((resolve, reject) => {
+      this.socketService.sendMessage(
+        'createConsumerTransport',
+        async (params: any) => {
+          if (params.error) {
+            console.error('createConsumerTransport: ', params.error);
+            reject(params.error);
+          }
+
+          let recvTransport = this.device.createRecvTransport(params);
+
+          recvTransport.on(
+            'connect',
+            async ({ dtlsParameters }, callback, errback) => {
+              try {
+                this.socketService.sendMessage('connectConsumerTransport', {
+                  dtlsParameters,
+                });
+              } catch (err) {
+                console.error(err);
+              }
+              callback();
+            }
+          );
+
+          resolve(recvTransport);
+        }
+      );
+    });
   }
 
   async loadDevice(routerRtpCapabilities: RtpCapabilities): Promise<void> {
     await this.device.load({ routerRtpCapabilities });
-  }
-
-  async consume(transport: Transport) {
-    const rtpCapabilities = this.device.rtpCapabilities;
-    this.socketService.sendMessage('consume', {
-      rtpCapabilities: rtpCapabilities,
-      callback: async (data: any) => {
-        console.log('Consumer created');
-        const consumer = await transport.consume({
-          id: data.id,
-          producerId: data.producerId,
-          kind: data.kind,
-          rtpParameters: data.rtpParameters,
-        });
-        const stream = new MediaStream();
-        stream.addTrack(consumer.track);
-        return stream;
-      },
-    });
   }
 
   toggleChat($event: boolean) {

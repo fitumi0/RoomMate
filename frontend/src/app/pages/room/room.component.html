@@ -1,12 +1,24 @@
 <div class="page-wrapper">
   <app-header></app-header>
   @defer () {
-  <app-settings [stream]="stream" [parentSharing]="screenSharing" (onSetStream)="screenShare()">
-    ></app-settings>
+  <app-settings
+    [stream]="stream"
+    [parentSharing]="screenSharing"
+    (onSetStream)="startScreenShare()"
+  >
+    ></app-settings
+  >
   <main class="room">
-    <section class="player-section" [ngClass]="{ 'player-section--no-chat': !showChat  }">
-      <app-player  class="player" [stream]="stream"></app-player>
-      <app-chat [ngClass]="{ 'w-1': !showChat }" (onShowChat)="toggleChat($event)" [roomId]="roomId"></app-chat>
+    <section
+      class="player-section"
+      [ngClass]="{ 'player-section--no-chat': !showChat }"
+    >
+      <app-player class="player" [stream]="stream"></app-player>
+      <app-chat
+        [ngClass]="{ 'w-1': !showChat }"
+        (onShowChat)="toggleChat($event)"
+        [roomId]="roomId"
+      ></app-chat>
     </section>
   </main>
   } @placeholder {

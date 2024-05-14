@@ -1,54 +1,31 @@
-# RoomMate - сервис совместного просмотра видео, а также место для общения с друзьями.
+# RoomMate [en] - a watch together service, as well as a place to communicate with friends.
 
-# TODO (дополнение по мере разработки): 
+# How to use - Selfhost
+Here will be more information
 
-Frontend
+# How to run and edit
+### Terminal 1
+```
+cd .\backend
+npm i
+npm run watch
+```
+Backend started at [`http://localhost:4443`](http://localhost:4443)
+### Terminal 2
+```
+cd .\frontend
+npm i
+ng serve
+```
+Frontend started at [`http://localhost:4200`](http://localhost:4200)
 
-> План минимум (верстка и связь с бэком):
-- [X] Главная страница (header, везде один)
-- [X] Страница комнаты (видеоплеер, чат, видеочат (мб тоггл между чатами (между двух иконок)), контролы для работы с видеоплеером)
-- [ ] Список комнат (мб как на твиче плитками, можно просто список выводить, поиграй, если не сложно, можно вообще тоггл сделать между режимами)
-- [X] Прокид запросов к API, рендер списков данных
-- [ ] Профиль пользователя
-- [X] Чат на сокетах
-> Опционально, договоримся
-- [ ] Адаптив под мобилки
-- [X] Использование плеера [vidstack](https://www.vidstack.io/), [доки](https://www.vidstack.io/docs/player?styling=default-theme)
-- [ ] Уникальная идентификация и запоминание браузера (или пк) пользователя для работы без авторизации (ограниченный режим).
-- [ ] Спиннер во время http запроса
+# RoomMate [ru] - сервис совместного просмотра видео, а также место для общения с друзьями.
 
-> P.S. Оставлю тебе на выбор стилистику, желательно минимализм, 2-3 цвета + оттенки. Можешь вдохновиться разметкой twitch\youtube,
-посмотреть как работает [watchparty](https://www.watchparty.me/) - штука написанная на реакте. С багами и своими приколами, реализация не нравится. Скрины того что было в самом низу.
-
-Backend
-1) Написать базовый API
-   - [X] CreateRoom - создать комнату и добавить в БД
-   - [X] GetRooms - достать из БД список комнат
-   - [ ] Достать историю сообщений, разбитие на чанки
-2) Создать базу данных, следующие таблицы
-   - [X] Комнаты
-   - [X] Добавить полей в таблицу с комнатами
-   - [X] Пользователи
-   - [ ] История общения в чате
-   - [ ] ...
-3) Медиасервер
-   - [x] device
-   - [X] transport
-   - [ ] mic producer
-   - [ ] camera producer
-   - [ ] screen video producer
-   - [ ] screen audio
-   - [ ] consumers
-
-4) SocketServer
-   - [x] connect event
-   - [x] disconnect event
-   - [x] MediaSoup events
-   - [X] Chat events
+# Как пользоваться
+Допишем позже
 
 # Screenshots
-![main](https://github.com/fitumi0/RoomMate/assets/87011164/be59a03b-7a57-40c0-b3f0-a48e6fdb6f11)
+![image](https://github.com/fitumi0/RoomMate/assets/87011164/38b74b75-8619-45d7-be57-b82764d98672)
+![image](https://github.com/fitumi0/RoomMate/assets/87011164/a93d8e29-67a0-4d81-b2c4-374775ef6322)
+![image](https://github.com/fitumi0/RoomMate/assets/87011164/ebf925cb-e5d7-4d76-b6bc-6afd39c1bde4)
 
-![main2](https://github.com/fitumi0/RoomMate/assets/87011164/8a87db80-73b1-44fa-ac9f-f1170619862c)
-
-![layout](https://github.com/fitumi0/RoomMate/assets/87011164/ecfdada6-62f3-43e1-a28d-2d14ef9558f2)

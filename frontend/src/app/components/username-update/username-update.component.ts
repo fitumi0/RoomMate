@@ -28,10 +28,7 @@ export class UsernameUpdateComponent implements OnDestroy {
     private readonly toastr: ToastrService
   ) {
     this.formData = new FormGroup({
-      newUsername: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-      ]),
+      newUsername: new FormControl('', [Validators.required]),
     });
   }
 

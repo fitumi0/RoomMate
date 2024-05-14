@@ -27,14 +27,8 @@ export class PasswordUpdateComponent implements OnDestroy {
     private readonly userService: UserService
   ) {
     this.formData = new FormGroup({
-      currentPassword: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-      ]),
-      newPassword: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-      ]),
+      currentPassword: new FormControl('', [Validators.required]),
+      newPassword: new FormControl('', [Validators.required]),
     });
   }
 
@@ -50,7 +44,6 @@ export class PasswordUpdateComponent implements OnDestroy {
         .subscribe(() => {
           this.toastr.success('Password updated successfully', 'Success');
           this.formData.reset();
-
         })
         .add(() => {
           this.isSubmitting = false;

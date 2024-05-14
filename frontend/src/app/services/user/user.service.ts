@@ -20,7 +20,7 @@ export class UserService {
   ) {}
 
   updateName(name: IUserNameDto): Observable<IUser> {
-    return this.http.patch<IUser>('api/user-name', name).pipe(
+    return this.http.patch<IUser>('api/update-user-name', name).pipe(
       tap((data: IUser) => {
         this.store.dispatch(changeUser(data));
       }),
@@ -32,7 +32,7 @@ export class UserService {
   }
 
   updateUsername(username: IUserUsernameDto): Observable<IUser> {
-    return this.http.patch<IUser>('api/user-username', username).pipe(
+    return this.http.patch<IUser>('api/update-user-username', username).pipe(
       tap((data: IUser) => {
         this.store.dispatch(changeUser(data));
       }),
@@ -44,7 +44,7 @@ export class UserService {
   }
 
   updatePassword(passwords: IUserPasswordDto): Observable<IUser> {
-    return this.http.patch<IUser>('api/user-password', passwords).pipe(
+    return this.http.patch<IUser>('api/update-user-password', passwords).pipe(
       catchError((err) => {
         this.toastr.error(err.error.message, 'Error');
         throw new Error(err.message);

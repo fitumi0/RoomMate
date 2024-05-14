@@ -30,7 +30,7 @@ export class DeleteUserModalComponent implements OnDestroy {
       .subscribe((user) => {
         if (user) {
           this.auth
-            .deleteUser(user.id)
+            .deleteUser()
             .pipe(takeUntil(this.$unsubscribe))
             .subscribe(() => {
               this.dialogRef.close();

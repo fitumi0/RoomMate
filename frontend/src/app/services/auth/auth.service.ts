@@ -198,8 +198,8 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
-  deleteUser(userUid: string) {
-    return this.http.delete(`/api/user/${userUid}`).pipe(
+  deleteUser() {
+    return this.http.delete(`api/delete-user`).pipe(
       catchError((err) => {
         this.toastr.error(err.error.message, 'Error');
         throw new Error(err.message);

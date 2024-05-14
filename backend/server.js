@@ -9,11 +9,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { PrismaClient } from '@prisma/client'
 
 import * as jwtModule from './libs/jwt.module.js';
-import { createHash } from 'node:crypto';
+import * as utils from './libs/utils.js';
 
 import swaggerJsDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
-
 import { config } from './config.js';
 
 const prisma = new PrismaClient();
@@ -272,28 +271,104 @@ async function createExpressApp() {
         return res.send(uuidv4());
     });
 
+    expressApp.patch('/api/update-user-name', async (req, res) => {
+        const payload = utils.getPayload(req);
+
+        const user = await prisma.user.update({
+            where: {
+                id: payload.id
+            },
+            data: {
+                name: req.body.newName
+            }
+        })
+
+        return res.status(202).send(user);
+    })
+
+    expressApp.patch('/api/update-user-username', async (req, res) => {
+        const payload = utils.getPayload(req);
+
+        if (!payload) {
+            return res.status(400).send("Token not found");
+        }
+
+        const user = await prisma.user.update({
+            where: {
+                id: payload.id
+            },
+            data: {
+                username: req.body.newUsername
+            }
+        })
+
+        return res.status(202).send(user);
+    })
+
+    expressApp.patch('/api/update-user-password', async (req, res) => {
+        const payload = utils.getPayload(req);
+
+        if (!payload) {
+            return res.status(400).send("Token not found");
+        }
+
+        const user = await prisma.user.update({
+            where: {
+                id: payload.id,
+                passwordHash: utils.hashPassword(req.body.currentPassword)
+            },
+            data: {
+                passwordHash: utils.hashPassword(req.body.newPassword)
+            }
+        })
+
+        return res.status(202).send(user);
+    })
+
+    expressApp.delete('/api/delete-user', async (req, res) => {
+        const payload = utils.getPayload(req);
+
+        if (!payload) {
+            return res.status(400).send("Token not found");
+        }
+
+        await prisma.user.update({
+            where: {
+                id: payload.id
+            },
+            data: {
+                deleted: true
+            }
+        })
+
+        return res.status(202);
+    })
+
     // TODO: вернуть нужные данные
     expressApp.post('/api/login', async (req, res) => {
         let email = req.body.email;
         let password = req.body.password;
-        let passwordHash = createHash('sha256').update(password).digest('hex');
-        console.log(passwordHash);
+        let passwordHash = utils.hashPassword(password);
 
         const user = await prisma.user.findUnique({
             where: {
                 email: email,
-                passwordHash: passwordHash,
-                // deleted: false
             }
         });
 
         if (!user) {
-            return res.sendStatus(404);
+            return res.status(401).send("User not found");
+        }
+
+        if (user.deleted) {
+            return res.status(401).send("User deleted. Recover your account");
+        }
+
+        if (user.passwordHash !== passwordHash) {
+            return res.status(401).send("Wrong password");
         }
 
         user.token = jwtModule.generateAccessToken(user);
-
-        // TODO: update user
 
         await prisma.user.update({
             where: {
@@ -319,22 +394,33 @@ async function createExpressApp() {
     });
 
     expressApp.get('/api/get-user', (req, res) => {
-        // get bearer from header
-        const token = req.headers.authorization?.split('Bearer ')[1];
-        return res.send(jwtModule.decodeAccessToken(token));
+        return res.send(utils.getPayload(req));
     });
 
-    // TODO: вернуть нужные данные, сразу авторизовать (мб метод написать отдельно)
     expressApp.post('/api/sign-up', async (req, res) => {
         const email = req.body.email;
         const password = req.body.password;
-        const passwordHash = createHash('sha256').update(password).digest('hex');
+        const passwordHash = utils.hashPassword(password);
 
         const username = email.split('@')[0];
 
         if (await prisma.user.findUnique({ where: { email: email } })) {
             return res.status(409).send('User with this email already exists');
         }
+
+        // TODO: а надо ли оно)))))))))))))))))))))))
+        /* if (await prisma.user.findUnique({ where: { email: email, deleted: true } })) {
+            const user = await prisma.user.update({
+                where: {
+                    email: email
+                },
+                data: {
+                    deleted: false
+                }
+            })
+
+            return res.status(202).send(user);
+        } */
 
         const user = await prisma.user.create({
             data: {
@@ -343,6 +429,17 @@ async function createExpressApp() {
                 username: username,
             }
         });
+
+        user.token = jwtModule.generateAccessToken(user);
+
+        await prisma.user.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                token: user.token
+            }
+        })
 
         res.status(200).send(
             {
@@ -387,7 +484,7 @@ async function createHttpServer() {
         httpServer.listen(
             Number(config.http.listenPort), config.http.listenIp, resolve);
     });
-    console.info(`HTTP server listening on http://${config.http.announcedIp}:${config.http.listenPort}`);
+    console.info(`HTTP server listening on http://${config.domain}:${config.http.listenPort}`);
 }
 
 async function createSocketServer() {

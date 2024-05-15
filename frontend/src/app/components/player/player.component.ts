@@ -24,7 +24,6 @@ import { videoUrlSelector } from '../../reducers/videoUrl';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { tap } from 'rxjs';
 import { MediaPlayerElement, MediaProviderElement } from 'vidstack/elements';
-import { EventEmitter } from 'node:stream';
 import { SocketService } from '../../services/sockets/socket.service';
 
 @Component({
@@ -42,25 +41,27 @@ export class PlayerComponent implements OnDestroy, OnChanges {
     @Inject(PLATFORM_ID) private platformId: any,
     private readonly socketService: SocketService
   ) {
-    this.url = 'https://www.youtube.com/watch?v=FGAQkUS9Yxw';
-    this.src = this.url;
+    this.url = '';
+    this.src = new MediaSource();
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['stream'] && !changes['stream'].firstChange) {
-      console.log('From player change: ');
-      this.playerElement.nativeElement.src = changes['stream']
-        .currentValue as MediaStream;
+      this.playerElement.nativeElement.src = changes['stream'].currentValue;
+
       if (isPlatformBrowser(this.platformId) && isDevMode()) {
         (window as any)['playerStream'] = this.stream;
       }
-      this.playerElement.nativeElement.autoPlay = true;
+
+      this.playerElement.nativeElement.autoPlay = false;
     }
   }
+
   @ViewChild('playerElement') playerElement!: ElementRef<MediaPlayerElement>;
 
   playerProvider!: ElementRef<MediaProviderElement>;
   url: string;
-  src!: string | MediaStream;
+  src!: string | MediaStream | MediaSource | null;
+
   @Input() stream: MediaStream | null = null;
 
   $videoUrlChange = this.store
@@ -68,7 +69,6 @@ export class PlayerComponent implements OnDestroy, OnChanges {
     .pipe(
       tap((url) => {
         this.src = url;
-        console.log('From player: ', this.url);
       })
     )
     .subscribe();

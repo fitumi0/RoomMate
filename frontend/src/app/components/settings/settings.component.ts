@@ -38,6 +38,33 @@ export class SettingsComponent implements OnChanges {
   @Output() onSetStream = new EventEmitter<string>();
   screenShared = false;
 
+  demoVideos: {
+    type: string;
+    title: string;
+    url: string;
+  }[] = [
+    {
+      type: 'HLS',
+      title: 'Tears of Steel',
+      url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+    },
+    {
+      type: '.mp4',
+      title: 'Big Buck Bunny',
+      url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    },
+    {
+      type: '.mp4',
+      title: 'What Car Can You Get For A Grand',
+      url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4',
+    },
+    {
+      type: 'Youtube',
+      title: '2020 LG OLED l The Black 4K HDR 60fps',
+      url: 'https://www.youtube.com/watch?v=njX2bu-_Vw4',
+    },
+  ];
+
   constructor(
     private store: Store,
     private readonly toastr: ToastrService,

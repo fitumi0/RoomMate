@@ -16,14 +16,10 @@
       />
       <datalist class="demo-videos" id="demo-videos">
         <option
-          value="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
+          *ngFor="let video of demoVideos; let i = index"
+          value="{{ video.url }}"
         >
-          HLS - Tears of Steel
-        </option>
-        <option
-          value="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-        >
-          Big Buck Bunny
+          {{ i + 1 }}) [{{ video.type }}]: {{ video.title }}
         </option>
       </datalist>
       <button

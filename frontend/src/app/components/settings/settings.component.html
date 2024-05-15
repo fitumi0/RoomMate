@@ -8,11 +8,24 @@
         *ngIf="this.arrayProvidersWithUrl.includes(this.selectedProvider)"
         type="text"
         name="videoUrl"
+        list="demo-videos"
         id="videoUrl"
         class="nav-input input input--start input--player no-border"
         placeholder="URL"
         [(ngModel)]="videoUrl"
       />
+      <datalist class="demo-videos" id="demo-videos">
+        <option
+          value="https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
+        >
+          HLS - Tears of Steel
+        </option>
+        <option
+          value="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        >
+          Big Buck Bunny
+        </option>
+      </datalist>
       <button
         type="button"
         class="btn no-left-border btn--border"

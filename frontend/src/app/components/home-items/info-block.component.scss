@@ -55,7 +55,8 @@
 
 .item {
   cursor: pointer;
-  border: 2px solid $dark-blue-color;
+  background-color: rgba($accent-color, 0.5);
+  border: 2px dashed $dark-blue-color;
   border-radius: 0.5rem;
   padding: 0.5rem;
   text-align: center;
@@ -64,9 +65,11 @@
   transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
 
   &:hover {
-    transform: translateY(-0.25rem);
     box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
     transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+    animation: jumping infinite 1s;
+    transition: background-color 0.5s;
+    background-color: $accent-color;
   }
 
   .description {

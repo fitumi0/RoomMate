@@ -307,3 +307,15 @@ body {
     opacity: 1;
   }
 }
+
+@keyframes jumping {
+  0% {
+    transform: none;
+  }
+  50% {
+    transform: translateY(-0.25rem);
+  }
+  100% {
+    transform: none;
+  }
+}

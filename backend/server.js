@@ -628,6 +628,16 @@ async function createSocketServer() {
         })
 
         // #endregion
+
+        // №region Event Synchronization
+
+
+        socket.on("videoChanged", (data) => {
+            console.log("[videoChanged]", data);
+            socket./*to(data.roomId).*/broadcast.emit("videoChanged", data);
+        })
+
+        // #endregion
     })
 }
 

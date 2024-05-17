@@ -2,6 +2,7 @@
   <app-header></app-header>
   @defer () {
   <app-settings
+    [roomId]="roomId"
     [stream]="stream"
     [parentSharing]="screenSharing"
     (onSetStream)="startScreenShare()"

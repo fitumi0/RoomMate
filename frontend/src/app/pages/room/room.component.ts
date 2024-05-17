@@ -101,9 +101,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.socketService.sendMessageCallback(
       'joinRoom',
       this.roomId,
-      (roomId: string) => {
-        console.log(roomId);
-      }
+      (roomId: string) => {}
     );
 
     this.socketService.sendMessage(

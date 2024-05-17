@@ -42,7 +42,6 @@ import { WebcamComponent } from '../webcam/webcam.component';
 })
 export class ChatComponent implements OnInit {
   messages: IMessage[] = [];
-  //   @ViewChild('playerElement') videoPlayers: ElementRef<MediaPlayerElement>[] = [];
   videoPlayers: MediaStream[] = [];
   msgData: FormGroup;
   @Input() roomId: string = '';
@@ -107,7 +106,6 @@ export class ChatComponent implements OnInit {
         )
       );
     }).then(() => {
-      console.log('videoPlayers ', this.videoPlayers);
       this.cdr.detectChanges();
     });
   }
@@ -122,7 +120,6 @@ export class ChatComponent implements OnInit {
     };
     this.socketService.sendMessage('message', data);
     this.addMessage(data);
-    console.log('data', data);
 
     this.msgData.controls['msg'].setValue('');
   }

@@ -12,12 +12,12 @@ import { isPlatformBrowser } from '@angular/common';
 /**
  * Interceptor that adds an authorization token to outgoing HTTP requests.
  * If the user is authenticated, the token is retrieved from local storage.
- * 
+ *
  * @remarks
  * - This interceptor is used to attach an `Authorization` header to requests.
  * - It checks if the user is authenticated and retrieves the token from local storage.
  * - The token is then added to the request headers.
- * 
+ *
  * @example
  * ```
  * // Usage in an Angular service or module:
@@ -37,16 +37,16 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-
-    const platformId = inject(PLATFORM_ID)
+    const platformId = inject(PLATFORM_ID);
 
     let token;
     if (isPlatformBrowser(platformId)) {
       token = localStorage.getItem('token') as string;
     }
-    if (isDevMode()) {
-      console.log('From interceptor: ', token);
-    }
+
+    // if (isDevMode()) {
+    //   console.log('From interceptor: ', token);
+    // }
 
     if (token && token !== 'undefined') {
       req = req.clone({

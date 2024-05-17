@@ -1,16 +1,15 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   EventEmitter,
   Inject,
   Input,
   OnChanges,
+  OnInit,
   Output,
   PLATFORM_ID,
   SimpleChanges,
-  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProvidersEnum } from './providers.enum';
@@ -18,11 +17,8 @@ import { Store } from '@ngrx/store';
 import { changeUrl } from '../../reducers/videoUrl';
 import { ToastrService } from 'ngx-toastr';
 import { SocketService } from '../../services/sockets/socket.service';
-import * as mediasoupClient from 'mediasoup-client';
-import { PlayerComponent } from '../player/player.component';
 import { MatIconModule } from '@angular/material/icon';
 import { IconSizeDirective } from '../../directives/icon-size.directive';
-import { timestamp } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -32,15 +28,17 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
 })
-export class SettingsComponent implements OnChanges {
+export class SettingsComponent implements OnChanges, OnInit {
   @Input() parentSharing = false;
   @Input() stream: MediaStream | null = null;
-  // TODO roomId needs to fix 
-  roomId = '';
+
+  @Input({ required: true }) roomId!: string;
+
+  @Output() onSetStream = new EventEmitter<string>();
+
   selectedProvider = ProvidersEnum.YouTube;
   videoUrl = '';
   arrayProvidersWithUrl = [ProvidersEnum.YouTube];
-  @Output() onSetStream = new EventEmitter<string>();
   screenShared = false;
 
   demoVideos: {
@@ -76,17 +74,20 @@ export class SettingsComponent implements OnChanges {
     private socketService: SocketService,
     private readonly cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private readonly route: ActivatedRoute,
-  ) {
+    private readonly route: ActivatedRoute
+  ) {}
+  ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.socketService.onEvent('videoChanged').subscribe((data) => {
+      this.socketService.onEvent('contentChanged').subscribe((data) => {
+        console.log('[contentChanged]', data);
+
         this.videoUrl = data.url;
         this.store.dispatch(changeUrl({ url: this.videoUrl }));
-        // console.log('[video changed]: data = ', data);
         this.cdr.detectChanges();
       });
     }
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (
       changes['parentSharing'] &&
@@ -107,16 +108,18 @@ export class SettingsComponent implements OnChanges {
     if (!this.videoUrl) {
       this.toastr.error('You must enter a URL', 'Error');
     }
-    
+
     if (!this.isValidUrl(this.videoUrl)) {
       this.toastr.error('Please enter a valid URL', 'Error');
     }
 
     this.store.dispatch(changeUrl({ url: this.videoUrl }));
-    this.socketService.sendMessage('videoChanged', {
+    console.log(this.roomId);
+
+    this.socketService.sendMessage('contentChanged', {
       roomId: this.roomId,
       url: this.videoUrl,
-      timestamp: 10
+      timestamp: 0,
     });
   }
 

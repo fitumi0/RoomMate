@@ -13,19 +13,13 @@ export function roomValidateGuard(): CanActivateFn {
       take(1),
       map((exists) => {
         if (exists) {
-          // If the room exists, return true
-          console.log('From room guard: exist');
           return true;
         } else {
           // If the room does not exist, return a UrlTree to redirect
-          // This condition does not occur!
-          console.log('From room guard: not exist');
           return router.createUrlTree(['/room-404']);
         }
       }),
       catchError((err) => {
-        // On error, redirect to a different route
-        console.log('From room guard: error');
         return of(router.createUrlTree(['/']));
       })
     );

@@ -1,12 +1,14 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnChanges,
   Output,
+  PLATFORM_ID,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -20,6 +22,8 @@ import * as mediasoupClient from 'mediasoup-client';
 import { PlayerComponent } from '../player/player.component';
 import { MatIconModule } from '@angular/material/icon';
 import { IconSizeDirective } from '../../directives/icon-size.directive';
+import { timestamp } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -31,7 +35,8 @@ import { IconSizeDirective } from '../../directives/icon-size.directive';
 export class SettingsComponent implements OnChanges {
   @Input() parentSharing = false;
   @Input() stream: MediaStream | null = null;
-
+  // TODO roomId needs to fix 
+  roomId = '';
   selectedProvider = ProvidersEnum.YouTube;
   videoUrl = '';
   arrayProvidersWithUrl = [ProvidersEnum.YouTube];
@@ -69,8 +74,19 @@ export class SettingsComponent implements OnChanges {
     private store: Store,
     private readonly toastr: ToastrService,
     private socketService: SocketService,
-    private readonly cdr: ChangeDetectorRef
-  ) {}
+    private readonly cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private readonly route: ActivatedRoute,
+  ) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.socketService.onEvent('videoChanged').subscribe((data) => {
+        this.videoUrl = data.url;
+        this.store.dispatch(changeUrl({ url: this.videoUrl }));
+        // console.log('[video changed]: data = ', data);
+        this.cdr.detectChanges();
+      });
+    }
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (
       changes['parentSharing'] &&
@@ -91,12 +107,17 @@ export class SettingsComponent implements OnChanges {
     if (!this.videoUrl) {
       this.toastr.error('You must enter a URL', 'Error');
     }
-
+    
     if (!this.isValidUrl(this.videoUrl)) {
       this.toastr.error('Please enter a valid URL', 'Error');
     }
 
     this.store.dispatch(changeUrl({ url: this.videoUrl }));
+    this.socketService.sendMessage('videoChanged', {
+      roomId: this.roomId,
+      url: this.videoUrl,
+      timestamp: 10
+    });
   }
 
   startScreenShare() {

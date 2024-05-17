@@ -505,6 +505,11 @@ async function createSocketServer() {
             callback(mediasoupRouter.rtpCapabilities);
         });
 
+        socket.on("videoChanged", (data) => {
+            console.log("[videoChanged]", data);
+            socket./*to(data.roomId).*/broadcast.emit("videoChanged", data);
+        })
+
         socket.on('createProducerTransport', async (callback) => {
             try {
                 const { transport, params } = await createWebRtcTransport();

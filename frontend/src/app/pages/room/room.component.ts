@@ -45,6 +45,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   device!: mediasoupClient.Device;
   stream!: MediaStream;
   screenSharing = false;
+  isBrowser = isPlatformBrowser(this.platformId);
   private eventSubscription!: Subscription;
   showChat = true;
   private sendTransport!: Transport;

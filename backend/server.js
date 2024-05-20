@@ -271,6 +271,17 @@ async function createExpressApp() {
         return res.send(uuidv4());
     });
 
+    /**
+     * @swagger
+     * /api/update-user-name:
+     *   patch:
+     *     tags:
+     *       - User API
+     *     description: Обновляет имя пользователя.
+     *     responses:
+     *       202:
+     *         description: Success
+     */
     expressApp.patch('/api/update-user-name', async (req, res) => {
         const payload = utils.getPayload(req);
 
@@ -286,6 +297,17 @@ async function createExpressApp() {
         return res.status(202).send(user);
     })
 
+    /**
+     * @swagger
+     * /api/update-user-username:
+     *   patch:
+     *     tags:
+     *       - User API
+     *     description: Обновляет имя пользователя.
+     *     responses:
+     *       202:
+     *         description: Success
+     */
     expressApp.patch('/api/update-user-username', async (req, res) => {
         const payload = utils.getPayload(req);
 
@@ -325,6 +347,17 @@ async function createExpressApp() {
         return res.status(202).send(user);
     })
 
+    /**
+     * @swagger
+     * /api/delete-user:
+     *   delete:
+     *     tags:
+     *       - User API
+     *     description: Удаляет пользователя. Установка тега deleted = true, запись в базе сохраняется.
+     *     responses:
+     *       202:
+     *         description: Success
+     */
     expressApp.delete('/api/delete-user', async (req, res) => {
         const payload = utils.getPayload(req);
 
@@ -344,7 +377,32 @@ async function createExpressApp() {
         return res.status(202);
     })
 
-    // TODO: вернуть нужные данные
+    /**
+     * @swagger
+     * /api/login:
+     *   post:
+     *     tags:
+     *       - User API
+     *     description: Аутентификация пользователя
+     *     responses:
+     *       200:
+     *         description: Success
+     *     body:
+     *       type: object
+     *       properties:
+     *         email:
+     *           type: string
+     *           example: 7Hk2H@example.com
+     *         password:
+     *           type: string
+     *           example: password
+     *       required:
+     *         - email
+     *         - password
+     *       example:
+     *         email: 7Hk2H@example.com
+     *         password: password
+     */
     expressApp.post('/api/login', async (req, res) => {
         let email = req.body.email;
         let password = req.body.password;
@@ -393,10 +451,57 @@ async function createExpressApp() {
         );
     });
 
+    /**
+     * @swagger
+     * /api/get-user:
+     *   get:
+     *     tags:
+     *       - User API
+     *     description: Возвращает информацию о пользователе
+     *     security:
+     *       - bearerAuth: []
+     *     responses:
+     *       200:
+     *         description: Success
+     */
     expressApp.get('/api/get-user', (req, res) => {
         return res.send(utils.getPayload(req));
     });
 
+    /**
+     * @swagger
+     * /api/sign-up:
+     *   post:
+     *     tags:
+     *       - User API
+     *     description: Создает нового пользователя
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               email:
+     *                 type: string
+     *                 example: 0g1Vz@example.com
+     *               password:
+     *                 type: string
+     * 
+     *     responses:
+     *       200:
+     *         description: Success
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 token:
+     *                   type: string
+     *       409:
+     *         description: User with this email already exists
+     * 
+     */
     expressApp.post('/api/sign-up', async (req, res) => {
         const email = req.body.email;
         const password = req.body.password;

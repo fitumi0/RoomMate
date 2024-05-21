@@ -39,18 +39,16 @@ model User {
     // deletedAt        DateTime? @db.Timestamptz(3)
     // rooms            Room[]    @relation(fields: [id], references: [ownerId])
     // roomId           String?
+    Chat             Chat[]
 }
 
 model Chat {
     id          String   @id @default(uuid())
     roomId      String // assuming 'roomId' is a foreign key to a 'Room' model
     senderId    String?
-    senderName  String   @unique
-    timeSend    DateTime @default(now())
+    timeSent    DateTime @default(now())
     content     String
     attachments String? // assuming attachments are stored as a string path or JSON, can be null
     room        Room     @relation(fields: [roomId], references: [id])
-
-    // Relations here if necessary, e.g., to a User or Room model
-    //   user        User?     @relation(fields: [senderId], references: [id])
+    user        User?    @relation(fields: [senderId], references: [id])
 }

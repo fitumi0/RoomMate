@@ -1,6 +1,6 @@
 <div class="page-wrapper">
   <app-header></app-header>
-  @defer () {
+  <ng-container *ngIf="isBrowser">
   <app-settings
     [roomId]="roomId"
     [stream]="stream"
@@ -22,7 +22,5 @@
       ></app-chat>
     </section>
   </main>
-  } @placeholder {
-  <div class="loader loader--fixed"></div>
-  }
+  </ng-container>
 </div>

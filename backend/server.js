@@ -101,6 +101,16 @@ async function createExpressApp() {
      *                   updatedAt: null   
     */
     expressApp.post('/api/create-room', async (req, res) => {
+        if (req.body.name === undefined) {
+            res.status(400).send('Name is required');
+            return;
+        }
+
+        if (req.body.public === undefined) {
+            res.status(400).send('Public status is required');
+            return;
+        }
+
         const room = await prisma.room.create({
             data: {
                 name: req.body.name,
@@ -169,6 +179,12 @@ async function createExpressApp() {
      *     tags:
      *       - Room API
      *     description: Возвращает комнату по id.
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: string
+     *         required: true
      *     responses:
      *       200:
      *         description: Success
@@ -195,7 +211,7 @@ async function createExpressApp() {
 
     /**
     * @swagger
-    * /get-public-rooms-list:
+    * /api/get-public-rooms:
     *   get:
     *     tags:
     *       - Room API
@@ -224,7 +240,7 @@ async function createExpressApp() {
 
     /**
      * @swagger
-     * /get-all-rooms-list:
+     * /api/get-all-rooms:
      *   get:
      *     tags:
      *       - Room API
@@ -252,7 +268,7 @@ async function createExpressApp() {
 
     /**
      * @swagger
-     * /generate-uuid:
+     * /api/generate-uuid:
      *   get:
      *     tags:
      *       - Room API
@@ -561,7 +577,7 @@ async function createExpressApp() {
 
     /**
      * @swagger
-     * /get-active-rooms:
+     * /api/get-active-rooms:
      *   get:
      *     tags:
      *       - Statistics API

@@ -14,35 +14,35 @@ datasource db {
 }
 
 model Room {
-    id        String    @id @default(uuid())
+    id        String        @id @default(uuid())
     name      String
-    public    Boolean   @default(false)
-    createdAt DateTime  @default(now()) @db.Timestamptz(3)
-    updatedAt DateTime? @db.Timestamptz(3)
-    deleted   Boolean   @default(false)
-    deletedAt DateTime? @db.Timestamptz(3)
+    public    Boolean       @default(false)
+    createdAt DateTime      @default(now()) @db.Timestamptz(3)
+    updatedAt DateTime?     @db.Timestamptz(3)
+    deleted   Boolean       @default(false)
+    deletedAt DateTime?     @db.Timestamptz(3)
     // owner     User?     @relation(fields: [ownerId], references: [id])
-    Chat      Chat[]
+    Chat      ChatMessage[]
 }
 
 model User {
-    id               String    @id @default(uuid())
-    username         String    @unique
+    id               String        @id @default(uuid())
+    username         String        @unique
     name             String?
     passwordHash     String
-    email            String    @unique
-    registrationDate DateTime  @default(now()) @db.Timestamptz(3)
-    dateModified     DateTime? @db.Timestamptz(3)
-    deleted          Boolean   @default(false)
+    email            String        @unique
+    registrationDate DateTime      @default(now()) @db.Timestamptz(3)
+    dateModified     DateTime?     @db.Timestamptz(3)
+    deleted          Boolean       @default(false)
     token            String?
     // deleted          Boolean   @default(false)
     // deletedAt        DateTime? @db.Timestamptz(3)
     // rooms            Room[]    @relation(fields: [id], references: [ownerId])
     // roomId           String?
-    Chat             Chat[]
+    Chat             ChatMessage[]
 }
 
-model Chat {
+model ChatMessage {
     id          String   @id @default(uuid())
     roomId      String // assuming 'roomId' is a foreign key to a 'Room' model
     senderId    String?

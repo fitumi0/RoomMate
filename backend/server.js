@@ -56,12 +56,6 @@ async function createMediaServer() {
     });
     const mediaCodecs = config.mediasoup.routerOptions.mediaCodecs;
     mediasoupRouter = await mediasoupWorker.createRouter({ mediaCodecs });
-
-
-    // TODO: add logger
-    // TODO: add multiple workers
-
-
 }
 
 async function createExpressApp() {
@@ -78,6 +72,8 @@ async function createExpressApp() {
         console.log(`[${req.method}]:`, req.url);
         next(); // Передаем управление следующему middleware в цепочке
     });
+
+    // #region Rooms
 
     /** 
      * @swagger
@@ -119,6 +115,23 @@ async function createExpressApp() {
         })
 
         res.status(201).json(room);
+    })
+
+    /**
+    * @swagger
+    * /api/get-active-rooms:
+    *   get:
+    *     tags:
+    *       - Statistics API
+    *     description: Возвращает количество активных комнат.
+    *     responses:
+    *       200:
+    *         description: Success
+    */
+    expressApp.get('/api/get-active-rooms', async (req, res) => {
+        const activeRooms = socketServer.sockets.adapter.rooms;
+        // to see rooms: Object.fromEntries(activeRooms)
+        res.status(200).json({ "activeRooms": activeRooms.size });
     })
 
     /**
@@ -265,6 +278,10 @@ async function createExpressApp() {
         })
         res.json(rooms);
     });
+
+    // #endregion Rooms
+
+    // #region User
 
     /**
      * @swagger
@@ -575,22 +592,8 @@ async function createExpressApp() {
         );
     });
 
-    /**
-     * @swagger
-     * /api/get-active-rooms:
-     *   get:
-     *     tags:
-     *       - Statistics API
-     *     description: Возвращает количество активных комнат.
-     *     responses:
-     *       200:
-     *         description: Success
-     */
-    expressApp.get('/api/get-active-rooms', async (req, res) => {
-        const activeRooms = socketServer.sockets.adapter.rooms;
-        // to see rooms: Object.fromEntries(activeRooms)
-        res.status(200).json({ "activeRooms": activeRooms.size });
-    })
+    // #endregion User
+
 
     const swaggerDocs = swaggerJsDoc(config.swaggerOptions);
     expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -744,7 +747,16 @@ async function createSocketServer() {
 
         // #region Chat
 
-        socket.on("message", (data) => {
+        socket.on("message", async (data) => {
+            await prisma.chatMessage.create({
+                data: {
+                    roomId: data.roomId,
+                    senderId: data.senderId || null,
+                    content: data.text,
+                    timeSent: data.date,
+                }
+            })
+
             socket.to(data.roomId).emit("message", data);
         })
 

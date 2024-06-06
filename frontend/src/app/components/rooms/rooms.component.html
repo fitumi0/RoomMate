@@ -4,13 +4,21 @@
     <p>No registration or download required.</p>
     <form [formGroup]="roomsGroup" (ngSubmit)="onSubmit()">
       <div class="rooms-wrapper">
-        <button type="button" class="btn btn--invert btn--border" (click)="openDialog()">
+        <button type="button" class="btn" (click)="openDialog()">
           Create a room
         </button>
         <p class="rooms__or-text">or</p>
 
-        <button type="submit" class="btn btn--invert btn--border">Join a room</button>
-        <input class="input" type="text" placeholder="Room id" formControlName="roomUid" required />
+        <button type="submit" class="btn btn--invert btn--border">
+          Join a room
+        </button>
+        <input
+          class="input"
+          type="text"
+          placeholder="Room id"
+          formControlName="roomUid"
+          required
+        />
       </div>
     </form>
   </div>
@@ -22,7 +30,7 @@
       </div>
       <div>
         <h2 id="active-rooms">
-          {{ activeRooms || '0' }}
+          {{ activeRooms || "0" }}
         </h2>
         <p>Currently active rooms</p>
       </div>

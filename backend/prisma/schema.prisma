@@ -35,20 +35,16 @@ model User {
     dateModified     DateTime?     @db.Timestamptz(3)
     deleted          Boolean       @default(false)
     token            String?
-    // deleted          Boolean   @default(false)
-    // deletedAt        DateTime? @db.Timestamptz(3)
-    // rooms            Room[]    @relation(fields: [id], references: [ownerId])
-    // roomId           String?
     Chat             ChatMessage[]
 }
 
 model ChatMessage {
     id          String   @id @default(uuid())
-    roomId      String // assuming 'roomId' is a foreign key to a 'Room' model
+    roomId      String 
     senderId    String?
     timeSent    DateTime @default(now())
     content     String
-    attachments String? // assuming attachments are stored as a string path or JSON, can be null
+    attachments String? 
     room        Room     @relation(fields: [roomId], references: [id])
     user        User?    @relation(fields: [senderId], references: [id])
 }

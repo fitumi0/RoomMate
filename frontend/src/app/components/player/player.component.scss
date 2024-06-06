@@ -1,6 +1,10 @@
+@import "../../../styles.scss";
+
 .player {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    @include backlight(0, 0, 20rem, 0.5, $text-color, $text-link-hover, 10s);
 }

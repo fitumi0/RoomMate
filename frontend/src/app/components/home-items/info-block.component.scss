@@ -1,83 +1,85 @@
 @import "../../../styles.scss";
 
 .info-block {
-  margin-bottom: 12vh;
+    margin-bottom: 12vh;
 }
 
 .wrapper {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  padding: 0;
-  margin: 0;
-}
-
-@media screen and (max-width: 768px) {
-  .wrapper {
-    // grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .wrapper {
-    // grid-template-columns: 1fr;
-  }
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
 }
 
 .title__wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  position: relative;
-  bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    bottom: 15px;
+    // @include backlight(0, 5rem, 20vh, 0.75, #0fffc1, #7e0fff, 10s);
+    @include backlight(0, 5rem, 20vh, 0.75, $blue-color, $green-color, 10s);
 }
 
 .title {
-  display: grid;
-  color: $blue-color;
-  font-size: 1.5rem;
-  grid-template-columns: repeat(3, 1fr);
-  align-items: center;
-  column-gap: 1rem;
-  max-width: 40vw;
+    display: grid;
+    color: $blue-color;
+    font-size: 1.5rem;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    column-gap: 1rem;
+    max-width: 40vw;
 
-  &::after,
-  &::before {
-    content: "";
-    height: 0.1rem;
-    background-color: $blue-color;
-    display: block;
-  }
+    &::after,
+    &::before {
+        content: "";
+        height: 0.1rem;
+        background-color: $blue-color;
+        display: block;
+    }
 }
 
 .item {
-  cursor: pointer;
-  background-color: rgba($accent-color, 0.5);
-  border: 2px dashed $dark-blue-color;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  text-align: center;
-  min-width: 15em;
-  width: 20%;
-  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
-
-  &:hover {
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    background-color: rgba($accent-color, 0.5);
+    border: 2px dashed $dark-blue-color;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    text-align: center;
+    min-width: 15em;
+    width: 20%;
     transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
-    animation: jumping infinite 1s;
-    transition: background-color 0.5s;
-    background-color: $accent-color;
-  }
 
-  .description {
-    word-wrap: normal;
-    width: auto;
-  }
+    &:hover {
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
+        transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+        animation: jumping infinite 1s;
+        transition: background-color 0.5s;
+        background-color: $accent-color;
+    }
+
+    .description {
+        word-wrap: normal;
+        width: auto;
+    }
 }
 
 .divider--blue {
-  background-color: $blue-color;
+    background-color: $blue-color;
+}
+
+@media screen and (max-width: 768px) {
+    .wrapper {
+        // grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .wrapper {
+        // grid-template-columns: 1fr;
+    }
 }

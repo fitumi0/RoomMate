@@ -1,7 +1,5 @@
 <div class="dialog-wrapper">
-  <mat-icon appIconSize="32px" (click)="onExit()" app class="close-icon"
-    >close</mat-icon
-  >
+  <mat-icon appIconSize="32px" (click)="onExit()" app class="close-icon">close</mat-icon>
   <h3 class="title" mat-dialog-title>Creating room</h3>
   <hr class="hr-divider" />
   <form [formGroup]="roomData" (ngSubmit)="onSubmit()">
@@ -12,46 +10,30 @@
 
       <div class="form-group">
         <label for="createRoomName">Room name</label>
-        <input
-          type="text"
-          class="input"
-          formControlName="name"
-          id="createRoomName"
-          name="createRoomName"
-          required
-        />
-        <div
-          *ngIf="
+        <input type="text" class="input" formControlName="name" id="createRoomName" name="createRoomName" required />
+        <div *ngIf="
             roomData.controls['name'].invalid && roomData.controls['name'].dirty
-          "
-          class="invalid"
-        >
+          " class="invalid">
           <span *ngIf="roomData.controls['name'].hasError('required')">
             Room name is required
           </span>
         </div>
       </div>
       <div class="form-group--checkbox">
-        <input
-          class="input-checkbox"
-          type="checkbox"
-          formControlName="public"
-          id="createRoompublic"
-          name="createRoompublic"
-        />
+        <input class="input-checkbox" type="checkbox" formControlName="public" id="createRoompublic"
+          name="createRoompublic" />
         <label for="createRoompublic">Public access?</label>
       </div>
     </div>
     <hr class="hr-divider" />
 
     <div class="dialog__footer" mat-dialog-actions>
-      <div *ngIf="isSubmitting" class="loader"></div>
-      <button
-        *ngIf="!isSubmitting"
-        class="btn"
-        type="submit"
-        [disabled]="!roomData.valid"
-      >
+      <div *ngIf="isSubmitting" style="height: 60px;">
+        <div class="loader"></div>
+      </div>
+
+
+      <button *ngIf="!isSubmitting" class="btn" type="submit" [disabled]="!roomData.valid">
         Create
       </button>
     </div>

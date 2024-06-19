@@ -87,13 +87,13 @@
     <button
         class="btn"
         [ngClass]="{ 'd-none': !showChat }"
-        (click)="addVideoPlayer()"
+        (click)="joinVideoChat()"
     >
         Join Video Chat
     </button>
     <div class="people__content" [ngClass]="{ 'd-none': !showChat }">
         <div class="video-players" [ngClass]="{ 'd-none': !showChat }">
-            <ng-container *ngFor="let player of videoPlayers; let i = index">
+            <ng-container *ngFor="let player of videoStreams; let i = index">
                 <!-- i: number, fix to able insert strings -->
                 <app-webcam [id]="i.toString()" [stream]="player"></app-webcam>
             </ng-container>

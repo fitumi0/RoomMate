@@ -306,42 +306,16 @@ async function createExpressApp() {
 
     /**
      * @swagger
-     * /api/update-user-name:
+     * /api/update-user:
      *   patch:
      *     tags:
      *       - User API
-     *     description: Обновляет имя пользователя.
+     *     description: Обновляет пользователя.
      *     responses:
      *       202:
      *         description: Success
      */
-    expressApp.patch('/api/update-user-name', async (req, res) => {
-        const payload = utils.getPayload(req);
-
-        const user = await prisma.user.update({
-            where: {
-                id: payload.id
-            },
-            data: {
-                name: req.body.newName
-            }
-        })
-
-        return res.status(202).send(user);
-    })
-
-    /**
-     * @swagger
-     * /api/update-user-username:
-     *   patch:
-     *     tags:
-     *       - User API
-     *     description: Обновляет имя пользователя.
-     *     responses:
-     *       202:
-     *         description: Success
-     */
-    expressApp.patch('/api/update-user-username', async (req, res) => {
+    expressApp.patch('/api/update-user', async (req, res) => {
         const payload = utils.getPayload(req);
 
         if (!payload) {
@@ -353,27 +327,7 @@ async function createExpressApp() {
                 id: payload.id
             },
             data: {
-                username: req.body.newUsername
-            }
-        })
-
-        return res.status(202).send(user);
-    })
-
-    expressApp.patch('/api/update-user-password', async (req, res) => {
-        const payload = utils.getPayload(req);
-
-        if (!payload) {
-            return res.status(400).send({ message: "Token not found" });
-        }
-
-        const user = await prisma.user.update({
-            where: {
-                id: payload.id,
-                passwordHash: utils.hashPassword(req.body.currentPassword)
-            },
-            data: {
-                passwordHash: utils.hashPassword(req.body.newPassword)
+                ...req.body
             }
         })
 

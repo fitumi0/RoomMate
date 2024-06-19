@@ -1,0 +1,88 @@
+<section>
+    <form class="update-form rounded" [formGroup]="formData" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="usernameUpdate">Username: </label>
+            <input id="usernameUpdate" name="usernameUpdate" class="input" type="text" formControlName="newUsername">
+            <div *ngIf="formData.controls['newUsername'].invalid && (formData.controls['newUsername'].dirty || formData.controls['newUsername'].touched)"
+                class="invalid">
+                <span *ngIf="formData.controls['newUsername'].hasError('required')">
+                    Username is required
+                </span>
+                <span *ngIf="formData.controls['newUsername'].hasError('minlength')">
+                    Username must be more than 4 characters
+                </span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="nameUpdate">Name: </label>
+            <input id="nameUpdate" name="nameUpdate" class="input" type="text" formControlName="newName">
+        </div>
+
+        <div class="form-group">
+            <label for="newEmail">Email: </label>
+            <input id="emailUpdate" name="emailUpdate" class="input" type="text" formControlName="newEmail">
+            <div *ngIf="formData.controls['newEmail'].invalid && (formData.controls['newEmail'].dirty || formData.controls['newEmail'].touched)"
+                class="invalid">
+                <span *ngIf="formData.controls['newEmail'].hasError('required')">
+                    Email is required
+                </span>
+                <span *ngIf="formData.controls['newEmail'].hasError('email')">
+                    Invalid email
+                </span>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label for="currentPasswordUpdate">Current password: </label>
+            <input id="currentPasswordUpdate" name="currentPasswordUpdate" class="input" type="password"
+                formControlName="currentPassword">
+            <div *ngIf="formData.controls['currentPassword'].invalid && (formData.controls['currentPassword'].dirty || formData.controls['currentPassword'].touched)"
+                class="invalid">
+                <span *ngIf="formData.controls['currentPassword'].hasError('required')">
+                    Current password is required
+                </span>
+                <span *ngIf="formData.controls['currentPassword'].hasError('minlength')">
+                    Current password must be more than 8 characters
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="newPasswordUpdate">New password: </label>
+            <input id="newPasswordUpdate" name="newPasswordUpdate" class="input" type="password"
+                formControlName="newPassword">
+            <div *ngIf="formData.controls['newPassword'].invalid && (formData.controls['newPassword'].dirty || formData.controls['newPassword'].touched)"
+                class="invalid">
+                <span *ngIf="formData.controls['newPassword'].hasError('required')">
+                    New password is required
+                </span>
+                <span *ngIf="formData.controls['newPassword'].hasError('minlength')">
+                    New password must be more than 8 characters
+                </span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPasswordInput">Confirm password:</label>
+            <input id="confirmPasswordInput" class="input" type="password" formControlName="confirmPassword" required />
+            <div *ngIf="
+                formData.controls['confirmPassword'].dirty ||
+                formData.controls['confirmPassword'].touched
+              " class="invalid">
+                <span *ngIf="formData.controls['confirmPassword'].hasError('required')">
+                    Confirmed password is required
+                </span>
+                <span *ngIf="
+                  formData.hasError('mustMatch') &&
+                  !formData.controls['confirmPassword'].hasError('required')
+                ">
+                    Confirmed password do not match
+                </span>
+            </div>
+        </div>
+        <div *ngIf="isSubmitting" class="loader"></div>
+        <button *ngIf="!isSubmitting" class="btn" style="margin-top: 5px;" type="submit"
+            [disabled]="!formData.valid">Submit</button>
+    </form>
+</section>

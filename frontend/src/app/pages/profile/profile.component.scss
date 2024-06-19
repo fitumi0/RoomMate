@@ -4,9 +4,34 @@
   width: 80%;
 }
 
+.grid-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
 .profile-controls {
   display: flex;
   gap: 10px;
   justify-content: center;
   margin-top: 20px;
+}
+
+.avatar-wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  @include backlight(0, 5rem, 20vh, 0.75, $blue-color, $green-color, 10s);
+
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+}
+
+.input-wrapper>label {
+  padding-bottom: 1em;
 }

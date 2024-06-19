@@ -13,52 +13,57 @@ import { Subject, take, takeUntil } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteUserModalComponent } from '../../components/delete-user-modal/delete-user-modal.component';
 import { IUser } from '../../interfaces/IUser';
+import { UpdateUserdataComponent } from '../../components/update-userdata/update-userdata.component';
 
 @Component({
-  selector: 'app-profile',
-  standalone: true,
-  imports: [HeaderComponent, FooterComponent, AccordionComponent],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
+    selector: 'app-profile',
+    standalone: true,
+    imports: [
+        HeaderComponent,
+        FooterComponent,
+        UpdateUserdataComponent,
+    ],
+    templateUrl: './profile.component.html',
+    styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnDestroy {
-  forms: { title: string; component: any }[] = [
-    { title: 'Update Name', component: NameUpdateComponent },
-    { title: 'Update Username', component: UsernameUpdateComponent },
-    { title: 'Update Password', component: PasswordUpdateComponent },
-  ];
+    // forms: { title: string; component: any }[] = [
+    //     { title: 'Update Name', component: NameUpdateComponent },
+    //     { title: 'Update Username', component: UsernameUpdateComponent },
+    //     { title: 'Update Password', component: PasswordUpdateComponent },
+    // ];
 
-  $unsubscribe = new Subject<void>();
-  constructor(
-    private readonly store: Store,
-    private readonly router: Router,
-    public readonly auth: AuthService,
-    private readonly dialog: MatDialog
-  ) {
-    this.store
-      .select(userSelector)
-      .pipe(take(1))
-      .subscribe((user) => {
-        if (user) {
-          this.user = user;
-        }
-      });
-  }
+    $unsubscribe = new Subject<void>();
+    constructor(
+        private readonly store: Store,
+        private readonly router: Router,
+        public readonly auth: AuthService,
+        private readonly dialog: MatDialog
+    ) {
+        this.store
+            .select(userSelector)
+            .pipe(take(1))
+            .subscribe((user) => {
+                if (user) {
+                    this.user = user;
+                }
+            });
+    }
 
-  user!: IUser;
+    user!: IUser;
 
-  openDialog(): void {
-    const dialogRef = this.dialog.open(DeleteUserModalComponent, {
-      width: '320px',
-      disableClose: true,
-      data: {},
-    });
+    openDialog(): void {
+        const dialogRef = this.dialog.open(DeleteUserModalComponent, {
+            width: '320px',
+            disableClose: true,
+            data: {},
+        });
 
-    dialogRef.afterClosed().pipe(takeUntil(this.$unsubscribe)).subscribe();
-  }
+        dialogRef.afterClosed().pipe(takeUntil(this.$unsubscribe)).subscribe();
+    }
 
-  ngOnDestroy(): void {
-    this.$unsubscribe.next();
-    this.$unsubscribe.complete();
-  }
+    ngOnDestroy(): void {
+        this.$unsubscribe.next();
+        this.$unsubscribe.complete();
+    }
 }

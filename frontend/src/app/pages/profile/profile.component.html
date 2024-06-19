@@ -2,9 +2,77 @@
   <app-header></app-header>
   <main class="main">
     <section>
-      <h2>Profile</h2>
+      <h2>Public avatar</h2>
 
+      <img src="https://placehold.co/128x128" />
       <app-accordion [accordionItems]="forms"></app-accordion>
+
+      <h2>Main settings</h2>
+      <style>
+        .input-wrapper {
+          display: flex;
+          flex-direction: column;
+          width: fit-content;
+        }
+        .input-wrapper > label {
+          padding-bottom: 1em;
+        }
+      </style>
+      <div style="display: flex; flex-direction: column; gap: 1em">
+        <div class="input-wrapper">
+          <label for="name">Name</label>
+          <input
+            type="text"
+            name="name"
+            placeholder="name"
+            value="{{ user.name }}"
+          />
+        </div>
+        <div class="input-wrapper">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            name="username"
+            placeholder="username"
+            value="{{ user.username }}"
+          />
+        </div>
+        <div class="input-wrapper">
+          <label for="email">Email</label>
+          <input
+            type="text"
+            name="email"
+            placeholder="email"
+            value="{{ user.email }}"
+          />
+        </div>
+        <div class="input-wrapper">
+          <label for="current password">Current password</label>
+          <input
+            type="password"
+            name="current password"
+            placeholder="current password"
+          />
+        </div>
+        <div class="input-wrapper">
+          <label for="newpassword">New password</label>
+          <input
+            type="password"
+            name="newpassword"
+            placeholder="new password"
+          />
+        </div>
+        <div class="input-wrapper">
+          <label for="confirmPassword">Confirm password</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="confirm password"
+          />
+        </div>
+
+        <button type="submit" class="btn btn--primary">Save</button>
+      </div>
 
       <div class="profile-controls">
         <button type="button" class="btn" (click)="auth.logOut()">

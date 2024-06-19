@@ -56,12 +56,6 @@ async function createMediaServer() {
     });
     const mediaCodecs = config.mediasoup.routerOptions.mediaCodecs;
     mediasoupRouter = await mediasoupWorker.createRouter({ mediaCodecs });
-
-
-    // TODO: add logger
-    // TODO: add multiple workers
-
-
 }
 
 async function createExpressApp() {
@@ -78,6 +72,8 @@ async function createExpressApp() {
         console.log(`[${req.method}]:`, req.url);
         next(); // Передаем управление следующему middleware в цепочке
     });
+
+    // #region Rooms
 
     /** 
      * @swagger
@@ -101,6 +97,16 @@ async function createExpressApp() {
      *                   updatedAt: null   
     */
     expressApp.post('/api/create-room', async (req, res) => {
+        if (req.body.name === undefined) {
+            res.status(400).send('Name is required');
+            return;
+        }
+
+        if (req.body.public === undefined) {
+            res.status(400).send('Public status is required');
+            return;
+        }
+
         const room = await prisma.room.create({
             data: {
                 name: req.body.name,
@@ -109,6 +115,23 @@ async function createExpressApp() {
         })
 
         res.status(201).json(room);
+    })
+
+    /**
+    * @swagger
+    * /api/get-active-rooms:
+    *   get:
+    *     tags:
+    *       - Statistics API
+    *     description: Возвращает количество активных комнат.
+    *     responses:
+    *       200:
+    *         description: Success
+    */
+    expressApp.get('/api/get-active-rooms', async (req, res) => {
+        const activeRooms = socketServer.sockets.adapter.rooms;
+        // to see rooms: Object.fromEntries(activeRooms)
+        res.status(200).json({ "activeRooms": activeRooms.size });
     })
 
     /**
@@ -169,6 +192,12 @@ async function createExpressApp() {
      *     tags:
      *       - Room API
      *     description: Возвращает комнату по id.
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         schema:
+     *           type: string
+     *         required: true
      *     responses:
      *       200:
      *         description: Success
@@ -195,7 +224,7 @@ async function createExpressApp() {
 
     /**
     * @swagger
-    * /get-public-rooms-list:
+    * /api/get-public-rooms:
     *   get:
     *     tags:
     *       - Room API
@@ -224,7 +253,7 @@ async function createExpressApp() {
 
     /**
      * @swagger
-     * /get-all-rooms-list:
+     * /api/get-all-rooms:
      *   get:
      *     tags:
      *       - Room API
@@ -250,9 +279,13 @@ async function createExpressApp() {
         res.json(rooms);
     });
 
+    // #endregion Rooms
+
+    // #region User
+
     /**
      * @swagger
-     * /generate-uuid:
+     * /api/generate-uuid:
      *   get:
      *     tags:
      *       - Room API
@@ -271,22 +304,18 @@ async function createExpressApp() {
         return res.send(uuidv4());
     });
 
-    expressApp.patch('/api/update-user-name', async (req, res) => {
-        const payload = utils.getPayload(req);
-
-        const user = await prisma.user.update({
-            where: {
-                id: payload.id
-            },
-            data: {
-                name: req.body.newName
-            }
-        })
-
-        return res.status(202).send(user);
-    })
-
-    expressApp.patch('/api/update-user-username', async (req, res) => {
+    /**
+     * @swagger
+     * /api/update-user:
+     *   patch:
+     *     tags:
+     *       - User API
+     *     description: Обновляет пользователя.
+     *     responses:
+     *       202:
+     *         description: Success
+     */
+    expressApp.patch('/api/update-user', async (req, res) => {
         const payload = utils.getPayload(req);
 
         if (!payload) {
@@ -298,33 +327,24 @@ async function createExpressApp() {
                 id: payload.id
             },
             data: {
-                username: req.body.newUsername
+                ...req.body
             }
         })
 
         return res.status(202).send(user);
     })
 
-    expressApp.patch('/api/update-user-password', async (req, res) => {
-        const payload = utils.getPayload(req);
-
-        if (!payload) {
-            return res.status(400).send({ message: "Token not found" });
-        }
-
-        const user = await prisma.user.update({
-            where: {
-                id: payload.id,
-                passwordHash: utils.hashPassword(req.body.currentPassword)
-            },
-            data: {
-                passwordHash: utils.hashPassword(req.body.newPassword)
-            }
-        })
-
-        return res.status(202).send(user);
-    })
-
+    /**
+     * @swagger
+     * /api/delete-user:
+     *   delete:
+     *     tags:
+     *       - User API
+     *     description: Удаляет пользователя. Установка тега deleted = true, запись в базе сохраняется.
+     *     responses:
+     *       202:
+     *         description: Success
+     */
     expressApp.delete('/api/delete-user', async (req, res) => {
         const payload = utils.getPayload(req);
 
@@ -344,7 +364,32 @@ async function createExpressApp() {
         return res.status(202);
     })
 
-    // TODO: вернуть нужные данные
+    /**
+     * @swagger
+     * /api/login:
+     *   post:
+     *     tags:
+     *       - User API
+     *     description: Аутентификация пользователя
+     *     responses:
+     *       200:
+     *         description: Success
+     *     body:
+     *       type: object
+     *       properties:
+     *         email:
+     *           type: string
+     *           example: 7Hk2H@example.com
+     *         password:
+     *           type: string
+     *           example: password
+     *       required:
+     *         - email
+     *         - password
+     *       example:
+     *         email: 7Hk2H@example.com
+     *         password: password
+     */
     expressApp.post('/api/login', async (req, res) => {
         let email = req.body.email;
         let password = req.body.password;
@@ -393,10 +438,57 @@ async function createExpressApp() {
         );
     });
 
+    /**
+     * @swagger
+     * /api/get-user:
+     *   get:
+     *     tags:
+     *       - User API
+     *     description: Возвращает информацию о пользователе
+     *     security:
+     *       - bearerAuth: []
+     *     responses:
+     *       200:
+     *         description: Success
+     */
     expressApp.get('/api/get-user', (req, res) => {
         return res.send(utils.getPayload(req));
     });
 
+    /**
+     * @swagger
+     * /api/sign-up:
+     *   post:
+     *     tags:
+     *       - User API
+     *     description: Создает нового пользователя
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               email:
+     *                 type: string
+     *                 example: 0g1Vz@example.com
+     *               password:
+     *                 type: string
+     * 
+     *     responses:
+     *       200:
+     *         description: Success
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 token:
+     *                   type: string
+     *       409:
+     *         description: User with this email already exists
+     * 
+     */
     expressApp.post('/api/sign-up', async (req, res) => {
         const email = req.body.email;
         const password = req.body.password;
@@ -454,22 +546,8 @@ async function createExpressApp() {
         );
     });
 
-    /**
-     * @swagger
-     * /get-active-rooms:
-     *   get:
-     *     tags:
-     *       - Statistics API
-     *     description: Возвращает количество активных комнат.
-     *     responses:
-     *       200:
-     *         description: Success
-     */
-    expressApp.get('/api/get-active-rooms', async (req, res) => {
-        const activeRooms = socketServer.sockets.adapter.rooms;
-        // to see rooms: Object.fromEntries(activeRooms)
-        res.status(200).json({ "activeRooms": activeRooms.size });
-    })
+    // #endregion User
+
 
     const swaggerDocs = swaggerJsDoc(config.swaggerOptions);
     expressApp.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -632,7 +710,16 @@ async function createSocketServer() {
 
         // #region Chat
 
-        socket.on("message", (data) => {
+        socket.on("message", async (data) => {
+            await prisma.chatMessage.create({
+                data: {
+                    roomId: data.roomId,
+                    senderId: data.senderId || null,
+                    content: data.text,
+                    timeSent: data.date,
+                }
+            })
+
             socket.to(data.roomId).emit("message", data);
         })
 

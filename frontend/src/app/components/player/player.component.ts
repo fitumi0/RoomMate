@@ -1,4 +1,5 @@
 import {
+    AfterViewInit,
     CUSTOM_ELEMENTS_SCHEMA,
     Component,
     ElementRef,
@@ -6,6 +7,7 @@ import {
     Input,
     OnChanges,
     OnDestroy,
+    OnInit,
     PLATFORM_ID,
     SimpleChanges,
     ViewChild,
@@ -21,6 +23,7 @@ import { videoUrlSelector } from '../../reducers/videoUrl';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { tap } from 'rxjs';
 import { MediaPlayerElement, MediaProviderElement } from 'vidstack/elements';
+import { CaptionButton, MediaControls, mediaContext } from 'vidstack';
 
 @Component({
     selector: 'app-player',
@@ -30,7 +33,7 @@ import { MediaPlayerElement, MediaProviderElement } from 'vidstack/elements';
     templateUrl: './player.component.html',
     styleUrl: './player.component.scss',
 })
-export class PlayerComponent implements OnDestroy, OnChanges {
+export class PlayerComponent implements OnDestroy, OnChanges, AfterViewInit {
     @Input() stream: MediaStream | null = null;
     @ViewChild('playerElement') playerElement!: ElementRef<MediaPlayerElement>;
 
@@ -43,6 +46,7 @@ export class PlayerComponent implements OnDestroy, OnChanges {
         )
         .subscribe();
 
+    @ViewChild('playerProvider')
     playerProvider!: ElementRef<MediaProviderElement>;
     url: string;
     src!: string | MediaStream | MediaSource | null;
@@ -52,18 +56,26 @@ export class PlayerComponent implements OnDestroy, OnChanges {
         @Inject(PLATFORM_ID) private platformId: any
     ) {
         this.url = '';
-        this.src = new MediaSource();
+        this.src = '';
+    }
+    ngAfterViewInit(): void {
+        this.playerElement.nativeElement.viewType = 'video';
+        if (isPlatformBrowser(this.platformId)) {
+            (window as any)['playerStream'] = this.stream;
+            (window as any)['playerElement'] = this.playerElement;
+            (window as any)['playerProvider'] = this.playerProvider;
+        }
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['stream'] && !changes['stream'].firstChange) {
             this.playerElement.nativeElement.src =
                 changes['stream'].currentValue;
-
             if (isPlatformBrowser(this.platformId) && isDevMode()) {
                 (window as any)['playerStream'] = this.stream;
+                (window as any)['playerElement'] = this.playerElement;
+                (window as any)['playerProvider'] = this.playerProvider;
             }
-
             this.playerElement.nativeElement.autoPlay = false;
         }
     }

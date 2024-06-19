@@ -87,7 +87,7 @@ export class SettingsComponent implements OnChanges, OnInit {
             });
         }
 
-        this.store.dispatch(changeUrl({ url: this.demoVideos[0].url }));
+        // this.store.dispatch(changeUrl({ url: this.demoVideos[0].url }));
     }
 
     ngOnChanges(changes: SimpleChanges): void {

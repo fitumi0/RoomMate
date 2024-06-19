@@ -98,12 +98,6 @@ export class RoomComponent implements OnInit, OnDestroy {
         this.consume(producerId);
       });
 
-    this.socketService.sendMessageCallback(
-      'joinRoom',
-      this.roomId,
-      (roomId: string) => {}
-    );
-
     this.socketService.sendMessage(
       'getRouterRtpCapabilities',
       async (rtpCapabilities: RtpCapabilities) => {

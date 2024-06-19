@@ -14,7 +14,11 @@
       class="player-section"
       [ngClass]="{ 'player-section--no-chat': !showChat }"
     >
-      <app-player class="player" [stream]="stream"></app-player>
+      <app-player
+        class="player"
+        [roomId]="roomId"
+        [stream]="stream"
+      ></app-player>
       <app-chat
         [ngClass]="{ 'w-1': !showChat }"
         (onShowChat)="toggleChat($event)"

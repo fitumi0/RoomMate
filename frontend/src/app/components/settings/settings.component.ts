@@ -77,15 +77,17 @@ export class SettingsComponent implements OnChanges, OnInit {
     private readonly route: ActivatedRoute
   ) {}
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.socketService.onEvent('contentChanged').subscribe((data) => {
-        console.log('[contentChanged]', data);
-
-        this.videoUrl = data.url;
-        this.store.dispatch(changeUrl({ url: this.videoUrl }));
-        this.cdr.detectChanges();
-      });
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
     }
+
+    this.socketService.onEvent('playerStateChanged').subscribe((data) => {
+      console.log('[playerStateChanged]', data);
+
+      this.videoUrl = data.url;
+      this.store.dispatch(changeUrl({ url: this.videoUrl }));
+      this.cdr.detectChanges();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -114,12 +116,12 @@ export class SettingsComponent implements OnChanges, OnInit {
     }
 
     this.store.dispatch(changeUrl({ url: this.videoUrl }));
-    console.log(this.roomId);
 
-    this.socketService.sendMessage('contentChanged', {
+    this.socketService.sendMessage('playerStateChanged', {
       roomId: this.roomId,
       url: this.videoUrl,
       timestamp: 0,
+      paused: true,
     });
   }
 

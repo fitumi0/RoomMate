@@ -1,37 +1,66 @@
 <form class="login-form" [formGroup]="userData" (ngSubmit)="onSubmit()">
-    <h2 class="title">Sign in to RoomMate</h2>
+  <h2 class="form-title">Sign in to RoomMate</h2>
 
-    <div class="form-group">
-        <label for="emailInput">Email:</label>
-        <input id="emailInput" class="input" type="email" formControlName="email" required>
-        <div *ngIf="userData.controls['email'].invalid && (userData.controls['email'].dirty || userData.controls['email'].touched)"
-            class="invalid">
-            <span *ngIf="userData.controls['email'].hasError('required')">
-                Email is required
-            </span>
-            <span *ngIf="userData.controls['email'].hasError('email')">
-                Invalid email
-            </span>
-        </div>
+  <div class="form-group">
+    <label for="emailInput">Email:</label>
+    <input
+      id="emailInput"
+      class="input"
+      type="email"
+      formControlName="email"
+      required
+    />
+    <div
+      *ngIf="
+        userData.controls['email'].invalid &&
+        (userData.controls['email'].dirty || userData.controls['email'].touched)
+      "
+      class="invalid"
+    >
+      <span *ngIf="userData.controls['email'].hasError('required')">
+        Email is required
+      </span>
+      <span *ngIf="userData.controls['email'].hasError('email')">
+        Invalid email
+      </span>
     </div>
+  </div>
 
-    <div class="form-group">
-        <label for="passwordInput">Password:</label>
-        <input id="passwordInput" class="input" type="password" formControlName="password" required>
-        <div *ngIf="userData.controls['password'].invalid && 
-        (userData.controls['password'].dirty || userData.controls['password'].touched)" class="invalid">
-            <span *ngIf="userData.controls['password'].hasError('required')">
-                Password is required
-            </span>
-            <span *ngIf="userData.controls['password'].hasError('minlength')">
-                Password must be more than 6 characters
-            </span>
-        </div>
+  <div class="form-group">
+    <label for="passwordInput">Password:</label>
+    <input
+      id="passwordInput"
+      class="input"
+      type="password"
+      formControlName="password"
+      required
+    />
+    <div
+      *ngIf="
+        userData.controls['password'].invalid &&
+        (userData.controls['password'].dirty ||
+          userData.controls['password'].touched)
+      "
+      class="invalid"
+    >
+      <span *ngIf="userData.controls['password'].hasError('required')">
+        Password is required
+      </span>
+      <span *ngIf="userData.controls['password'].hasError('minlength')">
+        Password must be more than 6 characters
+      </span>
     </div>
+  </div>
 
+  <div *ngIf="isSubmitting" class="loader"></div>
 
-    <div *ngIf="isSubmitting" class="loader"></div>
-
-    <button *ngIf="!isSubmitting" class="btn" style="margin-top: 5px;" type="submit" [disabled]="!userData.valid">Sign
-        in</button>
+  <button
+    *ngIf="!isSubmitting"
+    class="btn"
+    style="margin-top: 5px"
+    type="submit"
+    [disabled]="!userData.valid"
+  >
+    Sign in
+  </button>
 </form>

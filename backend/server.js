@@ -493,15 +493,24 @@ async function createSocketServer() {
     });
 
     socketServer.on('connection', (socket) => {
-        socket.on('joinRoom', async (roomId, callback) => {
+        socket.on('ping', () => {
+            socket.emit('pong', { id: socket.id });
+        })
+
+        socket.on('sid', () => {
+            // return session id
+
+        })
+
+        socket.on('joinRoom', async (roomId) => {
             socket.join(roomId);
             socket.to(roomId).emit('user-connected', socket.id);
             console.log(`User with ID: ${socket.id} joined room: ${roomId}`);
-            callback(roomId);
         })
 
         // #region WebRTC
         socket.on('getRouterRtpCapabilities', async (callback) => {
+            console.log(socket.id);
             callback(mediasoupRouter.rtpCapabilities);
         });
 
@@ -631,10 +640,9 @@ async function createSocketServer() {
 
         // №region Event Synchronization
 
-
-        socket.on("contentChanged", (data) => {
-            console.log("[contentChanged]", data);
-            socket.to(data.roomId).emit("contentChanged", data);
+        socket.on("playerStateChanged", (data) => {
+            console.log("[playerStateChanged]", data);
+            socket.to(data.roomId).emit("playerStateChanged", data);
         })
 
         // #endregion

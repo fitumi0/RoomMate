@@ -48,7 +48,7 @@
     >
       <div class="message-container__header">
         <h4>
-          <i>{{ message.senderName || "Unknown" }}</i>
+          {{ message.senderName || "Unknown" }}
         </h4>
         <p>{{ message.date | date : "short" }}</p>
       </div>

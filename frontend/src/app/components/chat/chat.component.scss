@@ -13,13 +13,31 @@
 }
 
 .chat__header {
-  box-shadow: 0 0 5px $black;
+  &::after {
+    content: "";
+    display: block;
+    width: 100%;
+    margin: auto;
+    height: 1px;
+    background-color: $black;
+  }
 }
 
 .chat__title {
-  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  margin: 0.5rem 0 0 0;
   font-size: 1.5rem;
   text-align: center;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 100%;
+    margin: auto;
+    height: 1px;
+    background-color: $black;
+  }
 }
 
 .chat__options {
@@ -30,6 +48,8 @@
 }
 
 .options__item {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
   width: 100%;
   text-align: center;
   padding: 0.75rem;
@@ -90,6 +110,11 @@
   border-radius: 0.5rem;
   padding: 0.25rem;
   font-size: 0.8rem;
+
+  & > * {
+    font-family: "Inter", sans-serif !important;
+    font-weight: 500;
+  }
 }
 
 .message-container__header {

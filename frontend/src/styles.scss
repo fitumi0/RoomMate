@@ -47,6 +47,16 @@ body {
   background-color: $background-color;
 }
 
+.title {
+  font-family: "Inter", sans-serif !important;
+  font-weight: 500;
+}
+
+.subtitle {
+  font-family: "Inter", sans-serif !important;
+  font-weight: 400;
+}
+
 .btn {
   font-family: "Inter", sans-serif !important;
   text-wrap: nowrap;
@@ -260,6 +270,11 @@ body {
   flex-direction: column;
   margin-bottom: 10px;
   width: 100%;
+}
+
+.form-group > * {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
 }
 
 .input-checkbox {

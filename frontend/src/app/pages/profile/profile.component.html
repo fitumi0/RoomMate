@@ -2,15 +2,16 @@
   <app-header></app-header>
   <main class="main">
     <section class="grid-wrapper">
-      <section>
-        <h2 class="text-shadow">Update userdata</h2>
-        <app-update-userdata class="shadow"></app-update-userdata>
-      </section>
       <section class="avatar-wrapper">
         <h2 class="text-shadow">Public avatar</h2>
         <img class="shadow" src="https://placehold.co/128x128" alt="avatar" />
-        <!-- <app-accordion [accordionItems]="forms"></app-accordion> -->
+        <!-- <app-accordion [accordionItems]="forms"></app-accordion>  -->
       </section>
+      <section class="profile-wrapper">
+        <!-- <h2 class="text-shadow">Update userdata</h2> -->
+        <app-update-userdata class="shadow"></app-update-userdata>
+      </section>
+
     </section>
     <section class="profile-controls ">
       <button type="button" class="btn shadow" (click)="auth.logOut()">

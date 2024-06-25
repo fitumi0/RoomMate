@@ -1,0 +1,21 @@
+<app-header></app-header>
+
+<div class="container">
+    <h1>Room List</h1>
+    <div *ngIf="rooms.length > 0; else noRooms">
+        <div
+            *ngFor="let room of rooms"
+            class="room-item"
+            [routerLink]="['/room', room.id]"
+        >
+            <h2>{{ room.name }}</h2>
+            <p>
+                Created on: {{ room.createdDate | date : "fullDate" }} at
+                {{ room.createdDate | date : "shortTime" }}
+            </p>
+        </div>
+    </div>
+    <ng-template #noRooms>
+        <p>No rooms available.</p>
+    </ng-template>
+</div>

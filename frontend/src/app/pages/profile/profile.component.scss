@@ -6,8 +6,9 @@
 
 .grid-wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.25fr;
   gap: 20px;
+  width: 100%;
 }
 
 .profile-controls {
@@ -26,6 +27,11 @@
 
 }
 
+.profile-wrapper {
+  
+  @include backlight(0, 5rem, 20vh, 0.75, $blue-color, $green-color, 10s);
+}
+
 .input-wrapper {
   display: flex;
   flex-direction: column;
@@ -34,4 +40,12 @@
 
 .input-wrapper>label {
   padding-bottom: 1em;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }

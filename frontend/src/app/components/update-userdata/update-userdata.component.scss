@@ -1,1 +1,21 @@
 @import '../../../styles.scss';
+
+.userdata-form {
+    box-shadow: none;
+    background-color: #ffffff00;
+    width: 100%;
+    &>.form-group{
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    &>.form-group>.input-wrapper{
+        width: 70%;
+        display: flex; 
+        flex-direction: column;
+        &>label{
+            color: $white;
+        }
+    }
+}

@@ -1,0 +1,31 @@
+@import "../../../styles.scss";
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.room-item {
+    background: linear-gradient(145deg, #e0e0e0, #ffffff);
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.room-item:hover {
+    transform: scale(1.02);
+    cursor: pointer;
+}
+
+h2 {
+    margin: 0 0 10px;
+    color: #333;
+}
+
+p {
+    margin: 0;
+    color: #666;
+}

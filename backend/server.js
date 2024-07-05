@@ -322,17 +322,19 @@ async function createExpressApp() {
      */
     expressApp.patch('/api/update-user', async (req, res) => {
         const payload = utils.getPayload(req);
-
         if (!payload) {
             return res.status(400).send({ message: "Token not found" });
         }
 
         const user = await prisma.user.update({
             where: {
-                id: payload.id
+                id: payload.id,
             },
             data: {
-                ...req.body
+                name: req.body.name,
+                username: req.body.username,
+                email: req.body.email,
+                passwordHash: utils.hashPassword(req.body.newPassword),
             }
         })
 

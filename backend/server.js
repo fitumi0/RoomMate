@@ -102,15 +102,16 @@ async function createExpressApp() {
             return;
         }
 
-        if (req.body.public === undefined) {
-            res.status(400).send('Public status is required');
-            return;
+        let isPublic = req.body.public;
+
+        if (isPublic === undefined) {
+            isPublic = false;
         }
 
         const room = await prisma.room.create({
             data: {
                 name: req.body.name,
-                public: req.body.public
+                public: isPublic
             }
         })
 
@@ -169,18 +170,22 @@ async function createExpressApp() {
      *     responses:
      *       204:
      *         description: Success
+     *       404:
+     *         description: Room not found
     */
     expressApp.post('/api/delete-room/:id', async (req, res) => {
         const room = await prisma.room.findUnique({
             where: { id: req.params.id }
         })
 
-        if (room) {
-            await prisma.room.update({
-                where: { id: req.params.id },
-                data: { deleted: true }
-            })
+        if (!room) {
+            return res.sendStatus(404);
         }
+
+        await prisma.room.update({
+            where: { id: req.params.id },
+            data: { deleted: true }
+        })
 
         res.sendStatus(204);
     })
@@ -494,25 +499,11 @@ async function createExpressApp() {
         const password = req.body.password;
         const passwordHash = utils.hashPassword(password);
 
-        const username = email.split('@')[0];
-
         if (await prisma.user.findUnique({ where: { email: email } })) {
             return res.status(409).send('User with this email already exists');
         }
 
-        // TODO: а надо ли оно)))))))))))))))))))))))
-        /* if (await prisma.user.findUnique({ where: { email: email, deleted: true } })) {
-            const user = await prisma.user.update({
-                where: {
-                    email: email
-                },
-                data: {
-                    deleted: false
-                }
-            })
-
-            return res.status(202).send(user);
-        } */
+        const username = email.split('@')[0];
 
         const user = await prisma.user.create({
             data: {
@@ -575,20 +566,13 @@ async function createSocketServer() {
             socket.emit('pong', { id: socket.id });
         })
 
-        socket.on('sid', () => {
-            // return session id
-
-        })
-
         socket.on('joinRoom', async (roomId) => {
             socket.join(roomId);
             socket.to(roomId).emit('user-connected', socket.id);
-            console.log(`User with ID: ${socket.id} joined room: ${roomId}`);
         })
 
         // #region WebRTC
         socket.on('getRouterRtpCapabilities', async (callback) => {
-            console.log(socket.id);
             callback(mediasoupRouter.rtpCapabilities);
         });
 
@@ -697,7 +681,6 @@ async function createSocketServer() {
             if (session && session.consumer) {
                 try {
                     await session.consumer.resume();
-                    console.log("Resumed consumer successfully");
                 } catch (err) {
                     console.error("Error resuming consumer:", err);
                 }
@@ -728,7 +711,6 @@ async function createSocketServer() {
         // №region Event Synchronization
 
         socket.on("playerStateChanged", (data) => {
-            console.log("[playerStateChanged]", data);
             socket.to(data.roomId).emit("playerStateChanged", data);
         })
 

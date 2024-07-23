@@ -1,0 +1,8 @@
+nginx
+storage
+run.*
+
+node_modules
+
+.env
+config.*

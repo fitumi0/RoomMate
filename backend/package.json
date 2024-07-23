@@ -1,0 +1,27 @@
+{
+	"name": "backend",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "tsc -p tsconfig.json",
+		"start": "nodemon --watch \"src/**\" --ext \"ts,json\" --ignore \"*.spec.ts\" --exec \"ts-node src/index.ts\""
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@fastify/postgres": "^5.2.2",
+		"dotenv": "^16.4.5",
+		"fastify": "^4.28.1",
+		"pg": "^8.12.0"
+	},
+	"devDependencies": {
+		"@types/node": "^20.14.11",
+		"nodemon": "^3.1.4",
+		"prettier": "3.3.3",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.5.4"
+	}
+}

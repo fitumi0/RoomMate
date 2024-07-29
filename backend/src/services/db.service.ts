@@ -1,31 +1,23 @@
-import { FastifyInstance } from "fastify";
+import sql from "./db";
+import { type Room } from "@roommate/room";
 
 class DBService {
-	private fastify: FastifyInstance;
-
-	constructor(fastify: FastifyInstance) {
-		this.fastify = fastify;
-	}
-
-	private async getClient() {
-		return await this.fastify.pg.connect();
-	}
-
+	constructor() {}
 	public async getPublicRooms() {
-		const client = await this.getClient();
-		try {
-			const result = await client.query(
-				'SELECT * FROM "Room" WHERE public IS TRUE'
-			);
-			return result.rows;
-		} catch (err) {
-			throw err;
-		} finally {
-			client.release();
-		}
+		return sql`SELECT * FROM "Room" WHERE public IS TRUE`;
 	}
 
-	// Добавьте другие методы для работы с базой данных здесь
+	public async getRoom(id: string) {
+		return sql`SELECT * FROM "Room" WHERE id = ${id} LIMIT 1`;
+	}
+
+	public async createRoom(room: Room) {}
+
+	public async updateRoom(room: Room) {}
+
+	public async deleteRoom(id: string) {}
+
+	public async getVideos() {}
 }
 
 export default DBService;

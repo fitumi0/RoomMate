@@ -1,0 +1,26 @@
+{
+	"name": "@rommate/types",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"dependencies": {
+		"typescript": "^5.5.4"
+	},
+	"files": [
+		"./src/**/*"
+	],
+	"exports": {
+		"./messages": {
+			"import": "./dist/Messages.js",
+			"types": "./dist/Messages.d.ts"
+		},
+		"./models": {
+			"import": "./dist/Models.js",
+			"types": "./dist/Models.d.ts"
+		},
+		"./player": {
+			"import": "./dist/Player.js",
+			"types": "./dist/Player.d.ts"
+		}
+	}
+}

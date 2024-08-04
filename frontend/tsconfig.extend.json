@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./",
+		"paths": {
+			"@roommate/messages/*": ["../types/messages/*"],
+			"@roommate/player/*": ["../types/player/*"],
+			"@roommate/models/*": ["../types/models/*"]
+		}
+	}
+}

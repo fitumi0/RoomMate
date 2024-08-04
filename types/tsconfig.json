@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"module": "NodeNext",
+		"target": "ES2022",
+
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"strict": true,
+		"noImplicitAny": true,
+
+		"outDir": "./dist",
+
+		"declaration": true,
+		"declarationMap": true
+	},
+	"include": ["src/**/*"]
+}

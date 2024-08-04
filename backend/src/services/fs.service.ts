@@ -1,17 +1,25 @@
 import fs, { Stats } from "fs";
 import path from "path";
 
-const videoPath = path.join(__dirname, "../", "../", "../", "videos");
-
 class FSService {
+	public static videoPath = path.join(
+		__dirname,
+		"../",
+		"../",
+		"../",
+		"videos"
+	);
+
 	constructor() {}
 
 	private getVideoPath(name: string) {
-		return path.join(videoPath, name);
+		return path.join(FSService.videoPath, name);
 	}
 
 	public getVideos(filter: RegExp = /.mp4/) {
-		return fs.readdirSync(videoPath).filter((file) => filter.test(file));
+		return fs
+			.readdirSync(FSService.videoPath)
+			.filter((file) => filter.test(file));
 	}
 
 	public getVideoInfo(name: string): Stats | null {

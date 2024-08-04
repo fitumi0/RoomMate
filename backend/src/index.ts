@@ -2,16 +2,14 @@ import Fastify from "fastify";
 import path from "path";
 import routes from "./routes/api";
 import fastifyStatic from "@fastify/static";
-
-import * as dotenv from "dotenv";
-dotenv.config();
+import sockets from "./routes/sockets";
+import fastifyCors from "@fastify/cors";
 
 const fastify = Fastify({
 	logger: true,
 });
 
-// cors
-fastify.register(require("@fastify/cors"), {
+fastify.register(fastifyCors, {
 	origin: true,
 	methods: ["GET", "POST", "PATCH", "DELETE"],
 });
@@ -23,6 +21,7 @@ fastify.register(fastifyStatic, {
 });
 
 fastify.register(routes);
+fastify.register(sockets);
 
 fastify.get("/", async (request, reply) => {
 	return reply.sendFile("index.html");

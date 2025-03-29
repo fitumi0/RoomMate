@@ -9,3 +9,5 @@
 *.test
 
 go.work
+
+.env

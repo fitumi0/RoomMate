@@ -7,33 +7,35 @@ import (
 	"roommate/internal/router"
 )
 
+type HandlerMap map[string]http.HandlerFunc
+
 // Route represents a single route configuration
 type Route struct {
-	Method  string
-	Path    string
-	Handler http.HandlerFunc
+	Path     string
+	Handlers HandlerMap
 }
 
 // RegisterRoutes registers all application routes
 func RegisterRoutes(router router.Router, handlers *handlers.Handlers) {
 	routes := []Route{
-		// TODO: Think about how to handle single route with multiple methods
-		// e.g. [GET]:  /api/room - handlers.Room.GetRoom
-		//      [POST]: /api/room - handlers.Room.CreateRoom
-		{Method: payload.METHOD_POST, Path: "/api/room", Handler: handlers.Room.CreateRoom},
-		{Method: payload.METHOD_GET, Path: "/api/get-room", Handler: handlers.Room.GetRoom},
-		// User routes
+		{
+			Path: "/api/room",
+			Handlers: HandlerMap{
+				payload.METHOD_POST: handlers.Room.CreateRoom,
+				payload.METHOD_GET:  handlers.Room.GetRoom,
+			},
+		},
 		// Add more routes here as needed
 	}
 
 	// Register all routes
 	for _, route := range routes {
 		router.HandleFunc(route.Path, func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != route.Method {
+			if handler, exists := route.Handlers[r.Method]; exists {
+				handler(w, r)
+			} else {
 				http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-				return
 			}
-			route.Handler(w, r)
 		})
 	}
 }

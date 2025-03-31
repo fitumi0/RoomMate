@@ -18,6 +18,4 @@ func NewRoomRepository(db *gorm.DB) *RoomRepository {
 
 // Get room by id
 
-// Update Room
-
 // Delete room

@@ -30,6 +30,9 @@ func RegisterRoutes(router router.Router, handlers *httphandlers.Handlers) {
 				payload.METHOD_GET: {
 					Handler: handlers.Room.GetRoom,
 				},
+				payload.METHOD_PATCH: {
+					Handler: handlers.Room.UpdateRoom,
+				},
 			},
 		},
 		{

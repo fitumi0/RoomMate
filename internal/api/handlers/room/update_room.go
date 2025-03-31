@@ -7,8 +7,8 @@ import (
 	"roommate/internal/models"
 )
 
-func (h *RoomHandler) CreateRoom(w http.ResponseWriter, r *http.Request) {
-	var request room.CreateRoomRequest
+func (h *RoomHandler) UpdateRoom(w http.ResponseWriter, r *http.Request) {
+	var request room.UpdateRoomRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
@@ -21,20 +21,17 @@ func (h *RoomHandler) CreateRoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	roomModel := &models.Room{
+		ID:          request.ID,
 		Title:       request.Title,
 		Description: request.Description,
-		Public:      request.Public,
 	}
 
-	roomID, errCreate := h.roomService.CreateRoom(roomModel)
-
-	if errCreate != nil {
+	if errUpdate := h.roomService.UpdateRoom(roomModel); errUpdate != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	response := room.CreateRoomResponse{ID: roomID}
-
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+	// Q: need to return the updated room?
+	json.NewEncoder(w)
 }

@@ -5,26 +5,29 @@ import (
 	"net/http"
 	"roommate/internal/api/payload/room"
 	"roommate/internal/models"
-	"strconv"
 )
 
 func (h *RoomHandler) GetRoom(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Query().Get("id")
-	idUint, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+	var request room.GetRoomRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}
 
-	request := &room.GetRoomRequest{
-		ID: idUint,
+	if err := request.Validate(); err != nil {
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		return
 	}
 
-	response := &room.GetRoomResponse{}
-
-	room, err := h.roomService.GetRoom(&models.Room{
+	roomModel := &models.Room{
 		ID: request.ID,
-	}, response)
+	}
+
+	room, err := h.roomService.GetRoom(roomModel)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(room)

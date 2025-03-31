@@ -3,10 +3,10 @@ package factory
 import (
 	"roommate/internal/api/handlers"
 	roomhandler "roommate/internal/api/handlers/room"
-	"roommate/internal/api/services"
-	roomservice "roommate/internal/api/services/room"
 	"roommate/internal/repository"
 	roomrepository "roommate/internal/repository/room"
+	"roommate/internal/services"
+	roomservice "roommate/internal/services/room"
 
 	"gorm.io/gorm"
 )

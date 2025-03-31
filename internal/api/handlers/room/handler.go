@@ -1,7 +1,7 @@
 package room
 
 import (
-	"roommate/internal/api/services/room"
+	"roommate/internal/services/room"
 )
 
 // RoomHandler handles all room-related HTTP requests

@@ -1,6 +1,6 @@
 package services
 
-import "roommate/internal/api/services/room"
+import "roommate/internal/services/room"
 
 // Services groups all services
 type Services struct {

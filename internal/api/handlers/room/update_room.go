@@ -7,6 +7,7 @@ import (
 	"roommate/internal/models"
 )
 
+// UpdateRoom updates a room
 func (h *RoomHandler) UpdateRoom(w http.ResponseWriter, r *http.Request) {
 	var request room.UpdateRoomRequest
 
@@ -32,6 +33,6 @@ func (h *RoomHandler) UpdateRoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	// Q: need to return the updated room?
+	// TODO, Q: need to return the updated room?
 	json.NewEncoder(w)
 }

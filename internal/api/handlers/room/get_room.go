@@ -5,11 +5,14 @@ import (
 	"net/http"
 	"roommate/internal/api/payload/room"
 	"roommate/internal/models"
+
+	"github.com/gorilla/schema"
 )
 
+// GetRoom returns a room by id
 func (h *RoomHandler) GetRoom(w http.ResponseWriter, r *http.Request) {
 	var request room.GetRoomRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	if err := schema.NewDecoder().Decode(&request, r.URL.Query()); err != nil {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}

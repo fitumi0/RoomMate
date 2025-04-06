@@ -1,3 +1,6 @@
+/docs/
+/cmd/server/data
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -11,3 +14,5 @@
 go.work
 
 .env
+
+*.pem

@@ -11,6 +11,9 @@ import (
 	"roommate/internal/models"
 	"roommate/internal/router"
 
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
+	"github.com/rs/cors"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -24,8 +27,13 @@ func main() {
 	}
 
 	initDB(cfg)
+	minioClient, minioError := initMinio(cfg)
+	if minioError != nil {
+		log.Fatal(minioError)
+	}
 
 	router := router.NewRouter()
+	cors.Default().Handler(router)
 
 	router.Use(
 		middleware.LoggingMiddleware,
@@ -33,7 +41,7 @@ func main() {
 	)
 
 	// Initialize all components using factory
-	appFactory := factory.NewAppFactory(db)
+	appFactory := factory.NewAppFactory(db, minioClient)
 	repos := appFactory.InitRepositories()
 	services := appFactory.InitServices(repos)
 	handlers := appFactory.InitHandlers(services)
@@ -47,7 +55,7 @@ func main() {
 	}
 
 	log.Printf("Server started on localhost:%s", cfg.Server.Port)
-	if err := server.ListenAndServe(); err != nil {
+	if err := server.ListenAndServeTLS(cfg.Server.CertFile, cfg.Server.KeyFile); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
 }
@@ -62,6 +70,19 @@ func initDB(cfg *config.Config) {
 	}
 
 	autoMigrate()
+}
+
+func initMinio(cfg *config.Config) (*minio.Client, error) {
+	minioClient, err := minio.New(cfg.Minio.Endpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(cfg.Minio.AccessKey, cfg.Minio.SecretKey, ""),
+		Secure: cfg.Minio.UseSSL,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return minioClient, nil
 }
 
 func autoMigrate() {

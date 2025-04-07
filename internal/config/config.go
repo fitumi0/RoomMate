@@ -10,6 +10,7 @@ import (
 // Config holds all application configuration
 type Config struct {
 	DB     DatabaseConfig
+	Minio  MinioConfig
 	Server ServerConfig
 }
 
@@ -22,9 +23,18 @@ type DatabaseConfig struct {
 	Port     string
 }
 
+type MinioConfig struct {
+	Endpoint  string
+	AccessKey string
+	SecretKey string
+	UseSSL    bool
+}
+
 // ServerConfig holds server settings
 type ServerConfig struct {
-	Port string
+	Port     string
+	CertFile string
+	KeyFile  string
 }
 
 // NewConfig creates a new configuration with values from .env file
@@ -42,8 +52,16 @@ func NewConfig() (*Config, error) {
 			Host:     getEnv("DB_HOST"),
 			Port:     getEnv("DB_PORT"),
 		},
+		Minio: MinioConfig{
+			Endpoint:  getEnv("MINIO_ENDPOINT"),
+			AccessKey: getEnv("MINIO_ACCESS_KEY"),
+			SecretKey: getEnv("MINIO_SECRET_KEY"),
+			UseSSL:    getEnv("MINIO_USE_SSL") == "true",
+		},
 		Server: ServerConfig{
-			Port: getEnv("SERVER_PORT"),
+			Port:     getEnv("SERVER_PORT"),
+			CertFile: getEnv("CERT_FILE_PATH"),
+			KeyFile:  getEnv("KEY_FILE_PATH"),
 		},
 	}
 

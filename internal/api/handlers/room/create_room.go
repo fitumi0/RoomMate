@@ -7,6 +7,7 @@ import (
 	"roommate/internal/models"
 )
 
+// CreateRoom creates a new room
 func (h *RoomHandler) CreateRoom(w http.ResponseWriter, r *http.Request) {
 	var request room.CreateRoomRequest
 
@@ -27,7 +28,6 @@ func (h *RoomHandler) CreateRoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	roomID, errCreate := h.roomService.CreateRoom(roomModel)
-
 	if errCreate != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

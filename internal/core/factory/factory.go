@@ -15,12 +15,14 @@ import (
 	storageservice "roommate/internal/services/storage"
 
 	"github.com/minio/minio-go/v7"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 // AppFactory handles initialization of all application components
 type AppFactory struct {
 	db          *gorm.DB
+	rdb         *redis.Client
 	minioClient *minio.Client
 }
 
@@ -35,7 +37,7 @@ func NewAppFactory(db *gorm.DB, minioClient *minio.Client) *AppFactory {
 // InitRepositories initializes all repositories
 func (f *AppFactory) InitRepositories() *repository.Repositories {
 	return &repository.Repositories{
-		Room:       roomrepository.NewRoomRepository(f.db),
+		Room:       roomrepository.NewRoomRepository(f.db, f.rdb),
 		Processing: processingrepository.NewProcessingRepository(f.db),
 		Storage:    storagerepository.NewStorageRepository(f.db, f.minioClient),
 		// Add new repositories here

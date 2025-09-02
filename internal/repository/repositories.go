@@ -8,7 +8,7 @@ import (
 
 // Repositories groups all repositories
 type Repositories struct {
-	Room       *room.PgRoomRepository
+	Room       *room.RoomRepository
 	Processing *processing.ProcessingRepository
 	Storage    *storage.StorageRepository
 	// Add new repositories here

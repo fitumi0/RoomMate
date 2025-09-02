@@ -26,11 +26,12 @@ type RedisRoomRepository struct {
 	rdb *redis.Client
 }
 
-// NewRoomRepository creates a new room repository
+// NewRoomRepository creates a new redis repo
 func NewRedisRoomRepository(rdb *redis.Client) *RedisRoomRepository {
 	return &RedisRoomRepository{rdb: rdb}
 }
 
+// NewPgRoomRepository creates a new postgres reoo
 func NewPgRoomRepository(db *gorm.DB) *PgRoomRepository {
 	return &PgRoomRepository{db: db}
 }

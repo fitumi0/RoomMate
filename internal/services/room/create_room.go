@@ -5,5 +5,5 @@ import (
 )
 
 func (s *RoomService) CreateRoom(room *models.Room) (uint64, error) {
-	return s.roomRepository.CreateRoom(room)
+	return s.roomRepository.Create(room)
 }

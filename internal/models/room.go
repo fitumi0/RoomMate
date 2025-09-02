@@ -22,14 +22,15 @@ type metadata struct {
 }
 
 type Room struct {
-	ID          uint64    `json:"id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Metadata    *metadata `json:"metadata"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
-	Public      bool      `json:"public"`
-	Temporary   bool      `json:"temporary"`
+	ID          uint64        `json:"id"`
+	Title       string        `json:"title"`
+	Description string        `json:"description"`
+	Metadata    *metadata     `json:"metadata"`
+	CreatedAt   time.Time     `json:"created_at"`
+	UpdatedAt   time.Time     `json:"updated_at"`
+	Public      bool          `json:"public"`
+	Temporary   bool          `json:"temporary"`
+	TTL         time.Duration `json:"TTL"`
 }
 
 // func (room *Room) Create(db *gorm.DB) (uint64, error) {

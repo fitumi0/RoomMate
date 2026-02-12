@@ -1,93 +1,98 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"log"
 	"net/http"
-	"roommate/internal/api/routes"
-	"roommate/internal/config"
-	"roommate/internal/core/factory"
-	"roommate/internal/core/middleware"
-	"roommate/internal/models"
-	"roommate/internal/router"
+	"os"
+	"strconv"
+	"time"
 
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
-	"github.com/rs/cors"
-	"gorm.io/driver/postgres"
+	"github.com/elastic/go-elasticsearch/v9"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
+	"github.com/sirupsen/logrus"
+	"go.elastic.co/ecslogrus"
+	pg "gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	app "roommate/internal/app/services"
+	postgres "roommate/internal/infrastructure/postgres"
+	presentation "roommate/internal/presentation/handlers"
+	"roommate/lib"
 )
 
-var db *gorm.DB
-
 func main() {
-	cfg, configError := config.NewConfig()
-	if configError != nil {
-		log.Fatal(configError)
+	hostname, _ := os.Hostname()
+
+	envPort := os.Getenv(lib.SERVER_PORT)
+
+	intEnvPort, _ := strconv.ParseInt(envPort, 10, 64)
+
+	host := flag.String("host", "0.0.0.0", "Host to listen on")
+	port := flag.Int("port", int(intEnvPort), "Port to listen on")
+	flag.Parse()
+
+	addr := fmt.Sprintf("%s:%d", *host, *port)
+
+	es, _ := elasticsearch.NewDefaultClient()
+
+	log := logrus.New()
+	log.SetFormatter(&ecslogrus.Formatter{})
+
+	log.Println(es.Info())
+
+	r := chi.NewRouter()
+
+	dsn := &lib.DSN{
+		Host:     os.Getenv(lib.DB_HOST),
+		Port:     os.Getenv(lib.DB_PORT),
+		User:     os.Getenv(lib.DB_USER),
+		Password: os.Getenv(lib.DB_PASSWORD),
+		DBName:   os.Getenv(lib.DB_NAME),
 	}
 
-	initDB(cfg)
-	minioClient, minioError := initMinio(cfg)
-	if minioError != nil {
-		log.Fatal(minioError)
-	}
-
-	router := router.NewRouter()
-	cors.Default().Handler(router)
-
-	router.Use(
-		middleware.LoggingMiddleware,
-		// add new middleware here
-	)
-
-	// Initialize all components using factory
-	appFactory := factory.NewAppFactory(db, minioClient)
-	repos := appFactory.InitRepositories()
-	services := appFactory.InitServices(repos)
-	handlers := appFactory.InitHandlers(services)
-
-	// Register all routes
-	routes.RegisterRoutes(router, handlers)
-
-	server := &http.Server{
-		Addr:    ":" + cfg.Server.Port,
-		Handler: router,
-	}
-
-	log.Printf("Server started on localhost:%s", cfg.Server.Port)
-	if err := server.ListenAndServeTLS(cfg.Server.CertFile, cfg.Server.KeyFile); err != nil {
-		log.Fatalf("Server failed: %v", err)
-	}
-}
-
-func initDB(cfg *config.Config) {
-	var err error
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		cfg.DB.Host, cfg.DB.User, cfg.DB.Password, cfg.DB.Name, cfg.DB.Port)
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(pg.Open(dsn.String()), &gorm.Config{})
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
-	autoMigrate()
-}
+	// db.AutoMigrate(
+	// 	&postgres.User{},
+	// 	&postgres.{},
+	// )
 
-func initMinio(cfg *config.Config) (*minio.Client, error) {
-	minioClient, err := minio.New(cfg.Minio.Endpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(cfg.Minio.AccessKey, cfg.Minio.SecretKey, ""),
-		Secure: cfg.Minio.UseSSL,
+	userRepository := postgres.NewPostgresUserRepository(db)
+	userService := app.NewUserService(userRepository)
+
+	hallRepository := postgres.NewPostgresHallRepository(db)
+	hallService := app.NewHallService(hallRepository)
+
+	r.Use(middleware.Logger)
+	r.Use(cors.Handler(cors.Options{
+		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
+		AllowedOrigins: []string{"https://*", "http://*"},
+		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
+
+	r.Get("/user", presentation.NewUserHandler(userService).GetUser)
+	r.Post("/user", presentation.NewUserHandler(userService).Register)
+	r.Post("/hall", presentation.NewHallHandler(hallService).CreateHall)
+	r.Get("/lobby", presentation.NewHallHandler(hallService).GetAllHalls) // TODO: add pagination
+
+	apiRouter := chi.NewRouter()
+	apiRouter.Mount("/api", r)
+	apiRouter.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
+		log.WithTime(time.Now()).Info("ping called")
+		w.Write([]byte("pong from " + hostname))
 	})
 
-	if err != nil {
-		return nil, err
-	}
-
-	return minioClient, nil
-}
-
-func autoMigrate() {
-	err := db.AutoMigrate(&models.Room{}, &models.User{})
-	if err != nil {
-		log.Fatal("Migration failed: ", err)
-	}
+	log.Info("Server listening on:", addr)
+	http.ListenAndServe(addr, apiRouter)
 }

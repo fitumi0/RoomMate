@@ -10,9 +10,15 @@
 
 # Test binary, built with `go test -c`
 *.test
-
 go.work
 
 .env
-
 *.pem
+*venv
+*.yml
+Dockerfile
+traefik
+pgadmin
+locust
+grafana
+prometheus

@@ -4,5 +4,15 @@ The main part of the backend logic is currently implementing in the initial_back
 
 # TODO:
 
--   [ ] Add tests
--   [ ] Create a TODO
+- [ ] Create a TODO
+
+
+# Common
+- [ ] Понять, нужны ли метаданные в запросах
+- [ ] Пример сценария: при создании условной комнаты в запросе напрямую не прокидывать все данные, например, ID создателя можно было бы брать откуда-то
+
+# User
+- [ ] Добавить пользователей
+- [ ] 
+
+# Hall

@@ -58,11 +58,6 @@ func main() {
 		panic(err)
 	}
 
-	// db.AutoMigrate(
-	// 	&postgres.User{},
-	// 	&postgres.{},
-	// )
-
 	userRepository := postgres.NewPostgresUserRepository(db)
 	userService := app.NewUserService(userRepository)
 

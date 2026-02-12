@@ -14,6 +14,8 @@ type HallRepository struct {
 }
 
 func NewPostgresHallRepository(db *gorm.DB) *HallRepository {
+	db.AutoMigrate(&pgentities.PgHall{})
+
 	return &HallRepository{db: db}
 }
 

@@ -30,9 +30,12 @@ type PgHall struct {
 	Status      HallStatus     `gorm:"column:status"`
 	Visibility  HallVisibility `gorm:"column:visibility"`
 	MaxMembers  int            `gorm:"column:max_members"`
-	SyncVersion int64          `gorm:"column:sync_version"`
 	CreatedAt   time.Time      `gorm:"column:created_at"`
 	UpdatedAt   time.Time      `gorm:"column:updated_at"`
+}
+
+func (h *PgHall) TableName() string {
+	return "halls"
 }
 
 func (h *PgHall) Validate() error {
@@ -50,24 +53,8 @@ func (h *PgHall) Validate() error {
 		return domain.ErrorIncorrectHallCode
 	}
 
-	if h.Status != "" && h.Status != HallStatusOpen && h.Status != HallStatusLive && h.Status != HallStatusEnded {
-		return domain.ErrorIncorrectHallStatus
-	}
-
-	if h.Visibility != "" && h.Visibility != HallVisibilityPrivate && h.Visibility != HallVisibilityPublic {
-		return domain.ErrorIncorrectHallVisibility
-	}
-
 	if h.MaxMembers < 0 {
 		return domain.ErrorIncorrectHallCapacity
-	}
-
-	if h.SyncVersion < 0 {
-		return domain.ErrorIncorrectSyncVersion
-	}
-
-	if h.OwnerUserID < 0 {
-		return domain.ErrorIncorrectIdentifier
 	}
 
 	return nil

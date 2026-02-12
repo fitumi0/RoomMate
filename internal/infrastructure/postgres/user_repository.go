@@ -13,7 +13,9 @@ type UserRepository struct {
 }
 
 func NewPostgresUserRepository(db *gorm.DB) *UserRepository {
-	db.AutoMigrate(&pgentities.PgUser{})
+	if err := db.AutoMigrate(&pgentities.PgUser{}); err != nil {
+		panic(err)
+	}
 
 	return &UserRepository{db: db}
 }

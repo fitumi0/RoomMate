@@ -1,4 +1,4 @@
-package lib
+package cmd
 
 type DSN struct {
 	Host     string

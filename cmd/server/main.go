@@ -17,16 +17,16 @@ import (
 	pg "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
+	"roommate/cmd"
 	app "roommate/internal/app/services"
 	postgres "roommate/internal/infrastructure/postgres"
 	presentation "roommate/internal/presentation/handlers"
-	"roommate/lib"
 )
 
 func main() {
 	hostname, _ := os.Hostname()
 
-	envPort := os.Getenv(lib.SERVER_PORT)
+	envPort := os.Getenv(cmd.SERVER_PORT)
 
 	intEnvPort, _ := strconv.ParseInt(envPort, 10, 64)
 
@@ -45,12 +45,12 @@ func main() {
 
 	r := chi.NewRouter()
 
-	dsn := &lib.DSN{
-		Host:     os.Getenv(lib.DB_HOST),
-		Port:     os.Getenv(lib.DB_PORT),
-		User:     os.Getenv(lib.DB_USER),
-		Password: os.Getenv(lib.DB_PASSWORD),
-		DBName:   os.Getenv(lib.DB_NAME),
+	dsn := &cmd.DSN{
+		Host:     os.Getenv(cmd.DB_HOST),
+		Port:     os.Getenv(cmd.DB_PORT),
+		User:     os.Getenv(cmd.DB_USER),
+		Password: os.Getenv(cmd.DB_PASSWORD),
+		DBName:   os.Getenv(cmd.DB_NAME),
 	}
 
 	db, err := gorm.Open(pg.Open(dsn.String()), &gorm.Config{})

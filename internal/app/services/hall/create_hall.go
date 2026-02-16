@@ -1,18 +1,10 @@
-package app
+package hall
 
 import (
 	"context"
 	"roommate/internal/app"
 	"roommate/internal/domain/entities"
 )
-
-type HallService struct {
-	repo HallRepository
-}
-
-func NewHallService(repo HallRepository) *HallService {
-	return &HallService{repo: repo}
-}
 
 func (s *HallService) CreateHall(ctx context.Context, hall *entities.Hall) error {
 	if err := hall.Validate(); err != nil {
@@ -24,12 +16,4 @@ func (s *HallService) CreateHall(ctx context.Context, hall *entities.Hall) error
 	}
 
 	return s.repo.CreateHall(ctx, hall)
-}
-
-func (s *HallService) GetHall(ctx context.Context, name string) (*entities.Hall, error) {
-	return s.repo.GetHall(ctx, name)
-}
-
-func (s *HallService) GetAllHalls(ctx context.Context) ([]*entities.Hall, error) {
-	return s.repo.GetAllHalls(ctx)
 }

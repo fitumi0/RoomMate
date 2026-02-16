@@ -1,21 +1,11 @@
-package presentation
+package user
 
 import (
 	"context"
 	"encoding/json"
 	"net/http"
-	app "roommate/internal/app/services"
 	"roommate/internal/presentation"
-	"time"
 )
-
-type UserHandler struct {
-	userService *app.UserService
-}
-
-func NewUserHandler(userService *app.UserService) *UserHandler {
-	return &UserHandler{userService: userService}
-}
 
 // TODO: fix
 func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
@@ -41,11 +31,4 @@ func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-}
-
-func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
-	_, cancel := context.WithTimeout(r.Context(), 5*time.Second)
-	defer cancel()
-
-	w.WriteHeader(http.StatusNoContent)
 }

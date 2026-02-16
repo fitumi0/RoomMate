@@ -32,7 +32,7 @@ func (r *HallRepository) GetHall(ctx context.Context, name string) (*entities.Ha
 	return &entities.Hall{}, err
 }
 
-func (r *HallRepository) GetAllHalls(ctx context.Context) ([]*entities.Hall, error) {
+func (r *HallRepository) GetHalls(ctx context.Context) ([]*entities.Hall, error) {
 	var pgHalls []pgentities.PgHall
 
 	err := r.db.WithContext(ctx).Find(&pgHalls).Error

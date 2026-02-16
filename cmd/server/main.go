@@ -18,9 +18,13 @@ import (
 	"gorm.io/gorm"
 
 	"roommate/cmd"
-	app "roommate/internal/app/services"
-	postgres "roommate/internal/infrastructure/postgres"
-	presentation "roommate/internal/presentation/handlers"
+	"roommate/internal/infrastructure/postgres"
+
+	hall_app "roommate/internal/app/services/hall"
+	hall_handler "roommate/internal/presentation/handlers/hall"
+
+	user_app "roommate/internal/app/services/user"
+	user_handler "roommate/internal/presentation/handlers/user"
 )
 
 func main() {
@@ -59,10 +63,10 @@ func main() {
 	}
 
 	userRepository := postgres.NewPostgresUserRepository(db)
-	userService := app.NewUserService(userRepository)
+	userService := user_app.NewUserService(userRepository)
 
 	hallRepository := postgres.NewPostgresHallRepository(db)
-	hallService := app.NewHallService(hallRepository)
+	hallService := hall_app.NewHallService(hallRepository)
 
 	r.Use(middleware.Logger)
 	r.Use(cors.Handler(cors.Options{
@@ -76,10 +80,10 @@ func main() {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	r.Get("/user", presentation.NewUserHandler(userService).GetUser)
-	r.Post("/user", presentation.NewUserHandler(userService).Register)
-	r.Post("/hall", presentation.NewHallHandler(hallService).CreateHall)
-	r.Get("/lobby", presentation.NewHallHandler(hallService).GetAllHalls) // TODO: add pagination
+	r.Get("/user", user_handler.NewUserHandler(userService).GetUser)
+	r.Post("/user", user_handler.NewUserHandler(userService).Register)
+	r.Post("/hall", hall_handler.NewHallHandler(hallService).CreateHall)
+	r.Get("/lobby", hall_handler.NewHallHandler(hallService).GetHalls) // TODO: add pagination
 
 	apiRouter := chi.NewRouter()
 	apiRouter.Mount("/api", r)

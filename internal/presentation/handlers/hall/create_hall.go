@@ -15,8 +15,10 @@ func (h *HallHandler) CreateHall(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		Code       string `json:"code"`
 		Title      string `json:"title"`
-		MaxMembers int    `json:"max_members"`
+		MaxMembers uint16 `json:"max_members"`
 	}
+
+	// TODO: validate
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "invalid request", http.StatusBadRequest)

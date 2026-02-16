@@ -9,30 +9,47 @@ import (
 
 type HallStatus string
 
-type HallVisibility string
-
 const (
 	HallStatusOpen  HallStatus = "open"
 	HallStatusLive  HallStatus = "live"
 	HallStatusEnded HallStatus = "ended"
 )
 
+type HallVisibility string
+
 const (
-	HallVisibilityPrivate HallVisibility = "private"
-	HallVisibilityPublic  HallVisibility = "public"
+	HallVisibilityPublic      HallVisibility = "public"
+	HallVisibilityPrivate     HallVisibility = "private"
+	HallVisibilityFriendsOnly HallVisibility = "friends-only"
 )
 
+// HallType enum
+const (
+	HallAnonymous = iota
+	HallUser
+	HallSystem
+)
+
+// TODO: sync with PgHall
 type Hall struct {
-	ID          int            `json:"id"`
-	Code        string         `json:"code,omitempty"`
-	Title       string         `json:"title,omitempty"`
-	OwnerUserID int            `json:"owner_user_id,omitempty"`
-	Status      HallStatus     `json:"status,omitempty"`
-	Visibility  HallVisibility `json:"visibility,omitempty"`
-	MaxMembers  int            `json:"max_members,omitempty"`
-	SyncVersion int64          `json:"sync_version,omitempty"`
-	CreatedAt   time.Time      `json:"created_at,omitempty"`
-	UpdatedAt   time.Time      `json:"updated_at,omitempty"`
+	ID          int    `json:"id"`
+	Title       string `json:"title,omitempty"` // Hall title (e.g. Interstellar)
+	Description string `json:"description,omitempty"`
+	// TODO: provide Schedule info
+
+	// System
+	Type       uint8          `json:"type"`                 // Hall type ref
+	TTL        uint64         `json:"ttl,omitempty"`        // For anonymous type
+	Code       string         `json:"code,omitempty"`       // Access code (PIN) if provided
+	OwnerID    int64          `json:"owner_id,omitempty"`   // Owner ID -1 for System, 0 for anon
+	Status     HallStatus     `json:"status,omitempty"`     // Hall status ref
+	Visibility HallVisibility `json:"visibility,omitempty"` // Hall visibility ref
+	MaxMembers uint16         `json:"max_members,omitempty"`
+
+	SyncVersion int64 `json:"sync_version,omitempty"` // NA
+
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
 func (h *Hall) Validate() error {
@@ -48,10 +65,6 @@ func (h *Hall) Validate() error {
 
 	if h.Code != "" && len(strings.TrimSpace(h.Code)) < 4 {
 		return domain.ErrorIncorrectHallCode
-	}
-
-	if h.MaxMembers < 0 {
-		return domain.ErrorIncorrectHallCapacity
 	}
 
 	// Пока так, ибо пользователю будет мало что доступно к заполнению
@@ -79,6 +92,6 @@ func (h *Hall) EffectiveTitle() string {
 	return strings.TrimSpace(h.Title)
 }
 
-func (h *Hall) EffectiveMaxMembers() int {
+func (h *Hall) EffectiveMaxMembers() uint16 {
 	return h.MaxMembers
 }

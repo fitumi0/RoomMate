@@ -9,29 +9,38 @@ import (
 
 type HallStatus string
 
-type HallVisibility string
-
 const (
 	HallStatusOpen  HallStatus = "open"
 	HallStatusLive  HallStatus = "live"
 	HallStatusEnded HallStatus = "ended"
 )
 
+type HallVisibility string
+
 const (
 	HallVisibilityPrivate HallVisibility = "private"
 	HallVisibilityPublic  HallVisibility = "public"
 )
 
+// HallType enum
+const (
+	HallAnonymous = iota
+	HallUser
+	HallSystem
+)
+
 type PgHall struct {
-	ID          int            `gorm:"column:id;primaryKey;autoIncrement"`
-	Code        string         `gorm:"column:code"`
-	Title       string         `gorm:"column:title"`
-	OwnerUserID int            `gorm:"column:owner_user_id"`
-	Status      HallStatus     `gorm:"column:status"`
-	Visibility  HallVisibility `gorm:"column:visibility"`
-	MaxMembers  int            `gorm:"column:max_members"`
-	CreatedAt   time.Time      `gorm:"column:created_at"`
-	UpdatedAt   time.Time      `gorm:"column:updated_at"`
+	ID         int            `gorm:"column:id;primaryKey;autoIncrement"`
+	Type       uint8          `gorm:"column:type"`
+	Code       string         `gorm:"column:code"`
+	Title      string         `gorm:"column:title"`
+	OwnerID    int64          `gorm:"column:owner_id"`
+	TTL        uint64         `gorm:"column:ttl"`
+	Status     HallStatus     `gorm:"column:status"`
+	Visibility HallVisibility `gorm:"column:visibility"`
+	MaxMembers uint16         `gorm:"column:max_members"`
+	CreatedAt  time.Time      `gorm:"column:created_at"`
+	UpdatedAt  time.Time      `gorm:"column:updated_at"`
 }
 
 func (h *PgHall) TableName() string {
@@ -53,10 +62,6 @@ func (h *PgHall) Validate() error {
 		return domain.ErrorIncorrectHallCode
 	}
 
-	if h.MaxMembers < 0 {
-		return domain.ErrorIncorrectHallCapacity
-	}
-
 	return nil
 }
 
@@ -64,6 +69,6 @@ func (h *PgHall) EffectiveTitle() string {
 	return strings.TrimSpace(h.Title)
 }
 
-func (h *PgHall) EffectiveMaxMembers() int {
+func (h *PgHall) EffectiveMaxMembers() uint16 {
 	return h.MaxMembers
 }

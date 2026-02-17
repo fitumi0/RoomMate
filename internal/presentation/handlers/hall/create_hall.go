@@ -9,6 +9,8 @@ import (
 )
 
 func (h *HallHandler) CreateHall(w http.ResponseWriter, r *http.Request) {
+	l := h.logger
+
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
 
@@ -21,6 +23,7 @@ func (h *HallHandler) CreateHall(w http.ResponseWriter, r *http.Request) {
 	// TODO: validate
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		l.WithField("Request", "CreateHall").Error(err.Error()) // TODO: надо что то получше будет выдумать
 		http.Error(w, "invalid request", http.StatusBadRequest)
 
 		return
@@ -31,6 +34,7 @@ func (h *HallHandler) CreateHall(w http.ResponseWriter, r *http.Request) {
 		Title:      req.Title,
 		MaxMembers: req.MaxMembers,
 	})
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 

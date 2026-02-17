@@ -66,7 +66,7 @@ func main() {
 	userService := user_app.NewUserService(userRepository)
 
 	hallRepository := postgres.NewPostgresHallRepository(db)
-	hallService := hall_app.NewHallService(hallRepository)
+	hallService := hall_app.NewHallService(hallRepository, log)
 
 	r.Use(middleware.Logger)
 	r.Use(cors.Handler(cors.Options{
@@ -82,8 +82,8 @@ func main() {
 
 	r.Get("/user", user_handler.NewUserHandler(userService).GetUser)
 	r.Post("/user", user_handler.NewUserHandler(userService).Register)
-	r.Post("/hall", hall_handler.NewHallHandler(hallService).CreateHall)
-	r.Get("/lobby", hall_handler.NewHallHandler(hallService).GetHalls) // TODO: add pagination
+	r.Post("/hall", hall_handler.NewHallHandler(hallService, log).CreateHall)
+	r.Get("/lobby", hall_handler.NewHallHandler(hallService, log).GetHalls) // TODO: add pagination
 
 	apiRouter := chi.NewRouter()
 	apiRouter.Mount("/api", r)

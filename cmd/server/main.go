@@ -66,10 +66,9 @@ func main() {
 	}
 
 	rdb := redis_client.NewClient(&redis_client.Options{
-		// TODO: set data
-		Addr:     os.Getenv(cmd.DB_HOST),
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Addr:     fmt.Sprintf("%s:%s", os.Getenv(cmd.REDIS_HOST), os.Getenv(cmd.REDIS_PORT)),
+		Password: os.Getenv(cmd.REDIS_PASSWORD),
+		DB:       0, // use default DB
 	})
 	defer rdb.Close()
 

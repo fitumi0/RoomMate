@@ -10,5 +10,12 @@ const (
 )
 
 const (
+	REDIS_HOST     = "REDIS_HOST"
+	REDIS_PORT     = "REDIS_PORT"
+	REDIS_PASSWORD = "REDIS_PASSWORD"
+	REDIS_DB       = "REDIS_DB"
+)
+
+const (
 	SERVER_PORT = "SERVER_PORT"
 )

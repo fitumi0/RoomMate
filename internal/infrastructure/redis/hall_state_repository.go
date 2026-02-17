@@ -16,6 +16,6 @@ func NewRedisHallStateRepository(rdb *redis.Client) *HallStateRepository {
 	return &HallStateRepository{rdb: rdb}
 }
 
-func (r *HallStateRepository) SetHallState(ctx context.Context /*TODO:*/) error {
+func (r *HallStateRepository) SetState(ctx context.Context /*TODO:*/) error {
 	return nil
 }

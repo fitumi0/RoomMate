@@ -13,5 +13,5 @@ type HallRepository interface {
 }
 
 type HallStateRepository interface {
-	SetHallState(ctx context.Context /*TODO:*/) error
+	SetState(ctx context.Context /*TODO:*/) error
 }

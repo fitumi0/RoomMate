@@ -6,5 +6,5 @@ import (
 )
 
 func (s *HallService) GetHall(ctx context.Context, name string) (*entities.Hall, error) {
-	return s.repo.GetHall(ctx, name)
+	return s.hallRepo.GetHall(ctx, name)
 }

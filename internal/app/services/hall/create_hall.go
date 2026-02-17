@@ -10,5 +10,5 @@ func (s *HallService) CreateHall(ctx context.Context, hall *entities.Hall) error
 		return err
 	}
 
-	return s.repo.CreateHall(ctx, hall)
+	return s.hallRepo.CreateHall(ctx, hall)
 }

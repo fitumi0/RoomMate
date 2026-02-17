@@ -13,6 +13,9 @@ The main part of the backend logic is currently implementing in the initial_back
 
 # User
 - [ ] Добавить пользователей
-- [ ] 
+- [ ] Добавить флаг на получение уведомлений о новых пользователях в зале (около бесполезное, но здесь можно pub/sub привязать)
 
 # Hall
+
+
+# HallState

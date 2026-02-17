@@ -11,3 +11,7 @@ type HallRepository interface {
 	GetHall(ctx context.Context, name string) (*entities.Hall, error)
 	GetHalls(ctx context.Context) ([]*entities.Hall, error)
 }
+
+type HallStateRepository interface {
+	SetHallState(ctx context.Context /*TODO:*/) error
+}

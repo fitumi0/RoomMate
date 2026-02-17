@@ -3,9 +3,10 @@ package hall
 import "github.com/sirupsen/logrus"
 
 type HallService struct {
-	repo HallRepository
+	hallRepo      HallRepository
+	hallStateRepo HallStateRepository
 }
 
-func NewHallService(repo HallRepository, l *logrus.Logger) *HallService {
-	return &HallService{repo: repo}
+func NewHallService(repo HallRepository, hallStateRepo HallStateRepository, l *logrus.Logger) *HallService {
+	return &HallService{hallRepo: repo, hallStateRepo: hallStateRepo}
 }

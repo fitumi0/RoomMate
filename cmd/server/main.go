@@ -12,13 +12,16 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	redis_client "github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
+
 	"go.elastic.co/ecslogrus"
 	pg "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
 	"roommate/cmd"
 	"roommate/internal/infrastructure/postgres"
+	"roommate/internal/infrastructure/redis"
 
 	hall_app "roommate/internal/app/services/hall"
 	hall_handler "roommate/internal/presentation/handlers/hall"
@@ -62,11 +65,20 @@ func main() {
 		panic(err)
 	}
 
+	rdb := redis_client.NewClient(&redis_client.Options{
+		// TODO: set data
+		Addr:     os.Getenv(cmd.DB_HOST),
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+	defer rdb.Close()
+
 	userRepository := postgres.NewPostgresUserRepository(db)
 	userService := user_app.NewUserService(userRepository)
 
 	hallRepository := postgres.NewPostgresHallRepository(db)
-	hallService := hall_app.NewHallService(hallRepository, log)
+	hallStateRepository := redis.NewRedisHallStateRepository(rdb)
+	hallService := hall_app.NewHallService(hallRepository, hallStateRepository, log)
 
 	r.Use(middleware.Logger)
 	r.Use(cors.Handler(cors.Options{

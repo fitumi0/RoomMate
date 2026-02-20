@@ -1,3 +1,3 @@
-package postgres
+package infrastructure
 
 var ()

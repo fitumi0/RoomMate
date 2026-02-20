@@ -2,6 +2,8 @@ package redis
 
 import (
 	"context"
+	"fmt"
+	"roommate/internal/infrastructure"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -17,5 +19,8 @@ func NewRedisHallStateRepository(rdb *redis.Client) *HallStateRepository {
 }
 
 func (r *HallStateRepository) SetState(ctx context.Context /*TODO:*/) error {
-	return nil
+	key := fmt.Sprintf(infrastructure.RedisHashStateKeyPattern, hallID)
+	value := map[string]interface{}{}
+
+	return r.rdb.HSet(ctx, key, value).Err()
 }
